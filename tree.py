@@ -6,17 +6,18 @@ class Node:
         self.esq = None
         self.pai = None
 
-#arvores não balanceadas
+
+# arvores não balanceadas
 class Arvore:
     def __init__(self):
         self.raiz = None
 
     def inserir(self, id, nome):
         novo = Node(id, nome)
-        if(self.raiz == None):
+        if(self.raiz is None):
             self.raiz = novo
         else:
-            self.inserir_recursao( self.raiz, novo )
+            self.inserir_recursao(self.raiz, novo)
 
     def inserir_recursao(self, node, novo_no):
         if node.id == novo_no.id:
@@ -48,63 +49,67 @@ class Arvore:
             return self.busca(node.dir, id)
         return self.busca(node.esq, id)
 
-    def remover( self, id ):
-        node = self.tras_ai( self.raiz, id )
-        if( node is False ):
+    def remover(self, id):
+        node = self.tras_ai(self.raiz, id)
+        if node is False:
             print("nó não encontrado na arvore. tente novamente.")
             return
-        
-        #se o nó for um nó folha:
-        if( node.esq is None && node.dir is None ):
-            if( node.pai != None ):
-                if( node.pai.dir == node ):
+
+        # se o nó for um nó folha:
+        if node.esq is None and node.dir is None:
+            if node.pai is not None:
+                if node.pai.dir == node:
                     node.pai.dir = None
                 else:
                     node.pai.esq = None
             return
 
-        #se o nó possui apenas 1 filho, e esse filho está a esquerda
-        if( node.dir is None ):
+        # se o nó possui apenas 1 filho, e esse filho está a esquerda
+        if node.dir is None:
             node.esq.pai = node.pai
-            if( node.pai != None && node.pai.id > node.id ): #se o nó for filho esquerdo
+
+            if node.pai is not None and node.pai.esq == node:
                 node.pai.esq = node.esq
-            else if( node.pai != None && node.pai.id < node.id ): #se o no for filho direito
+            elif node.pai is not None and node.pai.dir == node:
+
                 node.pai.dir = node.esq
         return
-        
-        #se o nó possui apenas um filho, que está a direita
-        if( node.esq is None ):
+
+        # se o nó possui apenas um filho, que está a direita
+        if node.esq is None:
             node.dir.pai = node.pai
-            if( node.pai != None && node.pai.id > node.id ): #se o nó for filho esquerdo
+
+            if node.pai is not None and node.pai.esq == node:
                 node.pai.esq = node.dir
-            else if( node.pai != None && node.pai.id < node.id ): #se o no for filho direito
+            elif node.pai is not None and node.pai.dir == node:
+
                 node.pai.dir = node.dir
         return
-        
-        #se o nó possui dois filhos
-        #podemos pegar o nó mais esquerdo do ramo direito, ou o nó mais direito do ramo esquerdo.
-        #implemeitarei a primeira opção, a outra é analoga.
+
+        # se o nó possui dois filhos
+        # podemos pegar o nó mais esquerdo do ramo direito, ou o nó mais direito do ramo esquerdo.
+        # implemeitarei a primeira opção, a outra é analoga.
         substituto = node.dir
-        while( substituto.esq != None ):
+        while substituto.esq is not None:
             substituto = substituto.esq
-        
-        #fazer o pai do substituto apontar para o null
-        if( substituto.pai.esq == substituto )
-            pai.substituto.esq = None
+
+        # fazer o pai do substituto apontar para o null
+        if substituto.pai.id > substituto.id:
+            substituto.pai.esq = None
         else:
-            pai.substituto.dir = None
-        
-        #fazer o substituto apontar pras ligações do nó a ser removido
+            substituto.pai.dir = None
+
+        # fazer o substituto apontar pras ligações do nó a ser removido
         substituto.pai = node.pai
         substituto.esq = node.esq
         substituto.dir = node.dir
-        
-        #fazer as ligações do nó a ser removido apontarem pro substituto
+
+        # fazer as ligações do nó a ser removido apontarem pro substituto
         node.esq.pai = substituto
         node.dir.pai = substituto
-        if( node.pai!=None and node.pai.esq == node )
+        if node.pai is not None and node.pai.esq == node:
             node.pai.esq = substituto
-        else if( node.pai!=None and node.pai.dir == node )
+        elif node.pai is not None and node.pai.dir == node:
             node.pai.dir = substituto
 
 
