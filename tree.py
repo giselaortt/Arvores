@@ -20,6 +20,9 @@ class Arvore:
             self.inserir_recursao(self.raiz, novo)
 
     def inserir_recursao(self, node, novo_no):
+        if node.id == novo_no.id:
+            print("não foi possivel inserir o novo nó, pois não são aceitas repetições.")
+            return
         if node.id < novo_no.id:
             if node.dir is None:
                 node.dir = novo_no
@@ -64,18 +67,22 @@ class Arvore:
         # se o nó possui apenas 1 filho, e esse filho está a esquerda
         if node.dir is None:
             node.esq.pai = node.pai
+
             if node.pai is not None and node.pai.esq == node:
                 node.pai.esq = node.esq
             elif node.pai is not None and node.pai.dir == node:
+
                 node.pai.dir = node.esq
         return
 
         # se o nó possui apenas um filho, que está a direita
         if node.esq is None:
             node.dir.pai = node.pai
+
             if node.pai is not None and node.pai.esq == node:
                 node.pai.esq = node.dir
             elif node.pai is not None and node.pai.dir == node:
+
                 node.pai.dir = node.dir
         return
 
@@ -104,3 +111,11 @@ class Arvore:
             node.pai.esq = substituto
         elif node.pai is not None and node.pai.dir == node:
             node.pai.dir = substituto
+
+
+    def altura(self):
+        pass
+
+
+    def altura_recursao(node):
+        pass
