@@ -9,7 +9,7 @@ def __init__(self, id, nome):
     self.dir = None
     self.esq = None
     self.pai = None
-    self.h = 0 #definirei a altura de uma folha como 0
+    self.h = 1 #definirei a altura de uma folha como 1
 
 '''
          y                               x
@@ -31,6 +31,7 @@ class AVL:
         else:
             insercao_recursao( self.raiz, novo )
 
+
     def insercao_recursao( no, novo):
         if node.id == novo_no.id:
             print("não foi possivel inserir o novo nó, pois não são aceitas repetições.")
@@ -39,23 +40,28 @@ class AVL:
             if node.dir is None:
                 node.dir = novo_no
                 novo_no.pai = node
-                self.bubble_up(node)
-                self.balancear(node)
+                self.bubble_up(novo_no)
+                self._balancear_apos_insercao(node)
             else:
                 self.inserir_recursao(node.dir, novo_no)
         else:
             if(node.esq is None):
                 node.esq = novo_no
                 novo_no.pai = node
-                self.bubble_up(node)
-                self.balancear(node)
+                self.bubble_up(novo_no)
+                self._balancear_apos_insercao(node)
             else:
                 self.inserir_recursao(node.esq, novo_no)
 
+
     def bubble_up(self, node):
-        while( node != None ):
-            node.h = node.h + 1
-            node = node.pai
+        while( node != None && node.pai != None ):
+            if( node.pai.h == node.h ):
+                node.pai.h = node.pai.h + 1
+                node = node.pai
+            else:
+                break
+
 
    def rotate_direita( self, node ):
         #o filho esquerdo se torna o novo pai
@@ -91,7 +97,7 @@ class AVL:
         atualizar_altura(node.pai)
 
    #função para balandear a arvore apos uma INSERÇÃO
-    def balancear( self, no ):
+    def _balancear_apos_insercao( self, no ):
         #find first unbalanced node
         while( node != None ):
             if( node.esq.h - node.dir.h >= 2):
@@ -122,11 +128,33 @@ class AVL:
     def remocao(self):
         pass
 
+
     def remocao_recursao():
         pass
 
-    def busca(self):
-        pass
 
-    def busca_recursao():
-        pass
+    def busca(self, id):
+        node = self._busca(self.raiz, id)
+        if node:
+            return node.nome
+        return f'id {id} não encontrado'
+
+
+    def _busca(self, node):
+        if node is None:
+            return False
+        if node.id == id:
+            return node
+        if id > node.id:
+            return self._busca(node.dir, id)
+        return self._busca(node.esq, id)
+        
+        
+    def altura( self ):
+        return _altura( self.raiz )
+    
+    
+    def _altura( self, node ):
+        if node is None:
+            return 0
+        return max( self._altura(node.dir), self._altura(node.esq) ) + 1
