@@ -59,7 +59,9 @@ class Arvore:
 
         # se o nó for um nó folha:
         if node.esq is None and node.dir is None:
-            if node.pai is not None:
+            if node is self.raiz :
+                self.raiz = None
+            else:
                 if node.pai.dir == node:
                     node.pai.dir = None
                 else:
@@ -69,24 +71,24 @@ class Arvore:
         # se o nó possui apenas 1 filho, e esse filho está a esquerda
         if node.dir is None:
             node.esq.pai = node.pai
-
-            if node.pai is not None and node.pai.esq == node:
+            if node is self.raiz:
+                self.raiz = node.esq
+            elif node.pai.esq == node:
                 node.pai.esq = node.esq
-            elif node.pai is not None and node.pai.dir == node:
-
+            elif node.pai.dir == node:
                 node.pai.dir = node.esq
-        return
+            return
 
         # se o nó possui apenas um filho, que está a direita
         if node.esq is None:
             node.dir.pai = node.pai
-
-            if node.pai is not None and node.pai.esq == node:
+            if node is self.raiz:
+                self.raiz = node.dir
+            elif node.pai.esq == node:
                 node.pai.esq = node.dir
-            elif node.pai is not None and node.pai.dir == node:
-
+            elif node.pai.dir == node:
                 node.pai.dir = node.dir
-        return
+            return
 
         # se o nó possui dois filhos
         # podemos pegar o nó mais esquerdo do ramo direito, ou o nó mais direito do ramo esquerdo.
@@ -109,9 +111,11 @@ class Arvore:
         # fazer as ligações do nó a ser removido apontarem pro substituto
         node.esq.pai = substituto
         node.dir.pai = substituto
-        if node.pai is not None and node.pai.esq == node:
+        if node is self.raiz:
+            self.raiz = substituto
+        if node.pai.esq == node:
             node.pai.esq = substituto
-        elif node.pai is not None and node.pai.dir == node:
+        elif node.pai.dir == node:
             node.pai.dir = substituto
 
 
