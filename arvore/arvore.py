@@ -38,7 +38,9 @@ class Arvore:
 
     def buscar(self, id):
         node = self._tras_ai(self.raiz, id)
-        return node.nome
+        if node:
+            return node.nome
+        return f'id {id} não encontrado'
 
     def _tras_ai(self, node, id):
         if node is None:
