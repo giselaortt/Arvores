@@ -19,7 +19,7 @@ def __init__(self, id, nome):
      T1  T2     Left Rotation            T2  T3
 '''
 #Arvores 2: arvores binarias balanceadas
-class ABB:
+class AVL:
     def __init__(self):
         self.raiz = None
 
