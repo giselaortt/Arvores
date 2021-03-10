@@ -10,7 +10,7 @@ def __init__(self, id, nome):
     self.esq = None
     self.pai = None
     self.h = 0 #definirei a altura de uma folha como 0
-    
+
 '''
          y                               x
         / \     Right Rotation          /  \
@@ -51,12 +51,12 @@ class ABB:
                 self.balancear(node)
             else:
                 self.inserir_recursao(node.esq, novo_no)
-   
+
     def bubble_up(self, node):
         while( node != None ):
             node.h = node.h + 1
             node = node.pai
-   
+
    def rotate_direita( self, node ):
         #o filho esquerdo se torna o novo pai
         novo_pai = node.esq
@@ -71,7 +71,7 @@ class ABB:
         novo_pai.dir.pai = node
         novo_pai.dir = node
         atualizar_altura( node )
-   
+
    def rotate_esquerda( self, node ):
         novo_pai = node.dir
         novo_pai.pai = node.pai
@@ -85,11 +85,11 @@ class ABB:
         node.dir = novo_pai.esq
         novo_pai.esq = node
         atualizar_altura( node )
-   
+
     def atualizar_altura( self, node ):
         node.h = max(node.dir.h, node.esq.h) + 1
         atualizar_altura(node.pai)
-   
+
    #função para balandear a arvore apos uma INSERÇÃO
     def balancear( self, no ):
         #find first unbalanced node
@@ -99,11 +99,11 @@ class ABB:
                     #left left case. perform simple right rotation.
                     self.rotate_direita( node )
                     #node.h = node.h - 2
-                    
+
                 else: #left right case.
                     rotate_esquerda( node.esq )
                     rotate_direita( node )
-                    
+
                 break;
             elif ( node.esq.h - node.dir.h <= -2 ):
                 if( node.dir.esq - node.dir.dir == -1 ):
@@ -114,17 +114,17 @@ class ABB:
                 else: #right left case.
                     rotate_direita(node.dir)
                     rotate_esquerda(node)
-                
+
                 break;
             node = node.pai
-            
-            
+
+
     def remocao(self):
         pass
-        
+
     def remocao_recursao():
         pass
-        
+
     def busca(self):
         pass
 
