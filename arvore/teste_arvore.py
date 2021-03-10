@@ -7,6 +7,8 @@ arv.inserir(3, 'Igor')
 arv.inserir(6, 'Jurema')
 arv.inserir(1, 'Lidia')
 arv.inserir(4, 'Carlos')
+arv.inserir(24, 'gi')
+arv.inserir(2, 'aurora')
 
 # buscando usuários
 teste_busca1 = arv.buscar(3)

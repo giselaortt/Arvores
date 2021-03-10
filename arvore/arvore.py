@@ -116,7 +116,7 @@ class Arvore:
 
 
     def altura(self):
-        pass
+        
 
 
     def _altura_recursao(self, node):
