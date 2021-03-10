@@ -1,4 +1,4 @@
-from avl import Arvore
+from arvore import Arvore
 
 arv = Arvore()
 
