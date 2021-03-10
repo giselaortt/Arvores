@@ -17,3 +17,12 @@ teste_busca2 = arv.buscar(4)
 print(teste_busca2)
 teste_busca3 = arv.buscar(9)
 print(teste_busca3)
+
+arv.remover( 6 )
+arv.remover( 1 )
+arv.remover( 2 )
+arv.remover( 4 )
+arv.remover( 24 )
+arv.remover( 2 )
+
+print( arv.buscar(6) )

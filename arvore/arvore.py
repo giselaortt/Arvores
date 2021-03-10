@@ -56,9 +56,9 @@ class Arvore:
         if node is False:
             print("nó não encontrado na arvore. tente novamente.")
             return
-
+        
         # se o nó for um nó folha:
-        if node.esq is None and node.dir is None:
+        if( node.esq is None and node.dir is None ):
             if node is self.raiz :
                 self.raiz = None
             else:
@@ -68,8 +68,9 @@ class Arvore:
                     node.pai.esq = None
             return
 
+        
         # se o nó possui apenas 1 filho, e esse filho está a esquerda
-        if node.dir is None:
+        if( node.dir is None ):
             node.esq.pai = node.pai
             if node is self.raiz:
                 self.raiz = node.esq
@@ -79,6 +80,7 @@ class Arvore:
                 node.pai.dir = node.esq
             return
 
+        
         # se o nó possui apenas um filho, que está a direita
         if node.esq is None:
             node.dir.pai = node.pai
@@ -97,25 +99,34 @@ class Arvore:
         while substituto.esq is not None:
             substituto = substituto.esq
 
-        # fazer o pai do substituto apontar para o null
-        if substituto.pai.id > substituto.id:
-            substituto.pai.esq = None
+        
+        if( node.dir is substituto ):
+            substituto.esq = node.esq
+            node.esq.pai = substituto
+
+        elif( node.esq is substituto ):
+            substituto.dir = node.dir
+            node.dir.pai = substituto
+        
         else:
-            substituto.pai.dir = None
-
-        # fazer o substituto apontar pras ligações do nó a ser removido
+            #caso geral
+            if substituto.pai.id > substituto.id:
+                substituto.pai.esq = None
+            else:
+                substituto.pai.dir = None
+            substituto.esq = node.esq
+            substituto.dir = node.dir
+            # fazer as ligações do nó a ser removido apontarem pro substituto
+            node.esq.pai = substituto
+            node.dir.pai = substituto
+       
         substituto.pai = node.pai
-        substituto.esq = node.esq
-        substituto.dir = node.dir
-
-        # fazer as ligações do nó a ser removido apontarem pro substituto
-        node.esq.pai = substituto
-        node.dir.pai = substituto
         if node is self.raiz:
             self.raiz = substituto
-        if node.pai.esq == node:
+        elif node.pai.esq == node:
             node.pai.esq = substituto
         elif node.pai.dir == node:
+            #problema
             node.pai.dir = substituto
 
 
