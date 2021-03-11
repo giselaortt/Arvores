@@ -88,6 +88,7 @@ class Arvore:
             node.esq.pai = node.pai
             if node is self.raiz:
                 self.raiz = node.esq
+                node.esq.pai = None
             elif node.pai.esq == node:
                 node.pai.esq = node.esq
             elif node.pai.dir == node:
@@ -113,7 +114,6 @@ class Arvore:
         while substituto.esq is not None:
             substituto = substituto.esq
 
-        
         if( node.dir is substituto ):
             substituto.esq = node.esq
             node.esq.pai = substituto
