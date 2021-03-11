@@ -1,7 +1,7 @@
-
+# -*- coding: utf-8 -*-
 
 #definirei altura de um no como a maior altura dentre seus filhos, mais 1.
-#o fator de balanceamento de um nó é a diferenca entre sua altura esquerda e direita. Aesq - Adir
+#o fator de balanceamento de um nó é a diferenca entre sua altura esquerda e direita. Hesq - Hdir
 
 
 class Node:
@@ -37,15 +37,15 @@ class AVL:
         self.raiz = None
 
 
-    def insercao(self, id, nome):
+    def inserir(self, id, nome):
         novo = Node(id, nome)
         if self.raiz is None:
             self.raiz = novo
         else:
-            insercao_recursao( self.raiz, novo )
+            self.inserir_recursao( self.raiz, novo )
 
 
-    def insercao_recursao( no, novo):
+    def inserir_recursao( self, node, novo_no):
         if node.id == novo_no.id:
             print("não foi possivel inserir o novo nó, pois não são aceitas repetições.")
             return
@@ -54,7 +54,7 @@ class AVL:
                 node.dir = novo_no
                 novo_no.pai = node
                 self.atualizar_altura(novo_no)
-                self._balancear_apos_insercao(node)
+                self._balancear_apos_inserir(node)
             else:
                 self.inserir_recursao(node.dir, novo_no)
         else:
@@ -62,24 +62,22 @@ class AVL:
                 node.esq = novo_no
                 novo_no.pai = node
                 self.atualizar_altura(novo_no)
-                self._balancear_apos_insercao(node)
+                self._balancear_apos_inserir(node)
             else:
                 self.inserir_recursao(node.esq, novo_no)
 
 
-    #atualiza a altura apos uma INSERCAO
+    #atualiza a altura apos uma inserir
     def atualizar_altura(self, node ):
-        while( node != None && node.pai != None ):
+        while( node != None and node.pai != None ):
             if( node.pai.h == node.h ):
                 node.pai.h = node.pai.h + 1
                 node = node.pai
             else:
                 break
 
-'''
 
-'''
-   def rotacionar_direita( self, node ):
+    def rotacionar_direita( self, node ):
         #o filho esquerdo se torna o novo pai
         novo_pai = node.esq
         if( node.pai.id > node.id ):
@@ -93,12 +91,9 @@ class AVL:
         novo_pai.dir.pai = node
         novo_pai.dir = node
         atualizar_altura( node )
-
-
-'''
-
-'''
-   def rotacionar_esquerda( self, node ):
+        
+        
+    def rotacionar_esquerda( self, node ):
         novo_pai = node.dir
         novo_pai.pai = node.pai
         if( node.pai.id > node.id ):
@@ -117,7 +112,7 @@ class AVL:
         atualizar_altura(node.pai)
 
    #função para balancear a arvore apos uma INSERÇÃO
-    def _balancear_apos_insercao( self, no ):
+    def _balancear_apos_inserir( self, no ):
         #find first unbalanced node
         while( node != None ):
             if( node.esq.h - node.dir.h >= 2):
@@ -240,7 +235,7 @@ class AVL:
             
         while( node.pai != None ):
             node = node.pai
-            if( node.dir.h < node.h-1 && node.esq.h < node.h-1 ):
+            if( node.dir.h < node.h-1 and node.esq.h < node.h-1 ):
                 node.h -= 1
             else:
                 break
@@ -251,8 +246,8 @@ class AVL:
             if abs(node.fator()) <= 1:
                 node = node.pai
             else:
-                 node_z = node
-                 if( node_z.dir.h > node_z.esq.h ):
+                node_z = node
+                if( node_z.dir.h > node_z.esq.h ):
                     node_y = node_z.dir
                 else:
                     node_y = node_z.esq
@@ -284,7 +279,7 @@ class AVL:
         node = self._busca(self.raiz, id)
         if node:
             return node.nome
-        return f'id {id} não encontrado'
+        return 'id {id} não encontrado'
 
 
     def _busca(self, node, id):

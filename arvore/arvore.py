@@ -42,7 +42,7 @@ class Arvore:
         node = self._tras_ai(self.raiz, id)
         if node:
             return node.nome
-        return f'id {id} não encontrado'
+        return 'id {id} não encontrado'
 
     def _tras_ai(self, node, id):
         if node is None:
@@ -128,13 +128,14 @@ class Arvore:
         elif node.pai.esq == node:
             node.pai.esq = substituto
         elif node.pai.dir == node:
-            #problema
             node.pai.dir = substituto
 
 
-    def altura(self):
-        pass
-
-
-    def _altura_recursao(self, node):
-        pass
+    def altura( self ):
+        return _altura( self.raiz )
+    
+    
+    def _altura( self, node ):
+        if node is None:
+            return 0
+        return max( self._altura(node.dir), self._altura(node.esq) ) + 1
