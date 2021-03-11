@@ -39,19 +39,19 @@ class Arvore:
                 self._inserir(node.esq, novo_no)
 
     def buscar(self, id):
-        node = self._brscar(self.raiz, id)
+        node = self._buscar(self.raiz, id)
         if node:
             return node.nome
         return 'id {id} não encontrado'
 
-    def _brscar(self, node, id):
+    def _buscar(self, node, id):
         if node is None:
             return False
         if node.id == id:
             return node
         if id > node.id:
-            return self._brscar(node.dir, id)
-        return self._brscar(node.esq, id)
+            return self._buscar(node.dir, id)
+        return self._buscar(node.esq, id)
 
 
     #essa função não tem nenhuma utilidade prática. foi feita apenas com propósitos educacionais.
@@ -66,7 +66,7 @@ class Arvore:
 
 
     def remover(self, id):
-        node = self._brscar(self.raiz, id)
+        node = self._buscar(self.raiz, id)
         if node is False:
             print("nó não encontrado na arvore. tente novamente.")
             return
