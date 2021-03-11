@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 class Node:
     def __init__(self, id, nome):
         self.id = id
