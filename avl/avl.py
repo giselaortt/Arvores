@@ -236,7 +236,7 @@ class AVL:
 
         auxiliar = substituto.pai # vamos guardar uma referencia para esse nó pois é a partir daqui que será necessário rebalancear.
 
-        if( node.dir is subatituro ):
+        if( node.dir is substituto ):
             substituto.esq = node.esq
             node.esq.pai = substituto
         

@@ -1,5 +1,6 @@
-from avl import AVL
+# -*- coding: utf-8 -*-
 
+from avl import AVL
 
 arv = AVL()
 
@@ -12,9 +13,18 @@ arv.inserir(24, 'gi')
 arv.inserir(2, 'aurora')
 
 # buscando usuários
-teste_busca1 = arv.buscar(3)
+teste_busca1 = arv.busca(3)
 print(teste_busca1)
-teste_busca2 = arv.buscar(4)
+teste_busca2 = arv.busca(4)
 print(teste_busca2)
-teste_busca3 = arv.buscar(9)
+teste_busca3 = arv.busca(9)
 print(teste_busca3)
+
+arv.remover( 6 )
+arv.remover( 1 )
+arv.remover( 2 )
+arv.remover( 4 )
+arv.remover( 24 )
+arv.remover( 2 )
+
+print( arv.busca(6) )
