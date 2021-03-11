@@ -174,12 +174,8 @@ class AVL:
         self.atualizar_altura(node.pai)
 
 
-    def remover(self, id):
-        self.remover( self.raiz, id )
-
-
-    def _remover( self, id ):
-        node = self.busca( id )
+    def remover( self, id ):
+        node = self.busca( self.raiz, id )
         if node is None:
             print("id não encontrado")
             return
