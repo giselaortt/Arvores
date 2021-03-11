@@ -118,15 +118,31 @@ class AVL:
         return self._busca(node.esq, id)
         
     
-    #Uma vez que os nós já guardam a altura, essa função se torna inútil. mas será usada para ter certeza que a arvore segue as propriedades de avl e que a altura dos nós está sendo atualizada corretamente.
+    #Uma vez que os nós já guardam a altura, essa função se torna inútil. mas será usada para ter certeza que a altura dos nós está sendo atualizada corretamente.
     def altura( self ):
-        return _altura( self.raiz )
+        return self._altura( self.raiz )
     
     def _altura( self, node ):
         if node is None:
             return 0
         return max( self._altura(node.dir), self._altura(node.esq) ) + 1
-        
+    
+    
+    #feita apenas para ter certeza que a implementação foi feita corretamente. não deve ser usada corriqueiramente, pois a eficiência foi deixada de lado.
+    def is_avl( self, node ):
+        if( node == None ):
+            return True
+        if( node.esq is None and node.dir is None ):
+            return True
+        h_esq = 0
+        h_dir = 0
+        if( node.esq is not None ):
+            h_esq =  node.esq.calcular_altura()
+        if( node.dir is not None ):
+            h_dir = node.dir.calcular_altura()
+        if( abs(h_esq - h_dir) >= 2 ):
+            return False
+        return (self.is_avl( node.dir ) and self.is_avl( node.esq ))
 
     def rotacionar_direita( self, node ):
         #o filho esquerdo se torna o novo pai
