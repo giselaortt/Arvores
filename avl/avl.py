@@ -3,7 +3,6 @@
 #definirei altura de um no como a maior altura dentre seus filhos, mais 1.
 #o fator de balanceamento de um nó é a diferenca entre sua altura esquerda e direita. Hesq - Hdir
 
-
 class Node:
     def __init__(self, id, nome):
         self.id = id
@@ -185,14 +184,19 @@ class AVL:
                     node.pai.dir = None
                 else:
                     node.pai.esq = None
+            else:
+                self.raiz = None
             return
 
         # se o nó possui apenas 1 filho, e esse filho está a esquerda
         if node.dir is None:
             node.esq.pai = node.pai
-            if node.pai is not None and node.pai.esq == node:
+            if node is self.raiz:
+                self.raiz = node.esq
+                node.esq.pai = None
+            elif node.pai.esq == node:
                 node.pai.esq = node.esq
-            elif node.pai is not None and node.pai.dir == node:
+            elif node.pai.dir == node:
 
                 node.pai.dir = node.esq
             return
@@ -200,10 +204,11 @@ class AVL:
         # se o nó possui apenas um filho, que está a direita
         if node.esq is None:
             node.dir.pai = node.pai
-            if node.pai is not None and node.pai.esq == node:
+            if node is self.raiz:
+                self.raiz = node.dir
+            elif node.pai.esq == node:
                 node.pai.esq = node.dir
-            elif node.pai is not None and node.pai.dir == node:
-
+            elif node.pai.dir == node:
                 node.pai.dir = node.dir
             return
             
@@ -222,7 +227,7 @@ class AVL:
             substituto_esquerdo = substituto_esquerdo.dir
             dist_esquerda += 1
         
-        #escolhendo o no que esta mais longe
+        #escolhendo o no que esta mais longe. Assim evitaremos ter que rebalancear, em algumas ocasiões.
         if( dist_direita > dist_esquerda ):
             substituto = substituto_direito
             
@@ -231,24 +236,36 @@ class AVL:
 
         auxiliar = substituto.pai # vamos guardar uma referencia para esse nó pois é a partir daqui que será necessário rebalancear.
 
-        # fazer o pai do substituto apontar para o null
-        if substituto.pai.id > substituto.id:
-            substituto.pai.esq = None
+        if( node.dir is subatituro ):
+            substituto.esq = node.esq
+            node.esq.pai = substituto
+        
+        if( node.esq is substituto ):
+            substituto.dir = node.dir
+            node.dir.pai = substituto
+        
         else:
-            substituto.pai.dir = None
+            # fazer o pai do substituto apontar para o null
+            #essa operação não pode ser feita caso o substituto seja filho do nó removido, caso contrário ele acabaria apontando pra si mesmo.
+            if substituto.pai.id > substituto.id:
+                substituto.pai.esq = None
+            else:
+                substituto.pai.dir = None
+            substituto.dir = node.dir
+            substituto.esq = node.esq
+            # fazer as ligações do nó a ser removido apontarem pro substituto
+            node.esq.pai = substituto
+            node.dir.pai = substituto
 
-        # fazer o substituto apontar pras ligações do nó a ser removido
         substituto.pai = node.pai
-        substituto.esq = node.esq
-        substituto.dir = node.dir
-
-        # fazer as ligações do nó a ser removido apontarem pro substituto
-        node.esq.pai = substituto
-        node.dir.pai = substituto
-        if node.pai is not None and node.pai.esq == node:
+        if node is self.raiz:
+            self.raiz = substituto
+        if node.pai.esq == node:
             node.pai.esq = substituto
-        elif node.pai is not None and node.pai.dir == node:
+        elif node.pai.dir == node:
             node.pai.dir = substituto
+
+        ###AQUI termina a remoção comum######
 
         #agora vamos atualizar a altura após a remoção ( para poder calcular os fatores de cada nó )
         node = auxiliar
