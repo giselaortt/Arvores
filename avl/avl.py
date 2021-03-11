@@ -157,7 +157,7 @@ class AVL:
         node.esq = novo_pai.dir
         novo_pai.dir.pai = node
         novo_pai.dir = node
-        atualizar_altura( node )
+        atualizar_altura( node.pai )
         
         
     def rotacionar_esquerda( self, node ):
@@ -172,7 +172,7 @@ class AVL:
         novo_pai.esq.pai = node
         node.dir = novo_pai.esq
         novo_pai.esq = node
-        atualizar_altura( node )
+        atualizar_altura( node.pai )
 
 
     #Atualizar a altura após uma inserção ou remoção.
