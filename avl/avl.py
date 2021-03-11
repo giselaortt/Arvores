@@ -106,10 +106,7 @@ class AVL:
  
  
     def busca(self, id):
-        node = self._busca(self.raiz, id)
-        if node:
-            return node.nome
-        return 'id {id} não encontrado'
+        return self._busca(self.raiz, id)
 
 
     def _busca(self, node, id):
@@ -175,7 +172,7 @@ class AVL:
 
 
     def remover( self, id ):
-        node = self.busca( self.raiz, id )
+        node = self.busca( id )
         if node is None:
             print("id não encontrado")
             return
