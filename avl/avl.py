@@ -21,19 +21,17 @@ class Node:
             return -1 * self.dir.h
         if self.dir is None:
             return self.esq.h
-        else:
-            return self.esq.h - self.dir.h
-    
+        return self.esq.h - self.dir.h
+
 
     def calcular_altura( self ):
         if( self.dir is None and self.esq is None ):
             return 1
-        elif( self.dir is None ):
+        if( self.dir is None ):
             return self.esq.h
-        elif( self.esq is None ):
+        if( self.esq is None ):
             return self.dir.h
-        else:
-            return max( self.esq.h, self.dir.h ) + 1
+        return max( self.esq.h, self.dir.h ) + 1
             
             
 '''
@@ -80,10 +78,10 @@ class AVL:
 
 
  #função para balancear a arvore apos uma INSERÇÃO
-    def _balancear_apos_inserir( self, no ):
+    def _balancear_apos_inserir( self, node ):
         #find first unbalanced node
         while( node != None ):
-            if( node.esq.h - node.dir.h >= 2):
+            if( node.fator()  >= 2):
                 if( node.esq.esq.h - node.esq.dir.h == 1 ):
                     #left left case. perform simple right rotation.
                     self.rotacionar_direita( node )
@@ -94,7 +92,7 @@ class AVL:
                     rotacionar_direita( node )
 
                 break;
-            elif ( node.esq.h - node.dir.h <= -2 ):
+            elif( node.fator() <= -2 ):
                 if( node.dir.esq - node.dir.dir == -1 ):
                     #right right case. perform simple right rotation.
                     self.rotacionar_esquerda( node )
@@ -169,7 +167,7 @@ class AVL:
     def atualizar_altura( self, node ):
         if( node is None ):
             return
-        nh = node.calcular_altura
+        nh = node.calcular_altura()
         if( nh == node.h ):
             return
         node.h = nh
