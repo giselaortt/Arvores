@@ -19,9 +19,9 @@ class Arvore:
         if(self.raiz is None):
             self.raiz = novo
         else:
-            self._inserir_recursao(self.raiz, novo)
+            self._inserir(self.raiz, novo)
 
-    def _inserir_recursao(self, node, novo_no):
+    def _inserir(self, node, novo_no):
         if node.id == novo_no.id:
             print("não foi possivel inserir o novo nó, pois não são aceitas repetições.")
             return
@@ -30,31 +30,43 @@ class Arvore:
                 node.dir = novo_no
                 novo_no.pai = node
             else:
-                self._inserir_recursao(node.dir, novo_no)
+                self._inserir(node.dir, novo_no)
         else:
             if(node.esq is None):
                 node.esq = novo_no
                 novo_no.pai = node
             else:
-                self._inserir_recursao(node.esq, novo_no)
+                self._inserir(node.esq, novo_no)
 
     def buscar(self, id):
-        node = self._tras_ai(self.raiz, id)
+        node = self._brscar(self.raiz, id)
         if node:
             return node.nome
         return 'id {id} não encontrado'
 
-    def _tras_ai(self, node, id):
+    def _brscar(self, node, id):
         if node is None:
             return False
         if node.id == id:
             return node
         if id > node.id:
-            return self._tras_ai(node.dir, id)
-        return self._tras_ai(node.esq, id)
+            return self._brscar(node.dir, id)
+        return self._brscar(node.esq, id)
+
+
+    #essa função não tem nenhuma utilidade prática. foi feita apenas com propósitos educacionais.
+    def altura( self ):
+        return _altura( self.raiz )
+    
+    
+    def _altura( self, node ):
+        if node is None:
+            return 0
+        return max( self._altura(node.dir), self._altura(node.esq) ) + 1
+
 
     def remover(self, id):
-        node = self._tras_ai(self.raiz, id)
+        node = self._brscar(self.raiz, id)
         if node is False:
             print("nó não encontrado na arvore. tente novamente.")
             return
@@ -130,12 +142,3 @@ class Arvore:
         elif node.pai.dir == node:
             node.pai.dir = substituto
 
-
-    def altura( self ):
-        return _altura( self.raiz )
-    
-    
-    def _altura( self, node ):
-        if node is None:
-            return 0
-        return max( self._altura(node.dir), self._altura(node.esq) ) + 1

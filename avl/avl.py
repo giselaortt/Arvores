@@ -13,6 +13,7 @@ class Node:
         self.pai = None
         self.h = 1 #definirei a altura de uma folha como 1
         
+        
     def fator(self): #o fator é a altura do lado esquerdo menos a altura do lado direito
         if self.dir is None and self.esq is None:
             return 0
@@ -24,6 +25,17 @@ class Node:
             return self.esq.h - self.dir.h
     
 
+    def calcular_altura( self ):
+        if( self.dir is None and self.esq is None ):
+            return 1
+        elif( self.dir is None ):
+            return self.esq.h
+        elif( self.esq is None ):
+            return self.dir.h
+        else:
+            return max( self.esq.h, self.dir.h ) + 1
+            
+            
 '''
          y                               x
         / \     Right Rotation          /  \
@@ -53,7 +65,7 @@ class AVL:
             if node.dir is None:
                 node.dir = novo_no
                 novo_no.pai = node
-                self.atualizar_altura(novo_no)
+                self.atualizar_altura(novo_no.pai)
                 self._balancear_apos_inserir(node)
             else:
                 self.inserir_recursao(node.dir, novo_no)
@@ -61,21 +73,66 @@ class AVL:
             if(node.esq is None):
                 node.esq = novo_no
                 novo_no.pai = node
-                self.atualizar_altura(novo_no)
+                self.atualizar_altura(novo_no.pai)
                 self._balancear_apos_inserir(node)
             else:
                 self.inserir_recursao(node.esq, novo_no)
 
 
-    #atualiza a altura apos uma inserir
-    def atualizar_altura(self, node ):
-        while( node != None and node.pai != None ):
-            if( node.pai.h == node.h ):
-                node.pai.h = node.pai.h + 1
-                node = node.pai
-            else:
-                break
+ #função para balancear a arvore apos uma INSERÇÃO
+    def _balancear_apos_inserir( self, no ):
+        #find first unbalanced node
+        while( node != None ):
+            if( node.esq.h - node.dir.h >= 2):
+                if( node.esq.esq.h - node.esq.dir.h == 1 ):
+                    #left left case. perform simple right rotation.
+                    self.rotacionar_direita( node )
+                    #node.h = node.h - 2
 
+                else: #left right case.
+                    rotacionar_esquerda( node.esq )
+                    rotacionar_direita( node )
+
+                break;
+            elif ( node.esq.h - node.dir.h <= -2 ):
+                if( node.dir.esq - node.dir.dir == -1 ):
+                    #right right case. perform simple right rotation.
+                    self.rotacionar_esquerda( node )
+                    #node.h = node.h - 2
+
+                else: #right left case.
+                    rotacionar_direita(node.dir)
+                    rotacionar_esquerda(node)
+                break;
+            node = node.pai
+ 
+ 
+    def busca(self, id):
+        node = self._busca(self.raiz, id)
+        if node:
+            return node.nome
+        return 'id {id} não encontrado'
+
+
+    def _busca(self, node, id):
+        if node is None:
+            return node
+        if node.id == id:
+            return node
+        if id > node.id:
+            return self._busca(node.dir, id)
+        return self._busca(node.esq, id)
+        
+    
+    #Uma vez que os nós já guardam a altura, essa função se torna inútil. mas será usada para ter certeza que a arvore segue as propriedades de avl e que a altura dos nós está sendo atualizada corretamente.
+    def altura( self ):
+        return _altura( self.raiz )
+    
+    def _altura( self, node ):
+        if node is None:
+            return 0
+        return max( self._altura(node.dir), self._altura(node.esq) ) + 1
+        
 
     def rotacionar_direita( self, node ):
         #o filho esquerdo se torna o novo pai
@@ -107,37 +164,16 @@ class AVL:
         novo_pai.esq = node
         atualizar_altura( node )
 
+
+    #Atualizar a altura após uma inserção ou remoção.
     def atualizar_altura( self, node ):
-        node.h = max(node.dir.h, node.esq.h) + 1
-        atualizar_altura(node.pai)
-
-   #função para balancear a arvore apos uma INSERÇÃO
-    def _balancear_apos_inserir( self, no ):
-        #find first unbalanced node
-        while( node != None ):
-            if( node.esq.h - node.dir.h >= 2):
-                if( node.esq.esq.h - node.esq.dir.h == 1 ):
-                    #left left case. perform simple right rotation.
-                    self.rotacionar_direita( node )
-                    #node.h = node.h - 2
-
-                else: #left right case.
-                    rotacionar_esquerda( node.esq )
-                    rotacionar_direita( node )
-
-                break;
-            elif ( node.esq.h - node.dir.h <= -2 ):
-                if( node.dir.esq - node.dir.dir == -1 ):
-                    #right right case. perform simple right rotation.
-                    self.rotacionar_esquerda( node )
-                    #node.h = node.h - 2
-
-                else: #right left case.
-                    rotacionar_direita(node.dir)
-                    rotacionar_esquerda(node)
-
-                break;
-            node = node.pai
+        if( node is None ):
+            return
+        nh = node.calcular_altura
+        if( nh == node.h ):
+            return
+        node.h = nh
+        self.atualizar_altura(node.pai)
 
 
     def remocao(self, id):
@@ -151,7 +187,6 @@ class AVL:
             return
             
         #a primeira parte é fazer uma remoção comum.
-        
         # se o nó for um nó folha:
         if node.esq is None and node.dir is None:
             if node.pai is not None:
@@ -169,7 +204,7 @@ class AVL:
             elif node.pai is not None and node.pai.dir == node:
 
                 node.pai.dir = node.esq
-        return
+            return
 
         # se o nó possui apenas um filho, que está a direita
         if node.esq is None:
@@ -179,7 +214,7 @@ class AVL:
             elif node.pai is not None and node.pai.dir == node:
 
                 node.pai.dir = node.dir
-        return
+            return
             
         # se o nó possui dois filhos
         # podemos pegar o nó mais esquerdo do ramo direito, ou o nó mais direito do ramo esquerdo.
@@ -274,29 +309,3 @@ class AVL:
                 if( node_z.dir is node_y and node_y.dir is node_x ):
                     rotacionar_esquerda( node_z )
 
-
-    def busca(self, id):
-        node = self._busca(self.raiz, id)
-        if node:
-            return node.nome
-        return 'id {id} não encontrado'
-
-
-    def _busca(self, node, id):
-        if node is None:
-            return node
-        if node.id == id:
-            return node
-        if id > node.id:
-            return self._busca(node.dir, id)
-        return self._busca(node.esq, id)
-        
-        
-    def altura( self ):
-        return _altura( self.raiz )
-    
-    
-    def _altura( self, node ):
-        if node is None:
-            return 0
-        return max( self._altura(node.dir), self._altura(node.esq) ) + 1
