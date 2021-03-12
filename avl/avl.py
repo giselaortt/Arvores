@@ -30,7 +30,10 @@ class Node:
             return self.esq.h + 1
         if( self.esq is None ):
             return self.dir.h + 1
-        return max( self.esq.h, self.dir.h ) + 1
+        if( self.dir.h < self.esq.h ):
+            return self.esq.h + 1
+        else:
+            return self.dir.h + 1
             
             
 '''
@@ -119,6 +122,7 @@ class AVL:
     def altura( self ):
         return self._altura( self.raiz )
     
+    
     def _altura( self, node ):
         if node is None:
             return 0
@@ -144,34 +148,40 @@ class AVL:
     def rotacionar_direita( self, node ):
         #o filho esquerdo se torna o novo pai
         novo_pai = node.esq
-        if( node.pai.id > node.id ):
-            node.pai.esq = novo_pai
-        else:
-            node.pai.dir = novo_pai
         novo_pai.pai = node.pai
+        if(node is self.raiz):
+            self.raiz = novo_pai
+        else:
+            if( node.pai.id > node.id ):
+                node.pai.esq = novo_pai
+            else:
+                node.pai.dir = novo_pai
         node.pai = novo_pai
         #o antigo pai se torna o novo filho DIREITO, e assume o filho direito do outro como seu filho ESQUERDO.
         node.esq = novo_pai.dir
-        novo_pai.dir.pai = node
+        if( novo_pai.dir is not None ):
+            novo_pai.dir.pai = node
         novo_pai.dir = node
-        #######
-        atualizar_altura( node.pai )
+        self.atualizar_altura( node.pai )
         
         
     def rotacionar_esquerda( self, node ):
         novo_pai = node.dir
         novo_pai.pai = node.pai
-        if( node.pai.id > node.id ):
-            node.pai.esq = novo_pai
+        if(node is self.raiz):
+            self.raiz = novo_pai
         else:
-            node.pai.dir = novo_pai
+            if( node.pai.id > node.id ):
+                node.pai.esq = novo_pai
+            else:
+                node.pai.dir = novo_pai
         node.pai = novo_pai
         #o antigo pai se torna o novo filho ESQUERDO e assume o filho esquerdo do outro como seu filho DIREITO
-        novo_pai.esq.pai = node
         node.dir = novo_pai.esq
+        if( novo_pai.esq is not None ):
+            novo_pai.esq.pai = node
         novo_pai.esq = node
-        #####
-        atualizar_altura( node.pai )
+        self.atualizar_altura( node.pai )
 
 
     #Atualizar a altura após uma inserção ou remoção.
