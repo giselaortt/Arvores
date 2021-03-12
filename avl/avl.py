@@ -65,20 +65,20 @@ class AVL:
         self.in_order( node.dir )
     
     
-    def pos_order():
+    def pos_order( self, node ):
         if( node == None ):
             return
-        self.in_order( node.esq )
-        self.in_order( node.dir )
+        self.pos_order( node.esq )
+        self.pos_order( node.dir )
         print( node.id, end = ' ' )
+
     
-    
-    def pre_order():
+    def pre_order( self, node ):
         if( node == None ):
             return
-        self.in_order( node.esq )
-        self.in_order( node.dir )
         print( node.id, end = ' ' )
+        self.pre_order( node.esq )
+        self.pre_order( node.dir )
 
 
     def inserir_recursao( self, node, novo_no):
