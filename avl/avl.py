@@ -27,9 +27,9 @@ class Node:
         if( self.dir is None and self.esq is None ):
             return 1
         if( self.dir is None ):
-            return self.esq.h
+            return self.esq.h + 1
         if( self.esq is None ):
-            return self.dir.h
+            return self.dir.h + 1
         return max( self.esq.h, self.dir.h ) + 1
             
             
@@ -157,6 +157,7 @@ class AVL:
         node.esq = novo_pai.dir
         novo_pai.dir.pai = node
         novo_pai.dir = node
+        #######
         atualizar_altura( node.pai )
         
         
@@ -172,6 +173,7 @@ class AVL:
         novo_pai.esq.pai = node
         node.dir = novo_pai.esq
         novo_pai.esq = node
+        #####
         atualizar_altura( node.pai )
 
 
