@@ -224,8 +224,8 @@ class AVL:
         if( node is None ):
             return
         nh = node.calcular_altura()
-        if( nh == node.h ):
-            return
+        #if( nh == node.h ):
+        #    return
         node.h = nh
         self.atualizar_altura(node.pai)
 
