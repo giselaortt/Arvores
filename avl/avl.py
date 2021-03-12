@@ -57,6 +57,30 @@ class AVL:
             self.inserir_recursao( self.raiz, novo )
 
 
+    def in_order( self, node ):
+        if( node == None ):
+            return
+        self.in_order( node.esq )
+        print( node.id, end = ' ' )
+        self.in_order( node.dir )
+    
+    
+    def pos_order():
+        if( node == None ):
+            return
+        self.in_order( node.esq )
+        self.in_order( node.dir )
+        print( node.id, end = ' ' )
+    
+    
+    def pre_order():
+        if( node == None ):
+            return
+        self.in_order( node.esq )
+        self.in_order( node.dir )
+        print( node.id, end = ' ' )
+
+
     def inserir_recursao( self, node, novo_no):
         if node.id == novo_no.id:
             print("não foi possivel inserir o novo nó, pois não são aceitas repetições.")
