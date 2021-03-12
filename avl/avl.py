@@ -11,8 +11,8 @@ class Node:
         self.esq = None
         self.pai = None
         self.h = 1 #definirei a altura de uma folha como 1
-        
-        
+
+
     def fator(self): #o fator é a altura do lado esquerdo menos a altura do lado direito
         if self.dir is None and self.esq is None:
             return 0
@@ -34,8 +34,8 @@ class Node:
             return self.esq.h + 1
         else:
             return self.dir.h + 1
-            
-            
+
+
 '''
          y                               x
         / \     Right Rotation          /  \
@@ -82,24 +82,34 @@ class AVL:
  #função para balancear a arvore apos uma INSERÇÃO
     def _balancear_apos_inserir( self, node ):
         #find first unbalanced node
+        folha = node
         while( node != None ):
             if( node.fator()  >= 2):
                 if( node.esq.fator() == 1 ):
                     #left left case. perform simple right rotation.
+                    #print("antes.", self.raiz.h, self.altura() )
                     self.rotacionar_direita( node )
+                    self.atualizar_altura(folha)
+                    #print("depois.", self.raiz.h, self.altura() )
                     #node.h = node.h - 2
                 else: #left right case.
-                    rotacionar_esquerda( node.esq )
-                    rotacionar_direita( node )
+                    #print("antes", self.raiz.h, self.altura() )
+                    self.rotacionar_esquerda( node.esq )
+                    self.rotacionar_direita( node )
+                    #print("depois", self.raiz.h, self.altura() )
                 break;
             elif( node.fator() <= -2 ):
                 if( node.dir.fator() == -1 ):
                     #right right case. perform simple right rotation.
+                    #print("antes..", self.raiz.h, self.altura() )
                     self.rotacionar_esquerda( node )
+                    #print("depois..", self.raiz.h, self.altura() )
                     #node.h = node.h - 2
                 else: #right left case.
-                    rotacionar_direita(node.dir)
-                    rotacionar_esquerda(node)
+                    #print("antes...", self.raiz.h, self.altura() )
+                    self.rotacionar_direita(node.dir)
+                    self.rotacionar_esquerda(node)
+                    #print("depois...", self.raiz.h, self.altura() )
                 break;
             node = node.pai
  
@@ -145,6 +155,7 @@ class AVL:
             return False
         return (self.is_avl( node.dir ) and self.is_avl( node.esq ))
 
+
     def rotacionar_direita( self, node ):
         #o filho esquerdo se torna o novo pai
         novo_pai = node.esq
@@ -162,7 +173,7 @@ class AVL:
         if( novo_pai.dir is not None ):
             novo_pai.dir.pai = node
         novo_pai.dir = node
-        self.atualizar_altura( node.pai )
+        self.atualizar_altura( node )
         
         
     def rotacionar_esquerda( self, node ):
@@ -181,7 +192,7 @@ class AVL:
         if( novo_pai.esq is not None ):
             novo_pai.esq.pai = node
         novo_pai.esq = node
-        self.atualizar_altura( node.pai )
+        self.atualizar_altura( node  )
 
 
     #Atualizar a altura após uma inserção ou remoção.
@@ -341,4 +352,3 @@ class AVL:
                 #right-right case
                 if( node_z.dir is node_y and node_y.dir is node_x ):
                     rotacionar_esquerda( node_z )
-
