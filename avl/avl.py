@@ -81,22 +81,19 @@ class AVL:
         #find first unbalanced node
         while( node != None ):
             if( node.fator()  >= 2):
-                if( node.esq.esq.h - node.esq.dir.h == 1 ):
+                if( node.esq.fator() == 1 ):
                     #left left case. perform simple right rotation.
                     self.rotacionar_direita( node )
                     #node.h = node.h - 2
-
                 else: #left right case.
                     rotacionar_esquerda( node.esq )
                     rotacionar_direita( node )
-
                 break;
             elif( node.fator() <= -2 ):
-                if( node.dir.esq - node.dir.dir == -1 ):
+                if( node.dir.fator() == -1 ):
                     #right right case. perform simple right rotation.
                     self.rotacionar_esquerda( node )
                     #node.h = node.h - 2
-
                 else: #right left case.
                     rotacionar_direita(node.dir)
                     rotacionar_esquerda(node)
