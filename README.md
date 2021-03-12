@@ -1,6 +1,7 @@
 # Reimplementando arvores em python
 
-#contem:
+# contem:
+
     1. uma arvore binária de busca simples.
 
     2. uma arvore com as propriedades AVL. 
