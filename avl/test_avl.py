@@ -20,9 +20,11 @@ class Test():
         test_search1 = self.test_avl.search(3)
         assert test_search1.name == 'Igor'
 
+
     def test_search_second( self ):
         test_search2 = self.test_avl.search(4)
         assert test_search2.name == 'Carlos'
+
 
     def test_search_inexisting_node( self ):
         test_search3 = self.test_avl.search(9)
@@ -69,6 +71,12 @@ class Test():
 
     def test_is_inorder_sorted( self ):
         pass
+
+
+    def test_insert_with_repetition( self ):
+        with pytest.raises(Exception) as info:
+            self.test_avl.insert( 3, "Igor" )
+        assert  str(info.value) == "Repetitions are not allowed."
 
 
 
