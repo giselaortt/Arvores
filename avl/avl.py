@@ -1,39 +1,38 @@
 # -*- coding: utf-8 -*-
 
-#definirei altura de um no como a maior altura dentre seus filhos, mais 1.
-#o fator de balanceamento de um nó é a diferenca entre sua altura esquerda e direita. Hesq - Hdir
 
 class Node:
-    def __init__(self, id, nome):
+
+    def __init__(self, id, name):
         self.id = id
-        self.nome = nome
-        self.dir = None
-        self.esq = None
-        self.pai = None
-        self.h = 1 #definirei a altura de uma folha como 1
+        self.name = name
+        self.right = None
+        self.left = None
+        self.parent = None
+        self.height = 1 #definirei a height de uma folha como 1
 
 
-    def fator(self): #o fator é a altura do lado esquerdo menos a altura do lado direito
-        if self.dir is None and self.esq is None:
+    def factor(self):
+        if self.right is None and self.left is None:
             return 0
-        if self.esq is None:
-            return -1 * self.dir.h
-        if self.dir is None:
-            return self.esq.h
-        return self.esq.h - self.dir.h
+        if self.left is None:
+            return -1 * self.right.height
+        if self.right is None:
+            return self.left.height
+        return self.left.height - self.right.height
 
 
-    def calcular_altura( self ):
-        if( self.dir is None and self.esq is None ):
+    def calculate_height( self ):
+        if( self.right is None and self.left is None ):
             return 1
-        if( self.dir is None ):
-            return self.esq.h + 1
-        if( self.esq is None ):
-            return self.dir.h + 1
-        if( self.dir.h < self.esq.h ):
-            return self.esq.h + 1
+        if( self.right is None ):
+            return self.left.height + 1
+        if( self.left is None ):
+            return self.right.height + 1
+        if( self.right.height < self.left.height ):
+            return self.left.height + 1
         else:
-            return self.dir.h + 1
+            return self.right.height + 1
 
 
 '''
@@ -43,336 +42,302 @@ class Node:
       / \       < - - - - - - -            / \
      T1  T2     Left Rotation            T2  T3
 '''
-#Arvores 2: arvores binarias balanceadas
 class AVL:
     def __init__(self):
-        self.raiz = None
+        self.root = None
 
 
-    def inserir(self, id, nome):
-        novo = Node(id, nome)
-        if self.raiz is None:
-            self.raiz = novo
+    def insert(self, id, name):
+        novo = Node(id, name)
+        if self.root is None:
+            self.root = novo
         else:
-            self.inserir_recursao( self.raiz, novo )
+            self._insert_recursion( self.root, novo )
 
 
     def in_order( self, node ):
         if( node == None ):
             return
-        self.in_order( node.esq )
+        self.in_order( node.left )
         print( node.id, end = ' ' )
-        self.in_order( node.dir )
-    
-    
+        self.in_order( node.right )
+
+
     def pos_order( self, node ):
         if( node == None ):
             return
-        self.pos_order( node.esq )
-        self.pos_order( node.dir )
+        self.pos_order( node.left )
+        self.pos_order( node.right )
         print( node.id, end = ' ' )
 
-    
+
     def pre_order( self, node ):
         if( node == None ):
             return
         print( node.id, end = ' ' )
-        self.pre_order( node.esq )
-        self.pre_order( node.dir )
+        self.pre_order( node.left )
+        self.pre_order( node.right )
 
 
-    def inserir_recursao( self, node, novo_no):
+    def _insert_recursion( self, node, novo_no):
         if node.id == novo_no.id:
-            print("não foi possivel inserir o novo nó, pois não são aceitas repetições.")
+            raise Exception("Repetitions are not allowed.")
             return
         if node.id < novo_no.id:
-            if node.dir is None:
-                node.dir = novo_no
-                novo_no.pai = node
-                self.atualizar_altura(novo_no.pai)
-                self._balancear_apos_inserir(node)
+            if node.right is None:
+                node.right = novo_no
+                novo_no.parent = node
+                self._redefine_height(novo_no.parent)
+                self._balance_after_insertion(node)
             else:
-                self.inserir_recursao(node.dir, novo_no)
+                self._insert_recursion(node.right, novo_no)
         else:
-            if(node.esq is None):
-                node.esq = novo_no
-                novo_no.pai = node
-                self.atualizar_altura(novo_no.pai)
-                self._balancear_apos_inserir(node)
+            if(node.left is None):
+                node.left = novo_no
+                novo_no.parent = node
+                self._redefine_height(novo_no.parent)
+                self._balance_after_insertion(node)
             else:
-                self.inserir_recursao(node.esq, novo_no)
+                self._insert_recursion(node.left, novo_no)
 
 
- #função para balancear a arvore apos uma INSERÇÃO
-    def _balancear_apos_inserir( self, node ):
-        #find first unbalanced node
+    def _balance_after_insertion( self, node ):
         folha = node
         while( node != None ):
-            if( node.fator()  >= 2):
-                if( node.esq.fator() == 1 ):
-                    #left left case. perform simple right rotation.
-                    #print("antes.", self.raiz.h, self.altura() )
-                    self.rotacionar_direita( node )
-                    self.atualizar_altura(folha)
-                    #print("depois.", self.raiz.h, self.altura() )
-                    #node.h = node.h - 2
+            if( node.factor()  >= 2):
+                if( node.left.factor() == 1 ):
+                    self._rotate_right( node )
+                    self._redefine_height(folha)
                 else: #left right case.
-                    #print("antes", self.raiz.h, self.altura() )
-                    self.rotacionar_esquerda( node.esq )
-                    self.rotacionar_direita( node )
-                    #print("depois", self.raiz.h, self.altura() )
+                    self._rotate_left( node.left )
+                    self._rotate_right( node )
                 break;
-            elif( node.fator() <= -2 ):
-                if( node.dir.fator() == -1 ):
-                    #right right case. perform simple right rotation.
-                    #print("antes..", self.raiz.h, self.altura() )
-                    self.rotacionar_esquerda( node )
-                    #print("depois..", self.raiz.h, self.altura() )
-                    #node.h = node.h - 2
+            elif( node.factor() <= -2 ):
+                if( node.right.factor() == -1 ):
+                    self._rotate_left( node )
                 else: #right left case.
-                    #print("antes...", self.raiz.h, self.altura() )
-                    self.rotacionar_direita(node.dir)
-                    self.rotacionar_esquerda(node)
-                    #print("depois...", self.raiz.h, self.altura() )
+                    self._rotate_right(node.right)
+                    self._rotate_left(node)
                 break;
-            node = node.pai
- 
- 
-    def busca(self, id):
-        return self._busca(self.raiz, id)
+            node = node.parent
 
 
-    def _busca(self, node, id):
+    def search(self, id):
+        return self._search(self.root, id)
+
+
+    def _search(self, node, id):
         if node is None:
             return node
         if node.id == id:
             return node
         if id > node.id:
-            return self._busca(node.dir, id)
-        return self._busca(node.esq, id)
-        
-    
-    #Uma vez que os nós já guardam a altura, essa função se torna inútil. mas será usada para ter certeza que a altura dos nós está sendo atualizada corretamente.
-    def altura( self ):
-        return self._altura( self.raiz )
-    
-    
-    def _altura( self, node ):
+            return self._search(node.right, id)
+        return self._search(node.left, id)
+
+
+    def height( self ):
+        return self._height( self.root )
+
+
+    def _height( self, node ):
         if node is None:
             return 0
-        return max( self._altura(node.dir), self._altura(node.esq) ) + 1
-    
-    
-    #feita apenas para ter certeza que a implementação foi feita corretamente. não deve ser usada corriqueiramente, pois a eficiência foi deixada de lado.
-    def is_avl( self, node ):
+        return max( self._height(node.right), self._height(node.left) ) + 1
+
+
+    def _is_avl( self, node ):
         if( node == None ):
             return True
-        if( node.esq is None and node.dir is None ):
+        if( node.left is None and node.right is None ):
             return True
-        h_esq = 0
-        h_dir = 0
-        if( node.esq is not None ):
-            h_esq =  node.esq.calcular_altura()
-        if( node.dir is not None ):
-            h_dir = node.dir.calcular_altura()
-        if( abs(h_esq - h_dir) >= 2 ):
+        left_height = 0
+        right_height = 0
+        if( node.left is not None ):
+            left_height =  node.left.calculate_height()
+        if( node.right is not None ):
+            right_height = node.right.calculate_height()
+        if( abs(left_height - right_height) >= 2 ):
             return False
-        return (self.is_avl( node.dir ) and self.is_avl( node.esq ))
+        return (self._is_avl( node.right ) and self._is_avl( node.left ))
 
 
-    def rotacionar_direita( self, node ):
-        #o filho esquerdo se torna o novo pai
-        novo_pai = node.esq
-        novo_pai.pai = node.pai
-        if(node is self.raiz):
-            self.raiz = novo_pai
+    def _rotate_right( self, node ):
+        new_parent = node.left
+        new_parent.parent = node.parent
+        if(node is self.root):
+            self.root = new_parent
         else:
-            if( node.pai.id > node.id ):
-                node.pai.esq = novo_pai
+            if( node.parent.id > node.id ):
+                node.parent.left = new_parent
             else:
-                node.pai.dir = novo_pai
-        node.pai = novo_pai
-        #o antigo pai se torna o novo filho DIREITO, e assume o filho direito do outro como seu filho ESQUERDO.
-        node.esq = novo_pai.dir
-        if( novo_pai.dir is not None ):
-            novo_pai.dir.pai = node
-        novo_pai.dir = node
-        self.atualizar_altura( node )
-        
-        
-    def rotacionar_esquerda( self, node ):
-        novo_pai = node.dir
-        novo_pai.pai = node.pai
-        if(node is self.raiz):
-            self.raiz = novo_pai
+                node.parent.right = new_parent
+        node.parent = new_parent
+        node.left = new_parent.right
+        if( new_parent.right is not None ):
+            new_parent.right.parent = node
+        new_parent.right = node
+        self._redefine_height( node )
+
+
+    def _rotate_left( self, node ):
+        new_parent = node.right
+        new_parent.parent = node.parent
+        if(node is self.root):
+            self.root = new_parent
         else:
-            if( node.pai.id > node.id ):
-                node.pai.esq = novo_pai
+            if( node.parent.id > node.id ):
+                node.parent.left = new_parent
             else:
-                node.pai.dir = novo_pai
-        node.pai = novo_pai
-        #o antigo pai se torna o novo filho ESQUERDO e assume o filho esquerdo do outro como seu filho DIREITO
-        node.dir = novo_pai.esq
-        if( novo_pai.esq is not None ):
-            novo_pai.esq.pai = node
-        novo_pai.esq = node
-        self.atualizar_altura( node  )
+                node.parent.right = new_parent
+        node.parent = new_parent
+        node.right = new_parent.left
+        if( new_parent.left is not None ):
+            new_parent.left.parent = node
+        new_parent.left = node
+        self._redefine_height( node  )
 
 
-    #Atualizar a altura após uma inserção ou remoção.
-    def atualizar_altura( self, node ):
+    def _redefine_height( self, node ):
         if( node is None ):
             return
-        nh = node.calcular_altura()
-        #if( nh == node.h ):
+        nh = node.calculate_height()
+        #if( nh == node.height ):
         #    return
-        node.h = nh
-        self.atualizar_altura(node.pai)
+        node.height = nh
+        self._redefine_height(node.parent)
 
 
-    def remover( self, id ):
-        node = self.busca( id )
+    def remove( self, id ):
+        node = self.search( id )
         if node is None:
-            print("id não encontrado")
+            raise Exception("id não encontrado")
             return
-            
-        #a primeira parte é fazer uma remoção comum.
-        # se o nó for um nó folha:
-        if node.esq is None and node.dir is None:
-            if node.pai is not None:
-                if node.pai.dir == node:
-                    node.pai.dir = None
+
+        if node.left is None and node.right is None:
+            if node.parent is not None:
+                if node.parent.right == node:
+                    node.parent.right = None
                 else:
-                    node.pai.esq = None
+                    node.parent.left = None
             else:
-                self.raiz = None
+                self.root = None
             return
 
-        # se o nó possui apenas 1 filho, e esse filho está a esquerda
-        if node.dir is None:
-            node.esq.pai = node.pai
-            if node is self.raiz:
-                self.raiz = node.esq
-                node.esq.pai = None
-            elif node.pai.esq == node:
-                node.pai.esq = node.esq
-            elif node.pai.dir == node:
+        if node.right is None:
+            node.left.parent = node.parent
+            if node is self.root:
+                self.root = node.left
+                node.left.parent = None
+            elif node.parent.left == node:
+                node.parent.left = node.left
+            elif node.parent.right == node:
 
-                node.pai.dir = node.esq
+                node.parent.right = node.left
             return
 
-        # se o nó possui apenas um filho, que está a direita
-        if node.esq is None:
-            node.dir.pai = node.pai
-            if node is self.raiz:
-                self.raiz = node.dir
-            elif node.pai.esq == node:
-                node.pai.esq = node.dir
-            elif node.pai.dir == node:
-                node.pai.dir = node.dir
+        if node.left is None:
+            node.right.parent = node.parent
+            if node is self.root:
+                self.root = node.right
+            elif node.parent.left == node:
+                node.parent.left = node.right
+            elif node.parent.right == node:
+                node.parent.right = node.right
             return
-            
-        # se o nó possui dois filhos
-        # podemos pegar o nó mais esquerdo do ramo direito, ou o nó mais direito do ramo esquerdo.
-        #ou podemos escolher o que tiver o valor mais próximo, ou o que estiver no ramo mais longo.
-        substituto_direito = node.dir
-        dist_direita = 1
-        while substituto_direito.esq is not None:
-            substituto_direito = substituto_direito.esq
-            dist_direita += 1
-            
-        substituto_esquerdo = node.esq
-        dist_esquerda = 1
-        while substituto_esquerdo.dir is not None:
-            substituto_esquerdo = substituto_esquerdo.dir
-            dist_esquerda += 1
-        
-        #escolhendo o no que esta mais longe. Assim evitaremos ter que rebalancear, em algumas ocasiões.
-        if( dist_direita > dist_esquerda ):
-            substituto = substituto_direito
-            
+
+        #TODO: refactor.
+        right_temporary_node = node.right
+        dist_right = 1
+        while right_temporary_node.left is not None:
+            right_temporary_node = right_temporary_node.left
+            dist_right += 1
+
+        left_temporary_node = node.left
+        dist_left = 1
+        while left_temporary_node.right is not None:
+            left_temporary_node = left_temporary_node.right
+            dist_left += 1
+
+        if( dist_right > dist_left ):
+            temporary = right_temporary_node
+
         else:
-            substituto = substituto_esquerdo
+            temporary = left_temporary_node
 
-        auxiliar = substituto.pai # vamos guardar uma referencia para esse nó pois é a partir daqui que será necessário rebalancear.
+        temporary = temporary.parent # vamos guardar uma referencia para esse nó pois é a partir daqui que será necessário rebalance.
 
-        if( node.dir is substituto ):
-            substituto.esq = node.esq
-            node.esq.pai = substituto
-        
-        if( node.esq is substituto ):
-            substituto.dir = node.dir
-            node.dir.pai = substituto
-        
+        if( node.right is temporary ):
+            temporary.left = node.left
+            node.left.parent = temporary
+
+        if( node.left is temporary ):
+            temporary.right = node.right
+            node.right.parent = temporary
+
         else:
-            # fazer o pai do substituto apontar para o null
-            #essa operação não pode ser feita caso o substituto seja filho do nó removido, caso contrário ele acabaria apontando pra si mesmo.
-            if substituto.pai.id > substituto.id:
-                substituto.pai.esq = None
+            if temporary.parent.id > temporary.id:
+                temporary.parent.left = None
             else:
-                substituto.pai.dir = None
-            substituto.dir = node.dir
-            substituto.esq = node.esq
-            # fazer as ligações do nó a ser removido apontarem pro substituto
-            node.esq.pai = substituto
-            node.dir.pai = substituto
+                temporary.parent.right = None
+            temporary.right = node.right
+            temporary.left = node.left
+            node.left.parent = temporary
+            node.right.parent = temporary
 
-        substituto.pai = node.pai
-        if node is self.raiz:
-            self.raiz = substituto
-        if node.pai.esq == node:
-            node.pai.esq = substituto
-        elif node.pai.dir == node:
-            node.pai.dir = substituto
+        temporary.parent = node.parent
+        if node is self.root:
+            self.root = temporary
+        if node.parent.left == node:
+            node.parent.left = temporary
+        elif node.parent.right == node:
+            node.parent.right = temporary
 
-        ###AQUI termina a remoção comum######
+        node = temporary
+        if node.right is None and node.left is None:
+            node.height = 0
+        elif node.right is None:
+            node.height = node.left.height+1
+        elif node.left is None:
+            node.height = node.right.height+1
 
-        #agora vamos atualizar a altura após a remoção ( para poder calcular os fatores de cada nó )
-        node = auxiliar
-        if node.dir is None and node.esq is None:
-            node.h = 0
-        elif node.dir is None:
-            node.h = node.esq.h+1
-        elif node.esq is None:
-            node.h = node.dir.h+1
-            
-        while( node.pai != None ):
-            node = node.pai
-            if( node.dir.h < node.h-1 and node.esq.h < node.h-1 ):
-                node.h -= 1
+        while( node.parent is not None ):
+            node = node.parent
+            if( (node.right is not None and node.right.height < node.height-1) and ( node.left is not None and node.left.height < node.height-1) ):
+                node.height -= 1
             else:
                 break
-    
-        #agora balancear a arvore. primeiro vamos procurar o primeiro nó desbalanceado.
-        node = auxiliar
+
+        node = temporary
         while( node != None ):
-            if abs(node.fator()) <= 1:
-                node = node.pai
+            if abs(node.factor()) <= 1:
+                node = node.parent
             else:
                 node_z = node
-                if( node_z.dir.h > node_z.esq.h ):
-                    node_y = node_z.dir
+                if( node_z.right.height > node_z.left.height ):
+                    node_y = node_z.right
                 else:
-                    node_y = node_z.esq
-                if( node_y.dir.h > node_y.esq.h ):
-                    node_x = node_y.dir
+                    node_y = node_z.left
+                if( node_y.right.height > node_y.left.height ):
+                    node_x = node_y.right
                 else:
-                    node_x = node_y.esq
-                    
+                    node_x = node_y.left
+
                 ##Left-left case
-                if( node_z.esq is node_y and node_y.esq is node_x ):
-                    rotacionar_direita(node_z)
+                if( node_z.left is node_y and node_y.left is node_x ):
+                    _rotate_right(node_z)
 
                 #Left-right case
-                if( node_z.esq is node_y and node_y.dir is node_x ):
-                    rotacionar_esquerda( node_y )
-                    rotacionar_direita( node_z )
+                if( node_z.left is node_y and node_y.right is node_x ):
+                    _rotate_left( node_y )
+                    _rotate_right( node_z )
 
                 #right-left case
-                if( node_z.dir is node_y and node_y.esq is node_x ):
-                    rotacionar_direita( node_y )
-                    rotacionar_esquerda( node_z )
-                
+                if( node_z.right is node_y and node_y.left is node_x ):
+                    _rotate_right( node_y )
+                    _rotate_left( node_z )
+
                 #right-right case
-                if( node_z.dir is node_y and node_y.dir is node_x ):
-                    rotacionar_esquerda( node_z )
+                if( node_z.right is node_y and node_y.right is node_x ):
+                    _rotate_left( node_z )
+
