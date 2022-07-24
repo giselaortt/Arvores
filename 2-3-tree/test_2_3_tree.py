@@ -38,4 +38,28 @@ class Test_node():
         assert node >= other_node
 
 
+    def test_third_key( self ):
+        node = Node( 3 )
+        node.addKey( 2 )
+        node._addThirdKey( 1 )
+        assert node.numberOfKeys == 3
+        print(node.keys)
+        mylist = node.keys
+        print(mylist)
+        mylist.sort()
+        assert mylist == node.keys
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

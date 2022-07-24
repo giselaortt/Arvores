@@ -5,10 +5,11 @@ from multipledispatch import dispatch
 class Node():
 
     def __init__( self, key, parentNode = None ):
-        self.children =  [ None, None, None ]
+        self.children =  [None, None, None]
         self.keys = [ key ]
         self.numberOfChildren = 0
         self.numberOfKeys = 1
+        self.parent = parentNode
 
 
     def __eq__( self, other ):
@@ -55,30 +56,26 @@ class Node():
 
 
     def insertChild( self, child ):
-        if( not child ):
-            return
-        child.parent = self
-        if( node.keys[0] > self.keys[ self.numberOfKeys-1 ] ):
-            node.children[ self.numberOfKeys ] = child
-        if( node.keys[0] < self.keys[ 0 ] ):
-            node.children[ 0 ] = child
-        node.children[ 1 ] = child
+        pass
 
 
     def addKey( self, newKey ):
-        if( numberOfChildren == 2 ):
+        if( self.numberOfKeys == 2 ):
             raise Exception( "This operation is not permitted" )
-        self.keys.append(newKey)
-        self.keys.sort()
-        children = deepcopy(self.children)
-        self.children = [None, None, None]
-        for child in children:
-            self.insertChild( child )
+        self.numberOfKeys += 1
+        if( newKey > self.keys[0] ):
+            self.keys.append(newKey )
+        else:
+            self.keys.insert( 0, newKey )
 
 
     @dispatch( object, int )
     def transformToThreeNode( self, newKey ):
-        pass
+        if( not self.isTwoNode() ):
+            raise Exception( "Ooops! Unexpected path." )
+        self.numberOfKeys += 1
+        self.keys.append(newKey)
+        self.keys.sort()
 
 
     @dispatch( object, object )
@@ -97,9 +94,20 @@ class Node():
             node.middle = None
 
 
+    #should only be used for sppliting a node
+    def addThirdKey( self, newKey ):
+        self.numberOfKeys += 1
+        self.keys.append(newKey)
+        self.keys.sort()
+
+
+    def split_node( self ):
+        pass
+
+
     def __repr__( self ):
 
-        return str( self.keys[0] ) + " " + str( self.keys[2] )
+        return str( self.keys )
 
 
 class Trees_2_3():
@@ -114,35 +122,24 @@ class Trees_2_3():
 
 
     def _searchRecursion( key, node ):
-        #TODO: consider the 3 node case!!
         if( node is None ):
             return None
 
-        if( node.keys[2] == key ):
+        if( key in node.keys ):
             return node
 
-        if( key < node.keys[2] ):
+        if( key < node.keys[0] ):
             return _searchRecursion( key, node.children[0] )
 
-        if( node.keys[0] is None or key > node.keys[0] ):
+        if(  key > node.keys[1] ):
             return _searchRecursion( key, node.children[2] )
 
-        return _searchRecursion( key, node.middle )
-
-
-    def _insertOnThreeNode( node, newNode ):
-        keys = [node.keys[2], node.keys[0], newNode.keys[2] ]
-        children = []
-        keys.sort
-        node.parent.removeChild( node.key )
-        newLeftNode     = Node( keys[0],  )
-        newRightNode    = Node( keys[2],  )
+        return _searchRecursion( key, node.children[1] )
 
 
     def insert( self, key ):
-        if( root is None ):
-            node = Node( key )
-            root = node
+        if( self.root is None ):
+            self.root = Node( key )
             return
 
         node = _findNodeToInsert( key, self.root )
@@ -151,11 +148,12 @@ class Trees_2_3():
             return
 
         if( node.parent == None ):
-            newLeftNode = Node(node.keys[2], parentNode = node)
-            newRightNode = Node(node.keys[0], parentNode = node)
-            node.keys[2], node.keys[0] = key, None
+            node.addThirdKey( key )
+            newLeftNode = Node(node.keys[0], parentNode = node)
+            newRightNode = Node(node.keys[2], parentNode = node)
+            del(node.keys[2]), del(node.keys[0])
             node.children[0] = newLeftNode
-            node.children[2] = newLeftNode
+            node.children[1] = newLeftNode
             return
 
         if( node.parent.isTwoNode ):
@@ -173,29 +171,35 @@ class Trees_2_3():
                 node.parent.middle = newLeftNode
             return
 
-        #while( node.isThreeNode() ):
-            #insert on three node
 
-            #node = node.parent
 
+
+    def _insertOnThreeNode( node, newNode ):
+        keys = [node.keys[2], node.keys[0], newNode.keys[2] ]
+        children = []
+        keys.sort
+        node.parent.removeChild( node.key )
+        newLeftNode     = Node( keys[0],  )
+        newRightNode    = Node( keys[2],  )
 
 
     def _findNodeToInsert( key, node ):
-        #TODO: throw error if key alredy exists or node is none
-        if( key < node.keys[2] ):
-            if( node.children[0] is None ):
-                return node
-            else:
-                return _findNodeToInsert( key, node.children[0] )
+        if( node is None ):
+            raise Exception("Unexpected error occured.")
 
-        if( node.keys[0] is None or key > node.keys[0] ):
-            if( node.children[2] is None ):
-                return node
-            else:
-                return _findNodeToInsert( key, node.children[2] )
+        if( key in node.keys ):
+            raise Exception("Operation not allowed.")
 
-        if( key > node.keys[2] and key < node.keys[0] ):
-            return _findNodeToInsert( key, node.middle )
+        if( node.numberOfChildren == 0 ):
+            return node
+
+        if( key < node.keys[0] ):
+            return _findNodeToInsert( key, node.children[0] )
+
+        if( key > node.keys[1] ):
+            return _findNodeToInsert( key, node.children[2] )
+
+        return _findNodeToInsert( key, node.children[1] )
 
 
     def remove( self, key ):
