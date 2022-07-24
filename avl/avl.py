@@ -35,13 +35,13 @@ class Node:
             return self.right.height + 1
 
 
-""" 
+"""
          y                               x
         / \     Right Rotation          /  \
        x   T3   - - - - - - - >        T1   y
       / \       < - - - - - - -            / \
      T1  T2     Left Rotation            T2  T3
- """
+"""
 class AVL:
     def __init__(self):
         self.root = None
@@ -53,30 +53,6 @@ class AVL:
             self.root = novo
         else:
             self._insert_recursion( self.root, novo )
-
-
-    def in_order( self, node ):
-        if( node == None ):
-            return
-        self.in_order( node.left )
-        print( node.id, end = ' ' )
-        self.in_order( node.right )
-
-
-    def pos_order( self, node ):
-        if( node == None ):
-            return
-        self.pos_order( node.left )
-        self.pos_order( node.right )
-        print( node.id, end = ' ' )
-
-
-    def pre_order( self, node ):
-        if( node == None ):
-            return
-        print( node.id, end = ' ' )
-        self.pre_order( node.left )
-        self.pre_order( node.right )
 
 
     def _insert_recursion( self, node, novo_no):
@@ -120,6 +96,30 @@ class AVL:
                     self._rotate_left(node)
                 break;
             node = node.parent
+
+
+    def in_order( self, node ):
+        if( node == None ):
+            return
+        self.in_order( node.left )
+        print( node.id, end = ' ' )
+        self.in_order( node.right )
+
+
+    def pos_order( self, node ):
+        if( node == None ):
+            return
+        self.pos_order( node.left )
+        self.pos_order( node.right )
+        print( node.id, end = ' ' )
+
+
+    def pre_order( self, node ):
+        if( node == None ):
+            return
+        print( node.id, end = ' ' )
+        self.pre_order( node.left )
+        self.pre_order( node.right )
 
 
     def search(self, id):
