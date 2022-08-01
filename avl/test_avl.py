@@ -26,7 +26,7 @@ class Test():
         assert test_search2.name == 'Carlos'
 
 
-    def test_search_inexisting_node( self ):
+    def test_search_inexistend_key( self ):
         test_search3 = self.test_avl.search(9)
         assert test_search3 is None
 
