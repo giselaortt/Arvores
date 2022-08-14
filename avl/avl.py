@@ -9,7 +9,7 @@ class Node:
         self.right = None
         self.left = None
         self.parent = None
-        self.height = 1 #definirei a height de uma folha como 1
+        self.height = 1
 
 
     def factor(self):
@@ -48,52 +48,54 @@ class AVL:
 
 
     def insert(self, id, name):
-        novo = Node(id, name)
+        new_node = Node(id, name)
         if self.root is None:
-            self.root = novo
+            self.root = new_node
         else:
-            self._insert_recursion( self.root, novo )
+            self._insert_recursion( self.root, new_node )
 
 
-    def _insert_recursion( self, node, novo_no):
-        if node.id == novo_no.id:
+    def _insert_recursion( self, node, new_node):
+
+        if node.id == new_node.id:
             raise Exception("Repetitions are not allowed.")
-            return
-        if node.id < novo_no.id:
+
+        if node.id < new_node.id:
             if node.right is None:
-                node.right = novo_no
-                novo_no.parent = node
-                self._redefine_height(novo_no.parent)
+                node.right = new_node
+                new_node.parent = node
+                self._redefine_height(node)
                 self._balance_after_insertion(node)
             else:
-                self._insert_recursion(node.right, novo_no)
+                self._insert_recursion(node.right, new_node)
+
         else:
-            if(node.left is None):
-                node.left = novo_no
-                novo_no.parent = node
-                self._redefine_height(novo_no.parent)
+            if node.left is None:
+                node.left = new_node
+                new_node.parent = node
+                self._redefine_height(node)
                 self._balance_after_insertion(node)
             else:
-                self._insert_recursion(node.left, novo_no)
+                self._insert_recursion(node.left, new_node)
 
 
     def _balance_after_insertion( self, node ):
-        folha = node
+        leaf = node
         while( node != None ):
             if( node.factor()  >= 2):
                 if( node.left.factor() == 1 ):
                     self._rotate_right( node )
-                    self._redefine_height(folha)
-                else: #left right case.
+                    self._redefine_height( leaf )
+                else:
                     self._rotate_left( node.left )
                     self._rotate_right( node )
                 break;
             elif( node.factor() <= -2 ):
                 if( node.right.factor() == -1 ):
                     self._rotate_left( node )
-                else: #right left case.
-                    self._rotate_right(node.right)
-                    self._rotate_left(node)
+                else:
+                    self._rotate_right( node.right )
+                    self._rotate_left( node )
                 break;
             node = node.parent
 
@@ -123,6 +125,7 @@ class AVL:
 
 
     def search(self, id):
+
         return self._search(self.root, id)
 
 
@@ -134,10 +137,6 @@ class AVL:
         if id > node.id:
             return self._search(node.right, id)
         return self._search(node.left, id)
-
-
-    def height( self ):
-        return self._height( self.root )
 
 
     def _height( self, node ):
@@ -201,10 +200,8 @@ class AVL:
     def _redefine_height( self, node ):
         if( node is None ):
             return
-        nh = node.calculate_height()
-        #if( nh == node.height ):
-        #    return
-        node.height = nh
+        node_height = node.calculate_height()
+        node.height = node_height
         self._redefine_height(node.parent)
 
 
@@ -341,3 +338,6 @@ class AVL:
                 if( node_z.right is node_y and node_y.right is node_x ):
                     _rotate_left( node_z )
 
+
+    def _balance_after_deletion( self, node ):
+        pass
