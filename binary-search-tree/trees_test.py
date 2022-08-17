@@ -1,30 +1,46 @@
 # -*- coding: utf-8 -*-
 
-from arvore import Arvore
+from trees import Tree
+import pytest
 
-arv = Arvore()
+class Test():
+    tree = Tree()
+    tree.insert(3, 'Igor')
+    tree.insert(6, 'Jurema')
+    tree.insert(1, 'Lidia')
+    tree.insert(4, 'Carlos')
+    tree.insert(24, 'gi')
+    tree.insert(2, 'aurora')
 
-# inserindo usuários
-arv.inserir(3, 'Igor')
-arv.inserir(6, 'Jurema')
-arv.inserir(1, 'Lidia')
-arv.inserir(4, 'Carlos')
-arv.inserir(24, 'gi')
-arv.inserir(2, 'aurora')
 
-# buscando usuários
-teste_busca1 = arv.buscar(3)
-print(teste_busca1)
-teste_busca2 = arv.buscar(4)
-print(teste_busca2)
-teste_busca3 = arv.buscar(9)
-print(teste_busca3)
+    def test_search_existing_node( self ):
+        name = self.tree.search(3)
+        assert name == 'Igor'
+        name = self.tree.search(4)
+        assert name == 'Carlos'
 
-arv.remover( 6 )
-arv.remover( 10 )
-arv.remover( 2 )
-arv.remover( 4 )
-arv.remover( 24 )
-arv.remover( 2 )
 
-print( arv.buscar(6) )
+    def test_search_unexisting_key( self ):
+        name = self.tree.search(9)
+        assert name is None
+
+
+    def test_deleting_existing_keys( self ):
+        self.tree.remove( 6 )
+        assert self.tree.search(6) is None
+        self.tree.remove( 4 )
+        assert self.tree.search(4) is None
+
+
+    def test_deleting_unexisting_keys( self ):
+        with pytest.raises(Exception) as info:
+            self.tree.remove( 10 )
+        assert  str(info.value) == "unexisting key"
+
+
+    def test_deleting_existing_key_multiple_times( self ):
+        self.tree.remove( 2 )
+        with pytest.raises(Exception) as info:
+            self.tree.remove( 2 )
+        assert  str(info.value) == "unexisting key"
+

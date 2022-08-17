@@ -9,7 +9,6 @@ class Node:
         self.father = None
 
 
-# trees não balanceadas
 class Tree:
     def __init__(self):
         self.root = None
@@ -68,9 +67,7 @@ class Tree:
     def remove(self, id):
         node = self._search(self.root, id)
         if node is False:
-            print("nó não encontrado na tree. tente novamente.")
-            return
-
+            raise Exception('unexisting key')
 
         if( node.left is None and node.right is None ):
             if node is self.root :
@@ -84,7 +81,7 @@ class Tree:
 
 
         if( node.right is None ):
-            node.left.father = node.pai
+            node.left.father = node.father
             if node is self.root:
                 self.root = node.left
                 node.left.father = None
@@ -96,7 +93,7 @@ class Tree:
 
 
         if node.left is None:
-            node.right.father = node.pai
+            node.right.father = node.father
             if node is self.root:
                 self.root = node.right
             elif node.father.left == node:
@@ -127,7 +124,7 @@ class Tree:
             node.left.father = new_node
             node.right.father = new_node
 
-        new_node.father = node.pai
+        new_node.father = node.father
         if node is self.root:
             self.root = new_node
         elif node.father.left == node:
