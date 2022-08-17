@@ -1,144 +1,137 @@
 # -*- coding: utf-8 -*-
 
 class Node:
-    def __init__(self, id, nome):
+    def __init__(self, id, name):
         self.id = id
-        self.nome = nome
-        self.dir = None
-        self.esq = None
-        self.pai = None
+        self.name = name
+        self.right = None
+        self.left = None
+        self.father = None
 
 
-# arvores não balanceadas
-class Arvore:
+# trees não balanceadas
+class Tree:
     def __init__(self):
-        self.raiz = None
+        self.root = None
 
-    def inserir(self, id, nome):
-        novo = Node(id, nome)
-        if(self.raiz is None):
-            self.raiz = novo
+    def insert(self, id, name):
+        novo = Node(id, name)
+        if(self.root is None):
+            self.root = novo
         else:
-            self._inserir(self.raiz, novo)
+            self._insert(self.root, novo)
 
-    def _inserir(self, node, novo_no):
+    def _insert(self, node, novo_no):
         if node.id == novo_no.id:
-            print("não foi possivel inserir o novo nó, pois não são aceitas repetições.")
-            return
+            raise Exception("keyword already exists.")
         if node.id < novo_no.id:
-            if node.dir is None:
-                node.dir = novo_no
-                novo_no.pai = node
+            if node.right is None:
+                node.right = novo_no
+                novo_no.father = node
             else:
-                self._inserir(node.dir, novo_no)
+                self._insert(node.right, novo_no)
         else:
-            if(node.esq is None):
-                node.esq = novo_no
-                novo_no.pai = node
+            if(node.left is None):
+                node.left = novo_no
+                novo_no.father = node
             else:
-                self._inserir(node.esq, novo_no)
+                self._insert(node.left, novo_no)
 
-    def buscar(self, id):
-        node = self._buscar(self.raiz, id)
+
+    def search(self, id):
+        node = self._search(self.root, id)
         if node:
-            return node.nome
-        return 'id {id} não encontrado'
+            return node.name
+        return  None
 
-    def _buscar(self, node, id):
+
+    def _search(self, node, id):
         if node is None:
             return False
         if node.id == id:
             return node
         if id > node.id:
-            return self._buscar(node.dir, id)
-        return self._buscar(node.esq, id)
+            return self._search(node.right, id)
+        return self._search(node.left, id)
 
 
-    #essa função não tem nenhuma utilidade prática. foi feita apenas com propósitos educacionais.
-    def altura( self ):
-        return _altura( self.raiz )
-    
-    
-    def _altura( self, node ):
+    def height( self ):
+        return _height( self.root )
+
+
+    def _height( self, node ):
         if node is None:
             return 0
-        return max( self._altura(node.dir), self._altura(node.esq) ) + 1
+        return max( self._height(node.right), self._height(node.left) ) + 1
 
 
-    def remover(self, id):
-        node = self._buscar(self.raiz, id)
+    def remove(self, id):
+        node = self._search(self.root, id)
         if node is False:
-            print("nó não encontrado na arvore. tente novamente.")
+            print("nó não encontrado na tree. tente novamente.")
             return
-        
-        # se o nó for um nó folha:
-        if( node.esq is None and node.dir is None ):
-            if node is self.raiz :
-                self.raiz = None
+
+
+        if( node.left is None and node.right is None ):
+            if node is self.root :
+                self.root = None
             else:
-                if node.pai.dir == node:
-                    node.pai.dir = None
+                if node.father.right == node:
+                    node.father.right = None
                 else:
-                    node.pai.esq = None
+                    node.father.left = None
             return
 
-        
-        # se o nó possui apenas 1 filho, e esse filho está a esquerda
-        if( node.dir is None ):
-            node.esq.pai = node.pai
-            if node is self.raiz:
-                self.raiz = node.esq
-                node.esq.pai = None
-            elif node.pai.esq == node:
-                node.pai.esq = node.esq
-            elif node.pai.dir == node:
-                node.pai.dir = node.esq
+
+        if( node.right is None ):
+            node.left.father = node.pai
+            if node is self.root:
+                self.root = node.left
+                node.left.father = None
+            elif node.father.left == node:
+                node.father.left = node.left
+            elif node.father.right == node:
+                node.father.right = node.left
             return
 
-        
-        # se o nó possui apenas um filho, que está a direita
-        if node.esq is None:
-            node.dir.pai = node.pai
-            if node is self.raiz:
-                self.raiz = node.dir
-            elif node.pai.esq == node:
-                node.pai.esq = node.dir
-            elif node.pai.dir == node:
-                node.pai.dir = node.dir
+
+        if node.left is None:
+            node.right.father = node.pai
+            if node is self.root:
+                self.root = node.right
+            elif node.father.left == node:
+                node.father.left = node.right
+            elif node.father.right == node:
+                node.father.right = node.right
             return
 
-        # se o nó possui dois filhos
-        # podemos pegar o nó mais esquerdo do ramo direito, ou o nó mais direito do ramo esquerdo.
-        # implemeitarei a primeira opção, a outra é analoga.
-        substituto = node.dir
-        while substituto.esq is not None:
-            substituto = substituto.esq
+        new_node = node.right
+        while new_node.left is not None:
+            new_node = new_node.left
 
-        if( node.dir is substituto ):
-            substituto.esq = node.esq
-            node.esq.pai = substituto
+        if( node.right is new_node ):
+            new_node.left = node.left
+            node.left.father = new_node
 
-        elif( node.esq is substituto ):
-            substituto.dir = node.dir
-            node.dir.pai = substituto
-        
+        elif( node.left is new_node ):
+            new_node.right = node.right
+            node.right.father = new_node
+
         else:
-            #caso geral
-            if substituto.pai.id > substituto.id:
-                substituto.pai.esq = None
+            if new_node.father.id > new_node.id:
+                new_node.father.left = None
             else:
-                substituto.pai.dir = None
-            substituto.esq = node.esq
-            substituto.dir = node.dir
-            # fazer as ligações do nó a ser removido apontarem pro substituto
-            node.esq.pai = substituto
-            node.dir.pai = substituto
-       
-        substituto.pai = node.pai
-        if node is self.raiz:
-            self.raiz = substituto
-        elif node.pai.esq == node:
-            node.pai.esq = substituto
-        elif node.pai.dir == node:
-            node.pai.dir = substituto
+                new_node.father.right = None
+            new_node.left = node.left
+            new_node.right = node.right
+            node.left.father = new_node
+            node.right.father = new_node
+
+        new_node.father = node.pai
+        if node is self.root:
+            self.root = new_node
+        elif node.father.left == node:
+            node.father.left = new_node
+        elif node.father.right == node:
+            node.father.right = new_node
 
