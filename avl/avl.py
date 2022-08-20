@@ -3,13 +3,18 @@
 
 class Node:
 
-    def __init__(self, id, name):
-        self.id = id
+    def __init__(self, key, name):
+        self.key = key
         self.name = name
         self.right = None
         self.left = None
         self.parent = None
         self.height = 1
+
+
+    def is_leaf( self ):
+
+        return (self.height == 0)
 
 
     def factor(self):
@@ -35,57 +40,58 @@ class Node:
             return self.right.height + 1
 
 
-"""
-         y                               x
-        / \     Right Rotation          /  \
-       x   T3   - - - - - - - >        T1   y
-      / \       < - - - - - - -            / \
-     T1  T2     Left Rotation            T2  T3
-"""
+#"""
+#     y                               x
+#    / \     Right Rotation          /  \
+#   x   T3   - - - - - - - >        T1   y
+#  / \       < - - - - - - -            / \
+# T1  T2     Left Rotation            T2  T3
+#"""
 class AVL:
     def __init__(self):
         self.root = None
+        self.height = -1
 
 
-    def insert(self, id, name):
-        new_node = Node(id, name)
+    def insert(self, key:int, name:str):
+        new_node = Node(key, name)
         if self.root is None:
             self.root = new_node
+            return
+        node = self._find_node_to_insert( self.root, key )
+        print( node )
+        if( node == None ):
+            print("oops")
+        if( node.key >  new_node.key ):
+            node.left = new_node
         else:
-            self._insert_recursion( self.root, new_node )
+            node.right = new_node
+        new_node.parent = node
+        self._update_heights(node)
+        self._rebalance_after_insertion( new_node )
 
 
-    def _insert_recursion( self, node, new_node):
-
-        if node.id == new_node.id:
+    def _find_node_to_insert( self, node, new_key ):
+        if node.key == new_key:
             raise Exception("Repetitions are not allowed.")
-
-        if node.id < new_node.id:
+        if node.key < new_key:
             if node.right is None:
-                node.right = new_node
-                new_node.parent = node
-                self._redefine_height(node)
-                self._balance_after_insertion(node)
+                return node
             else:
-                self._insert_recursion(node.right, new_node)
-
+                return self._find_node_to_insert(node.right, new_key)
         else:
             if node.left is None:
-                node.left = new_node
-                new_node.parent = node
-                self._redefine_height(node)
-                self._balance_after_insertion(node)
+                return node
             else:
-                self._insert_recursion(node.left, new_node)
+                return self._find_node_to_insert(node.left, new_key)
 
 
-    def _balance_after_insertion( self, node ):
+    def _rebalance_after_insertion( self, node ):
         leaf = node
         while( node != None ):
             if( node.factor()  >= 2):
                 if( node.left.factor() == 1 ):
                     self._rotate_right( node )
-                    self._redefine_height( leaf )
                 else:
                     self._rotate_left( node.left )
                     self._rotate_right( node )
@@ -100,74 +106,13 @@ class AVL:
             node = node.parent
 
 
-    def in_order( self, node ):
-        if( node == None ):
-            return
-        self.in_order( node.left )
-        print( node.id, end = ' ' )
-        self.in_order( node.right )
-
-
-    def pos_order( self, node ):
-        if( node == None ):
-            return
-        self.pos_order( node.left )
-        self.pos_order( node.right )
-        print( node.id, end = ' ' )
-
-
-    def pre_order( self, node ):
-        if( node == None ):
-            return
-        print( node.id, end = ' ' )
-        self.pre_order( node.left )
-        self.pre_order( node.right )
-
-
-    def search(self, id):
-
-        return self._search(self.root, id)
-
-
-    def _search(self, node, id):
-        if node is None:
-            return node
-        if node.id == id:
-            return node
-        if id > node.id:
-            return self._search(node.right, id)
-        return self._search(node.left, id)
-
-
-    def _height( self, node ):
-        if node is None:
-            return 0
-        return max( self._height(node.right), self._height(node.left) ) + 1
-
-
-    def _is_avl( self, node ):
-        if( node == None ):
-            return True
-        if( node.left is None and node.right is None ):
-            return True
-        left_height = 0
-        right_height = 0
-        if( node.left is not None ):
-            left_height =  node.left.calculate_height()
-        if( node.right is not None ):
-            right_height = node.right.calculate_height()
-        if( abs(left_height - right_height) >= 2 ):
-            return False
-        return (self._is_avl( node.right ) and self._is_avl( node.left ))
-
-
     def _rotate_right( self, node ):
         new_parent = node.left
         new_parent.parent = node.parent
         if(node is self.root):
             self.root = new_parent
         else:
-            if( node.parent.id > node.id ):
+            if( node.parent.key > node.key ):
                 node.parent.left = new_parent
             else:
                 node.parent.right = new_parent
@@ -176,7 +121,7 @@ class AVL:
         if( new_parent.right is not None ):
             new_parent.right.parent = node
         new_parent.right = node
-        self._redefine_height( node )
+        self._update_heights( node )
 
 
     def _rotate_left( self, node ):
@@ -185,7 +130,7 @@ class AVL:
         if(node is self.root):
             self.root = new_parent
         else:
-            if( node.parent.id > node.id ):
+            if( node.parent.key > node.key ):
                 node.parent.left = new_parent
             else:
                 node.parent.right = new_parent
@@ -194,21 +139,87 @@ class AVL:
         if( new_parent.left is not None ):
             new_parent.left.parent = node
         new_parent.left = node
-        self._redefine_height( node  )
+        self._update_heights( node  )
 
 
-    def _redefine_height( self, node ):
+    def _rotate_left_right( self, first_node, second_node ):
+        pass
+
+
+    def _rotate_right_left( self, first_node, second_node ):
+        pass
+
+
+    def _find_successor():
+        pass
+
+
+    def _predecessor():
+        pass
+
+
+    def in_order( self ) -> list:
+        return self._in_order( self, self.root )
+
+
+    def _in_order( self, node, answer ) -> list:
+        if( node == None ):
+            return
+        self._in_order( node.left )
+        answer.append( node.key )
+        self._in_order( node.right )
+
+
+    def pos_order( self ) -> list:
+        return self._pos_order( self, self.root )
+
+
+    def _pos_order( self, node, answer ) -> list:
+        if( node == None ):
+            return
+        self._pos_order( node.left )
+        self._pos_order( node.right )
+        answer.append( node.key )
+
+
+    def pre_order( self ) -> list:
+        return self._pre_order( self, self.root )
+
+
+    def _pre_order( self, node, answer ) -> list :
+        if( node == None ):
+            return
+        answer.append( node.key )
+        self._pre_order( node.left )
+        self._pre_order( node.right )
+
+
+    def search(self, key):
+
+        return self._search(self.root, key)
+
+
+    def _search(self, node, key):
+        if node is None:
+            return node
+        if node.key == key:
+            return node
+        if key > node.key:
+            return self._search(node.right, key)
+        return self._search(node.left, key)
+
+
+    def _update_heights( self, node ):
         if( node is None ):
             return
-        node_height = node.calculate_height()
-        node.height = node_height
-        self._redefine_height(node.parent)
+        node.height = node.calculate_height()
+        self._update_heights(node.parent)
 
 
-    def remove( self, id ):
-        node = self.search( id )
+    def remove( self, key ):
+        node = self.search( key )
         if node is None:
-            raise Exception("id não encontrado")
+            raise Exception("key não encontrado")
             return
 
         if node.left is None and node.right is None:
@@ -262,7 +273,7 @@ class AVL:
         else:
             temporary = left_temporary_node
 
-        temporary = temporary.parent # vamos guardar uma referencia para esse nó pois é a partir daqui que será necessário rebalance.
+        temporary = temporary.parent # vamos guardar uma referencia para esse nó pois é a partir daqui que será necessário rerebalance.
 
         if( node.right is temporary ):
             temporary.left = node.left
@@ -273,7 +284,7 @@ class AVL:
             node.right.parent = temporary
 
         else:
-            if temporary.parent.id > temporary.id:
+            if temporary.parent.key > temporary.key:
                 temporary.parent.left = None
             else:
                 temporary.parent.right = None
@@ -339,5 +350,5 @@ class AVL:
                     _rotate_left( node_z )
 
 
-    def _balance_after_deletion( self, node ):
+    def _rebalance_after_deletion( self, node ):
         pass
