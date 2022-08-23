@@ -36,10 +36,6 @@ class Test():
         assert  str(info.value) == "Repetitions are not allowed."
 
 
-    def test_is_height_correct( self ):
-        assert self.test_avl.root.height == 3
-
-
     def proof_height( self, avl_node ):
         if avl_node is None:
             return 0
@@ -93,14 +89,22 @@ class Test():
         assert self._is_avl( self.test_avl.root ) is True
 
 
-    """
-#    def test_remove_existing_element( self ):
-#        self.test_avl.remove( 6 )
-#        assert self.test_avl.search(6) is None
+    def test_remove_existing_element( self ):
+        self.test_avl.remove( 6 )
+        assert self.test_avl.search(6) is None
+
+
+    def test_remove_unexisting_element( self ):
+        with pytest.raise.exception as info:
+            self.test_avl.remove( 32 )
 
 
     def test_is_inorder_sorted( self ):
-        pass
+        inorder = self.test_avl.in_order()
+        for( i in range( len( inorder )-1 ):
+            assert inorder[i] < inorder[i+1]
+
+
 
 
     def test_pre_order( self ):
@@ -114,8 +118,4 @@ class Test():
     def test_in_order( self ):
         pass
 
-
-
-
-    """
 

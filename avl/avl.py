@@ -150,14 +150,6 @@ class AVL:
         pass
 
 
-    def _find_successor():
-        pass
-
-
-    def _predecessor():
-        pass
-
-
     def in_order( self ) -> list:
         return self._in_order( self, self.root )
 
@@ -216,65 +208,80 @@ class AVL:
         self._update_heights(node.parent)
 
 
+    def _remove_conection_child_parent( node, child_node ):
+        if node is None or child_node is None :
+            return
+        if node.left == child_node :
+            node.left = None
+        elif node.right == child_node:
+            node.right = None
+        child_node.parent = None
+
+
+    def _replace_node(  self, node, substitute ):
+        parent = node.parent
+        if( self.root is node ):
+            self.root = substitute
+        if node is None or parent is None :
+            return
+        if parent.left == node :
+            parent.left = substitute
+        elif parent.right == node:
+            parent.right = substitute
+        substitute.parent = parent
+        node.parent = None
+
+
+    def _find_logical_successor( node ) -> Node :
+        successor = node.right
+        distance_from_successor = 1
+        while successor.left is not None:
+            successor = successor.left
+            distance_from_successor += 1
+
+        return successor, distance_from_successor
+
+
+    def _find_logical_predecessor( node ) -> Node :
+        predecessor = node.left
+        distance_from_predecessor = 1
+        while predecessor.right is not None:
+            predecessor = predecessor.right
+            distance_from_predecessor += 1
+
+        return predecessor, distance_from_predecessor
+
+
     def remove( self, key ):
         node = self.search( key )
         if node is None:
-            raise Exception("key não encontrado")
+            raise Exception("key does not exist.")
             return
 
         if node.left is None and node.right is None:
-            if node.parent is not None:
-                if node.parent.right == node:
-                    node.parent.right = None
-                else:
-                    node.parent.left = None
-            else:
+            if( self.root == node ):
                 self.root = None
+            _remove_conection_child_parent( node.parent, node )
             return
 
         if node.right is None:
-            node.left.parent = node.parent
-            if node is self.root:
-                self.root = node.left
-                node.left.parent = None
-            elif node.parent.left == node:
-                node.parent.left = node.left
-            elif node.parent.right == node:
-
-                node.parent.right = node.left
+            self._replace_node( node, node.left )
             return
 
         if node.left is None:
-            node.right.parent = node.parent
-            if node is self.root:
-                self.root = node.right
-            elif node.parent.left == node:
-                node.parent.left = node.right
-            elif node.parent.right == node:
-                node.parent.right = node.right
+            self._replace_node( node, node.right )
             return
 
         #TODO: refactor.
-        right_temporary_node = node.right
-        dist_right = 1
-        while right_temporary_node.left is not None:
-            right_temporary_node = right_temporary_node.left
-            dist_right += 1
+        successor, distance_from_successor = _find_logical_successor( node )
+        predecessor, distance_from_predecessor  = _find_logical_predecessor( node )
 
-        left_temporary_node = node.left
-        dist_left = 1
-        while left_temporary_node.right is not None:
-            left_temporary_node = left_temporary_node.right
-            dist_left += 1
-
-        if( dist_right > dist_left ):
-            temporary = right_temporary_node
-
+        if( distance_from_successor > distance_from_predecessor ):
+            temporary = successor
         else:
-            temporary = left_temporary_node
+            temporary = predecessor
 
-        temporary = temporary.parent # vamos guardar uma referencia para esse nó pois é a partir daqui que será necessário rerebalance.
-
+        temporary = temporary.parent
         if( node.right is temporary ):
             temporary.left = node.left
             node.left.parent = temporary
@@ -352,3 +359,4 @@ class AVL:
 
     def _rebalance_after_deletion( self, node ):
         pass
+
