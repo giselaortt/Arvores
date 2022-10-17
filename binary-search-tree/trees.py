@@ -15,6 +15,16 @@ class Node:
         return ( self.right == None and self.left == None )
 
 
+    def is_left_child( self ):
+
+        return ( self.father is not None and self.id < self.father.id )
+
+
+    def is_right_child( self ):
+
+        return ( self.father is not None and self.id > self.father.id )
+
+
 class Tree:
     def __init__(self):
         self.root = None
@@ -77,7 +87,7 @@ class Tree:
         if node is False:
             raise Exception('unexisting key')
 
-        if( node.left is None and node.right is None ):
+        if( node.is_leaf() ):
             if node is self.root :
                 self.root = None
             else:
