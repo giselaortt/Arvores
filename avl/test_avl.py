@@ -5,7 +5,6 @@ from collections import deque
 
 
 class Test():
-
     test_avl = AVL()
     test_avl.insert(3, 'Igor')
     test_avl.insert(6, 'Jurema')
@@ -13,7 +12,6 @@ class Test():
     test_avl.insert(4, 'Carlos')
     test_avl.insert(24, 'gi')
     test_avl.insert(2, 'aurora')
-
 
     def test_search_first( self ):
         test_search1 = self.test_avl.search(3)
@@ -69,19 +67,14 @@ class Test():
     def _is_avl( self, node ):
         if( node == None ):
             return True
-
         if( node.left is None and node.right is None ):
             return True
-
         if( node.left is None ):
             return node.right.height <= 2
-
         if( node.right is None ):
             return node.left.height <= 2
-
         if( abs( node.left.height - node.right.height ) >= 2 ):
             return False
-
         return (self._is_avl( node.right ) and self._is_avl( node.left ))
 
 
@@ -105,8 +98,6 @@ class Test():
             assert inorder[i] < inorder[i+1]
 
 
-
-
     def test_pre_order( self ):
         pass
 
@@ -117,5 +108,4 @@ class Test():
 
     def test_in_order( self ):
         pass
-
 

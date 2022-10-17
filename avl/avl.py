@@ -14,7 +14,17 @@ class Node:
 
     def is_leaf( self ):
 
-        return (self.height == 0)
+        return ( self.right == None and self.left == None )
+
+
+    def is_left_child( self ):
+
+        return ( self.father is not None and self.id < self.father.id )
+
+
+    def is_right_child( self ):
+
+        return ( self.father is not None and self.id > self.father.id )
 
 
     def factor(self):
@@ -58,11 +68,9 @@ class AVL:
         if self.root is None:
             self.root = new_node
             return
+
         node = self._find_node_to_insert( self.root, key )
-        print( node )
-        if( node == None ):
-            print("oops")
-        if( node.key >  new_node.key ):
+        if( node.key > new_node.key ):
             node.left = new_node
         else:
             node.right = new_node
@@ -258,7 +266,7 @@ class AVL:
             raise Exception("key does not exist.")
             return
 
-        if node.left is None and node.right is None:
+        if( node.is_leaf() ):
             if( self.root == node ):
                 self.root = None
             _remove_conection_child_parent( node.parent, node )

@@ -13,7 +13,7 @@ class Test():
     tree.insert(2, 'aurora')
 
 
-    def test_search_existing_node( self ):
+    def test_search_existing_key( self ):
         name = self.tree.search(3)
         assert name == 'Igor'
         name = self.tree.search(4)
