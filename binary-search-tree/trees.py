@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class Node:
     def __init__(self, id, name):
         self.id = id
@@ -9,16 +10,23 @@ class Node:
         self.father = None
 
 
+    def is_leaf( self ):
+
+        return ( self.right == None and self.left == None )
+
+
 class Tree:
     def __init__(self):
         self.root = None
 
+
     def insert(self, id, name):
-        novo = Node(id, name)
+        new_node = Node(id, name)
         if(self.root is None):
-            self.root = novo
+            self.root = new_node
         else:
-            self._insert(self.root, novo)
+            self._insert(self.root, new_node)
+
 
     def _insert(self, node, novo_no):
         if node.id == novo_no.id:
