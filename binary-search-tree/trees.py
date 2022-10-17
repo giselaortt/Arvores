@@ -108,8 +108,7 @@ class Tree:
         first.id, second.id = second.id, first.id
 
 
-    @staticmethod
-    def succeed( node, successor ):
+    def succeed( self, node, successor ):
         if( successor is not None ):
             successor.father = node.father
         if( node is self.root ):
@@ -127,15 +126,15 @@ class Tree:
             raise Exception('unexisting key')
 
         if( node.is_leaf() ):
-            Tree.succeed( node, None)
+            self.succeed( node, None)
             return
 
         if( node.right is None ):
-            Tree.succeed( node, node.left )
+            self.succeed( node, node.left )
             return
 
         if( node.left is None ):
-            Tree.succeed( node, node.right )
+            self.succeed( node, node.right )
             return
 
         successor = Tree.find_natural_successor( node )
