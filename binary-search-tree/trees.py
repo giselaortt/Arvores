@@ -82,71 +82,64 @@ class Tree:
         return max( self._height(node.right), self._height(node.left) ) + 1
 
 
+    @staticmethod
+    def prune( node ):
+        if( node.father is not None ):
+            node.father = None
+
+
+    @staticmethod
+    def find_natural_successor( node ):
+        if( node.is_leaf() ):
+            return None
+        if( node.right is None ):
+            return node.left
+        if( node.left is None ):
+            return node.right
+        successor = node.right
+        while( successor.left is not None ):
+            successor = successor.left
+        return successor
+
+
+    @staticmethod
+    def swap_node_informations( first, second ):
+        first.name, second.name = second.name, first.name
+        first.id, second.id = second.id, first.id
+
+
+    @staticmethod
+    def succeed( node, successor ):
+        if( successor is not None ):
+            successor.father = node.father
+        if( node is self.root ):
+            self.root = successor
+        elif( node.is_left_child() ):
+            node.father.left = node.left
+        elif( node.is_right_child() ):
+            node.father.right = node.left
+
+
     def remove(self, id):
         node = self._search(self.root, id)
+
         if node is False:
             raise Exception('unexisting key')
 
         if( node.is_leaf() ):
-            if node is self.root :
-                self.root = None
-            else:
-                if node.father.right == node:
-                    node.father.right = None
-                else:
-                    node.father.left = None
+            Tree.succeed( node, None)
             return
-
 
         if( node.right is None ):
-            node.left.father = node.father
-            if node is self.root:
-                self.root = node.left
-                node.left.father = None
-            elif node.father.left == node:
-                node.father.left = node.left
-            elif node.father.right == node:
-                node.father.right = node.left
+            Tree.succeed( node, node.left )
             return
 
-
-        if node.left is None:
-            node.right.father = node.father
-            if node is self.root:
-                self.root = node.right
-            elif node.father.left == node:
-                node.father.left = node.right
-            elif node.father.right == node:
-                node.father.right = node.right
+        if( node.left is None ):
+            Tree.succeed( node, node.right )
             return
 
-        new_node = node.right
-        while new_node.left is not None:
-            new_node = new_node.left
+        successor = Tree.find_natural_successor( node )
+        Tree.swap_node_informations( node, successor )
+        Tree.prune( successor )
 
-        if( node.right is new_node ):
-            new_node.left = node.left
-            node.left.father = new_node
-
-        elif( node.left is new_node ):
-            new_node.right = node.right
-            node.right.father = new_node
-
-        else:
-            if new_node.father.id > new_node.id:
-                new_node.father.left = None
-            else:
-                new_node.father.right = None
-            new_node.left = node.left
-            new_node.right = node.right
-            node.left.father = new_node
-            node.right.father = new_node
-
-        new_node.father = node.father
-        if node is self.root:
-            self.root = new_node
-        elif node.father.left == node:
-            node.father.left = new_node
-        elif node.father.right == node:
-            node.father.right = new_node
 
