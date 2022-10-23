@@ -19,12 +19,12 @@ class Node:
 
     def is_left_child(self) -> bool:
 
-        return ( self.parent is not None and self.id < self.parent.id )
+        return ( self.parent is not None and self.key < self.parent.key )
 
 
     def is_right_child(self) -> bool:
 
-        return ( self.parent is not None and self.id > self.parent.id )
+        return ( self.parent is not None and self.key > self.parent.key )
 
 
     def factor(self) -> int:
@@ -307,19 +307,19 @@ class AVL:
 
                 ##Left-left case
                 if( node_z.left is node_y and node_y.left is node_x ):
-                    _rotate_right(node_z)
+                    self._rotate_right(node_z)
 
                 #Left-right case
                 if( node_z.left is node_y and node_y.right is node_x ):
-                    _rotate_left( node_y )
-                    _rotate_right( node_z )
+                    self._rotate_left( node_y )
+                    self._rotate_right( node_z )
 
                 #right-left case
                 if( node_z.right is node_y and node_y.left is node_x ):
-                    _rotate_right( node_y )
-                    _rotate_left( node_z )
+                    self._rotate_right( node_y )
+                    self._rotate_left( node_z )
 
                 #right-right case
                 if( node_z.right is node_y and node_y.right is node_x ):
-                    _rotate_left( node_z )
+                    self._rotate_left( node_z )
 
