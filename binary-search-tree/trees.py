@@ -82,14 +82,20 @@ class Tree:
         return max( self._height(node.right), self._height(node.left) ) + 1
 
 
-    @staticmethod
-    def prune( node ):
-        if( node.father is not None ):
-            node.father = None
+    def _prune( self, node ):
+        if( self.root is node ):
+            self.root = None
+        if( node.father is None ):
+            return
+        if( node.is_left_child() ):
+            node.father.left = None
+        else:
+            node.father.right = None
+        node.father = None
 
 
     @staticmethod
-    def find_natural_successor( node ):
+    def find_logical_successor( node ):
         if( node.is_leaf() ):
             return None
         if( node.right is None ):
@@ -103,7 +109,7 @@ class Tree:
 
 
     @staticmethod
-    def swap_node_informations( first, second ):
+    def _swap_node_informations( first, second ):
         first.name, second.name = second.name, first.name
         first.id, second.id = second.id, first.id
 
@@ -121,24 +127,25 @@ class Tree:
 
     def remove(self, id):
         node = self._search(self.root, id)
+        print( node )
 
-        if node is False:
+        if( node is False ):
             raise Exception('unexisting key')
 
         if( node.is_leaf() ):
-            self.succeed( node, None)
+            self._prune( node )
             return
 
-        if( node.right is None ):
+        '''if( node.right is None ):
             self.succeed( node, node.left )
             return
 
         if( node.left is None ):
             self.succeed( node, node.right )
             return
-
-        successor = Tree.find_natural_successor( node )
-        Tree.swap_node_informations( node, successor )
-        Tree.prune( successor )
+        '''
+        successor = Tree.find_logical_successor( node )
+        Tree._swap_node_informations( node, successor )
+        self._prune( successor )
 
 
