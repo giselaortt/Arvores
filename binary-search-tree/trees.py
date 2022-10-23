@@ -17,12 +17,12 @@ class Node:
 
     def is_left_child( self ):
 
-        return ( self.father is not None and self.id < self.father.id )
+        return self.father is not None and self.father.left == self
 
 
     def is_right_child( self ):
 
-        return ( self.father is not None and self.id > self.father.id )
+        return self.father is not None and self.father.right == self
 
 
 class Tree:
@@ -59,7 +59,7 @@ class Tree:
         node = self._search(self.root, id)
         if node:
             return node.name
-        return  None
+        return False
 
 
     def _search(self, node, id):
@@ -96,12 +96,6 @@ class Tree:
 
     @staticmethod
     def find_logical_successor( node ):
-        if( node.is_leaf() ):
-            return None
-        if( node.right is None ):
-            return node.left
-        if( node.left is None ):
-            return node.right
         successor = node.right
         while( successor.left is not None ):
             successor = successor.left
@@ -117,17 +111,20 @@ class Tree:
     def succeed( self, node, successor ):
         if( successor is not None ):
             successor.father = node.father
+
         if( node is self.root ):
             self.root = successor
-        elif( node.is_left_child() ):
-            node.father.left = node.left
+            return
+
+        if( node.is_left_child() ):
+            node.father.left = successor
+
         elif( node.is_right_child() ):
-            node.father.right = node.left
+            node.father.right = successor
 
 
     def remove(self, id):
         node = self._search(self.root, id)
-        print( node )
 
         if( node is False ):
             raise Exception('unexisting key')
@@ -136,16 +133,15 @@ class Tree:
             self._prune( node )
             return
 
-        '''if( node.right is None ):
+        if( node.right is None ):
             self.succeed( node, node.left )
             return
 
         if( node.left is None ):
             self.succeed( node, node.right )
             return
-        '''
+
         successor = Tree.find_logical_successor( node )
         Tree._swap_node_informations( node, successor )
         self._prune( successor )
-
 
