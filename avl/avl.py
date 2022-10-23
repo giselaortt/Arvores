@@ -280,7 +280,7 @@ class AVL:
             self.root = None
             return
 
-        successor = _find_logical_successor( node )
+        successor = AVL._find_logical_successor( node )
         AVL._swap_node_informations( node, successor )
         AVL._prune( successor )
         AVL._update_heights( successor.parent )
