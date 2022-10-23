@@ -158,8 +158,9 @@ class AVL:
 
 
     def in_order( self ) -> list:
-
-        return AVL._in_order( self.root, [] )
+        answer = []
+        AVL._in_order( self.root, answer )
+        return answer
 
 
     @staticmethod
@@ -172,8 +173,9 @@ class AVL:
 
 
     def pos_order( self ) -> list:
-
-        return AVL._pos_order( self.root, [] )
+        answer = []
+        AVL._pos_order( self.root, answer )
+        return answer
 
 
     @staticmethod
@@ -186,8 +188,9 @@ class AVL:
 
 
     def pre_order( self ) -> list:
-
-        return AVL._pre_order( self.root, [] )
+        answer = []
+        AVL._pos_order( self.root, answer )
+        return answer
 
 
     @staticmethod
