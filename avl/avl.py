@@ -19,12 +19,12 @@ class Node:
 
     def is_left_child(self) -> bool:
 
-        return ( self.father is not None and self.id < self.father.id )
+        return ( self.parent is not None and self.id < self.parent.id )
 
 
     def is_right_child(self) -> bool:
 
-        return ( self.father is not None and self.id > self.father.id )
+        return ( self.parent is not None and self.id > self.parent.id )
 
 
     def factor(self) -> int:
@@ -253,12 +253,12 @@ class AVL:
 
     @staticmethod
     def _prune( node:Node ) -> None:
-        if( node.father is None ):
+        if( node.parent is None ):
             return
         if( node.is_left_child() ):
-            node.father.left = None
+            node.parent.left = None
         else:
-            node.father.right = None
+            node.parent.right = None
 
 
     def remove( self, key:int ) -> None:
@@ -274,8 +274,8 @@ class AVL:
         successor = _find_logical_successor( node )
         AVL._swap_node_informations( node, successor )
         AVL._prune( successor )
-        AVL._update_heights( successor.father )
-        self._rebalance_after_deletion( successor.father )
+        AVL._update_heights( successor.parent )
+        self._rebalance_after_deletion( successor.parent )
 
         if( node == self.root ):
             self.root = successor
