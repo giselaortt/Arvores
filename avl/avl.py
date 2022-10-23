@@ -158,39 +158,45 @@ class AVL:
 
 
     def in_order( self ) -> list:
-        return self._in_order( self, self.root )
+
+        return AVL._in_order( self.root, [] )
 
 
-    def _in_order( self, node, answer ) -> list:
+    @staticmethod
+    def _in_order( node:Node, answer:list ) -> list:
         if( node == None ):
             return
-        self._in_order( node.left )
+        AVL._in_order( node.left, answer )
         answer.append( node.key )
-        self._in_order( node.right )
+        AVL._in_order( node.right, answer )
 
 
     def pos_order( self ) -> list:
-        return self._pos_order( self, self.root )
+
+        return AVL._pos_order( self.root, [] )
 
 
-    def _pos_order( self, node:None, answer:list ) -> list:
+    @staticmethod
+    def _pos_order( node:None, answer:list ) -> list:
         if( node == None ):
             return
-        self._pos_order( node.left )
-        self._pos_order( node.right )
-        answer.append( node.key )
+        AVL._pos_order( node.left, answer )
+        AVL._pos_order( node.right )
+        answer.append( node.key, answer )
 
 
     def pre_order( self ) -> list:
-        return self._pre_order( self, self.root )
+
+        return AVL._pre_order( self.root, [] )
 
 
-    def _pre_order( self, node:None, answer:list ) -> list :
+    @staticmethod
+    def _pre_order( node:None, answer:list ) -> list :
         if( node == None ):
             return
-        answer.append( node.key )
-        self._pre_order( node.left )
-        self._pre_order( node.right )
+        answer.append( node.key, answer )
+        AVL._pre_order( node.left )
+        AVL._pre_order( node.right, answer )
 
 
     def search(self, key:int) -> Node:
