@@ -3,7 +3,7 @@
 
 class Node:
 
-    def __init__(self, key, name):
+    def __init__(self, key:int, name:str) -> None:
         self.key = key
         self.name = name
         self.right = None
@@ -12,22 +12,22 @@ class Node:
         self.height = 1
 
 
-    def is_leaf( self ):
+    def is_leaf(self) -> bool:
 
         return ( self.right == None and self.left == None )
 
 
-    def is_left_child( self ):
+    def is_left_child(self) -> bool:
 
         return ( self.father is not None and self.id < self.father.id )
 
 
-    def is_right_child( self ):
+    def is_right_child(self) -> bool:
 
         return ( self.father is not None and self.id > self.father.id )
 
 
-    def factor(self):
+    def factor(self) -> int:
         if self.right is None and self.left is None:
             return 0
         if self.left is None:
@@ -37,7 +37,7 @@ class Node:
         return self.left.height - self.right.height
 
 
-    def calculate_height( self ):
+    def calculate_height(self) -> int:
         if( self.right is None and self.left is None ):
             return 1
         if( self.right is None ):
@@ -63,7 +63,7 @@ class AVL:
         self.height = -1
 
 
-    def insert(self, key:int, name:str):
+    def insert(self, key:int, name:str) -> None:
         new_node = Node(key, name)
         if self.root is None:
             self.root = new_node
@@ -78,7 +78,7 @@ class AVL:
         self._rebalance_after_insertion( new_node )
 
 
-    def _find_node_to_insert( self, node, new_key ):
+    def _find_node_to_insert( self, node:Node, new_key:int ) -> Node:
         if node.key == new_key:
             raise Exception("Repetitions are not allowed.")
         if node.key < new_key:
@@ -93,7 +93,7 @@ class AVL:
                 return self._find_node_to_insert(node.left, new_key)
 
 
-    def _rebalance_after_insertion( self, node ):
+    def _rebalance_after_insertion( self, node:Node ) -> None:
         leaf = node
         while( node != None ):
             if( node.factor()  >= 2):
@@ -113,7 +113,7 @@ class AVL:
             node = node.parent
 
 
-    def _rotate_right( self, node ):
+    def _rotate_right( self, node:Node ) -> None:
         new_parent = node.left
         new_parent.parent = node.parent
         if(node is self.root):
@@ -131,7 +131,7 @@ class AVL:
         self._update_heights( node )
 
 
-    def _rotate_left( self, node ):
+    def _rotate_left( self, node:Node ) -> None:
         new_parent = node.right
         new_parent.parent = node.parent
         if(node is self.root):
@@ -173,7 +173,7 @@ class AVL:
         return self._pos_order( self, self.root )
 
 
-    def _pos_order( self, node, answer ) -> list:
+    def _pos_order( self, node:None, answer:list ) -> list:
         if( node == None ):
             return
         self._pos_order( node.left )
@@ -185,7 +185,7 @@ class AVL:
         return self._pre_order( self, self.root )
 
 
-    def _pre_order( self, node, answer ) -> list :
+    def _pre_order( self, node:None, answer:list ) -> list :
         if( node == None ):
             return
         answer.append( node.key )
@@ -193,12 +193,12 @@ class AVL:
         self._pre_order( node.right )
 
 
-    def search(self, key):
+    def search(self, key:int) -> Node:
 
         return self._search(self.root, key)
 
 
-    def _search(self, node, key):
+    def _search(self, node:Node, key:int) -> Node:
         if( node is None or node.key == key):
             return node
         if key > node.key:
@@ -207,7 +207,7 @@ class AVL:
 
 
     @staticmethod
-    def _update_heights( node ):
+    def _update_heights( node:Node ) -> None:
         if( node is None ):
             return
         new_height = node.calculate_height()
@@ -217,7 +217,7 @@ class AVL:
         AVL._update_heights(node.parent)
 
 
-    def _remove_conection_child_parent( node, child_node ):
+    def _remove_conection_child_parent( node:Node, child_node:Node ) -> None:
         if node is None or child_node is None :
             return
         if node.left == child_node :
@@ -228,7 +228,7 @@ class AVL:
 
 
     @staticmethod
-    def _find_logical_successor( node ) -> Node :
+    def _find_logical_successor( node:Node ) -> Node :
         if( node.is_leaf()):
             return node
 
@@ -246,13 +246,13 @@ class AVL:
 
 
     @staticmethod
-    def _swap_node_informations( first, second ):
+    def _swap_node_informations( first:Node, second:Node ) -> None:
         first.name, second.name = second.name, first.name
         first.key, second.key = second.key, first.key
 
 
     @staticmethod
-    def prune( node ):
+    def _prune( node:Node ) -> None:
         if( node.father is None ):
             return
         if( node.is_left_child() ):
@@ -261,7 +261,7 @@ class AVL:
             node.father.right = None
 
 
-    def remove( self, key ):
+    def remove( self, key:int ) -> None:
         node = self.search( key )
         if node is None:
             raise Exception("key does not exist.")
@@ -273,14 +273,15 @@ class AVL:
 
         successor = _find_logical_successor( node )
         AVL._swap_node_informations( node, successor )
-        AVL.prune( successor )
+        AVL._prune( successor )
         AVL._update_heights( successor.father )
         self._rebalance_after_deletion( successor.father )
 
         if( node == self.root ):
             self.root = successor
 
-    def _rebalance_after_deletion( self, node ):
+
+    def _rebalance_after_deletion( self, node:Node ) -> None :
         while( node != None ):
             if abs(node.factor()) <= 1:
                 node = node.parent
