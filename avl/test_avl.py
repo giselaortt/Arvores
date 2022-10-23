@@ -88,13 +88,14 @@ class Test():
 
 
     def test_remove_unexisting_element( self ):
-        with pytest.raise.exception as info:
+        with pytest.raises(Exception) as info:
             self.test_avl.remove( 32 )
 
 
     def test_is_inorder_sorted( self ):
         inorder = self.test_avl.in_order()
-        for( i in range( len( inorder )-1 ):
+        print( inorder )
+        for i in range( len( inorder )-1 ):
             assert inorder[i] < inorder[i+1]
 
 
