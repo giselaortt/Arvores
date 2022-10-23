@@ -68,7 +68,6 @@ class AVL:
         if self.root is None:
             self.root = new_node
             return
-
         node = self._find_node_to_insert( self.root, key )
         if( node.key > new_node.key ):
             node.left = new_node
@@ -200,20 +199,22 @@ class AVL:
 
 
     def _search(self, node, key):
-        if node is None:
-            return node
-        if node.key == key:
+        if( node is None or node.key == key):
             return node
         if key > node.key:
             return self._search(node.right, key)
         return self._search(node.left, key)
 
 
-    def _update_heights( self, node ):
+    @staticmethod
+    def _update_heights(  node ):
         if( node is None ):
             return
-        node.height = node.calculate_height()
-        self._update_heights(node.parent)
+        new_height = node.calculate_height()
+        if( new_height == node.height ):
+            return
+        node.height = new_height
+        AVL._update_heights(node.parent)
 
 
     def _remove_conection_child_parent( node, child_node ):
@@ -240,24 +241,30 @@ class AVL:
         node.parent = None
 
 
+    @staticmethod
     def _find_logical_successor( node ) -> Node :
         successor = node.right
-        distance_from_successor = 1
         while successor.left is not None:
             successor = successor.left
-            distance_from_successor += 1
 
-        return successor, distance_from_successor
+        return successor
 
 
-    def _find_logical_predecessor( node ) -> Node :
-        predecessor = node.left
-        distance_from_predecessor = 1
-        while predecessor.right is not None:
-            predecessor = predecessor.right
-            distance_from_predecessor += 1
+    @staticmethod
+    def swap_node_informations( first, second ):
+        first.name, second.name = second.name, first.name
+        first.key, second.key = second.key, first.key
 
-        return predecessor, distance_from_predecessor
+
+    @staticmethod
+    def prune( node ):
+        if( node.father is None ):
+            return
+        if( node.is_left_child() ):
+            node.father.left = None
+        else:
+            node.father.right = None
+        AVL._update_heights( node.father )
 
 
     def remove( self, key ):
@@ -280,16 +287,10 @@ class AVL:
             self._replace_node( node, node.right )
             return
 
-        #TODO: refactor.
-        successor, distance_from_successor = _find_logical_successor( node )
-        predecessor, distance_from_predecessor  = _find_logical_predecessor( node )
+        successor = _find_logical_successor( node )
+        temporary = successor.parent
 
-        if( distance_from_successor > distance_from_predecessor ):
-            temporary = successor
-        else:
-            temporary = predecessor
 
-        temporary = temporary.parent
         if( node.right is temporary ):
             temporary.left = node.left
             node.left.parent = temporary
