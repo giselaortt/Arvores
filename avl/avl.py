@@ -207,7 +207,7 @@ class AVL:
 
 
     @staticmethod
-    def _update_heights(  node ):
+    def _update_heights( node ):
         if( node is None ):
             return
         new_height = node.calculate_height()
@@ -227,22 +227,17 @@ class AVL:
         child_node.parent = None
 
 
-    def _replace_node(  self, node, substitute ):
-        parent = node.parent
-        if( self.root is node ):
-            self.root = substitute
-        if node is None or parent is None :
-            return
-        if parent.left == node :
-            parent.left = substitute
-        elif parent.right == node:
-            parent.right = substitute
-        substitute.parent = parent
-        node.parent = None
-
-
     @staticmethod
     def _find_logical_successor( node ) -> Node :
+        if( node.is_leaf()):
+            return node
+
+        if( node.right is None):
+            return node.left
+
+        if node.left is None:
+            return node.right
+
         successor = node.right
         while successor.left is not None:
             successor = successor.left
@@ -251,7 +246,7 @@ class AVL:
 
 
     @staticmethod
-    def swap_node_informations( first, second ):
+    def _swap_node_informations( first, second ):
         first.name, second.name = second.name, first.name
         first.key, second.key = second.key, first.key
 
@@ -264,7 +259,6 @@ class AVL:
             node.father.left = None
         else:
             node.father.right = None
-        AVL._update_heights( node.father )
 
 
     def remove( self, key ):
@@ -273,66 +267,20 @@ class AVL:
             raise Exception("key does not exist.")
             return
 
-        if( node.is_leaf() ):
-            if( self.root == node ):
-                self.root = None
-            _remove_conection_child_parent( node.parent, node )
-            return
-
-        if node.right is None:
-            self._replace_node( node, node.left )
-            return
-
-        if node.left is None:
-            self._replace_node( node, node.right )
+        if( node.is_leaf() and self.root == node ):
+            self.root = None
             return
 
         successor = _find_logical_successor( node )
-        temporary = successor.parent
+        AVL._swap_node_informations( node, successor )
+        AVL.prune( successor )
+        AVL._update_heights( successor.father )
+        self._rebalance_after_deletion( successor.father )
 
+        if( node == self.root ):
+            self.root = successor
 
-        if( node.right is temporary ):
-            temporary.left = node.left
-            node.left.parent = temporary
-
-        if( node.left is temporary ):
-            temporary.right = node.right
-            node.right.parent = temporary
-
-        else:
-            if temporary.parent.key > temporary.key:
-                temporary.parent.left = None
-            else:
-                temporary.parent.right = None
-            temporary.right = node.right
-            temporary.left = node.left
-            node.left.parent = temporary
-            node.right.parent = temporary
-
-        temporary.parent = node.parent
-        if node is self.root:
-            self.root = temporary
-        if node.parent.left == node:
-            node.parent.left = temporary
-        elif node.parent.right == node:
-            node.parent.right = temporary
-
-        node = temporary
-        if node.right is None and node.left is None:
-            node.height = 0
-        elif node.right is None:
-            node.height = node.left.height+1
-        elif node.left is None:
-            node.height = node.right.height+1
-
-        while( node.parent is not None ):
-            node = node.parent
-            if( (node.right is not None and node.right.height < node.height-1) and ( node.left is not None and node.left.height < node.height-1) ):
-                node.height -= 1
-            else:
-                break
-
-        node = temporary
+    def _rebalance_after_deletion( self, node ):
         while( node != None ):
             if abs(node.factor()) <= 1:
                 node = node.parent
@@ -364,8 +312,4 @@ class AVL:
                 #right-right case
                 if( node_z.right is node_y and node_y.right is node_x ):
                     _rotate_left( node_z )
-
-
-    def _rebalance_after_deletion( self, node ):
-        pass
 
