@@ -7,7 +7,7 @@ class Node:
         self.name = name
         self.right = None
         self.left = None
-        self.father = None
+        self.parent = None
 
 
     def is_leaf( self ):
@@ -17,12 +17,12 @@ class Node:
 
     def is_left_child( self ):
 
-        return self.father is not None and self.father.left == self
+        return self.parent is not None and self.parent.left == self
 
 
     def is_right_child( self ):
 
-        return self.father is not None and self.father.right == self
+        return self.parent is not None and self.parent.right == self
 
 
 class Tree:
@@ -44,13 +44,13 @@ class Tree:
         if node.id < novo_no.id:
             if node.right is None:
                 node.right = novo_no
-                novo_no.father = node
+                novo_no.parent = node
             else:
                 self._insert(node.right, novo_no)
         else:
             if(node.left is None):
                 node.left = novo_no
-                novo_no.father = node
+                novo_no.parent = node
             else:
                 self._insert(node.left, novo_no)
 
@@ -85,13 +85,13 @@ class Tree:
     def _prune( self, node ):
         if( self.root is node ):
             self.root = None
-        if( node.father is None ):
+        if( node.parent is None ):
             return
         if( node.is_left_child() ):
-            node.father.left = None
+            node.parent.left = None
         else:
-            node.father.right = None
-        node.father = None
+            node.parent.right = None
+        node.parent = None
 
 
     @staticmethod
@@ -110,17 +110,17 @@ class Tree:
 
     def succeed( self, node, successor ):
         if( successor is not None ):
-            successor.father = node.father
+            successor.parent = node.parent
 
         if( node is self.root ):
             self.root = successor
             return
 
         if( node.is_left_child() ):
-            node.father.left = successor
+            node.parent.left = successor
 
         elif( node.is_right_child() ):
-            node.father.right = successor
+            node.parent.right = successor
 
 
     def remove(self, id):
