@@ -38,6 +38,7 @@ class Test():
         if avl_node is None:
             return 0
         height = max( self.proof_height(avl_node.right), self.proof_height(avl_node.left) ) + 1
+
         return height
 
 
@@ -82,6 +83,13 @@ class Test():
         assert self._is_avl( self.test_avl.root ) is True
 
 
+    def test_is_inorder_sorted( self ):
+        inorder = self.test_avl.in_order()
+        print( inorder )
+        for i in range( len( inorder )-1 ):
+            assert inorder[i] < inorder[i+1]
+
+
     def test_remove_existing_element( self ):
         self.test_avl.remove( 6 )
         assert self.test_avl.search(6) is None
@@ -90,13 +98,6 @@ class Test():
     def test_remove_unexisting_element( self ):
         with pytest.raises(Exception) as info:
             self.test_avl.remove( 32 )
-
-
-    def test_is_inorder_sorted( self ):
-        inorder = self.test_avl.in_order()
-        print( inorder )
-        for i in range( len( inorder )-1 ):
-            assert inorder[i] < inorder[i+1]
 
 
     def test_pre_order( self ):

@@ -2,8 +2,7 @@
 
 
 class Node:
-
-    def __init__(self, key:int, name:str) -> None:
+    def __init__(self, key, name):
         self.key = key
         self.name = name
         self.right = None
@@ -12,19 +11,19 @@ class Node:
         self.height = 1
 
 
-    def is_leaf(self) -> bool:
+    def is_leaf( self ) -> bool:
 
-        return ( self.right == None and self.left == None )
-
-
-    def is_left_child(self) -> bool:
-
-        return ( self.parent is not None and self.key < self.parent.key )
+        return self.right == None and self.left == None
 
 
-    def is_right_child(self) -> bool:
+    def is_left_child( self ) -> bool:
 
-        return ( self.parent is not None and self.key > self.parent.key )
+        return self.parent is not None and self.parent.left == self
+
+
+    def is_right_child( self ) -> bool:
+
+        return self.parent is not None and self.parent.right == self
 
 
     def factor(self) -> int:
@@ -46,8 +45,7 @@ class Node:
             return self.right.height + 1
         if( self.right.height < self.left.height ):
             return self.left.height + 1
-        else:
-            return self.right.height + 1
+        return self.right.height + 1
 
 
 #"""
@@ -81,11 +79,13 @@ class AVL:
     def _find_node_to_insert( self, node:Node, new_key:int ) -> Node:
         if node.key == new_key:
             raise Exception("Repetitions are not allowed.")
+
         if node.key < new_key:
             if node.right is None:
                 return node
             else:
                 return self._find_node_to_insert(node.right, new_key)
+
         else:
             if node.left is None:
                 return node
@@ -203,7 +203,6 @@ class AVL:
 
 
     def search(self, key:int) -> Node:
-
         return self._search(self.root, key)
 
 
@@ -220,8 +219,6 @@ class AVL:
         if( node is None ):
             return
         new_height = node.calculate_height()
-        if( new_height == node.height ):
-            return
         node.height = new_height
         AVL._update_heights(node.parent)
 
@@ -238,13 +235,13 @@ class AVL:
 
     @staticmethod
     def _find_logical_successor( node:Node ) -> Node :
-        if( node.is_leaf()):
+        if(node.is_leaf()):
             return node
 
-        if( node.right is None):
+        if(node.right is None):
             return node.left
 
-        if node.left is None:
+        if(node.left is None):
             return node.right
 
         successor = node.right
@@ -272,7 +269,7 @@ class AVL:
 
     def remove( self, key:int ) -> None:
         node = self.search( key )
-        if node is None:
+        if( node is None ):
             raise Exception("key does not exist.")
             return
 
@@ -284,7 +281,7 @@ class AVL:
         AVL._swap_node_informations( node, successor )
         AVL._prune( successor )
         AVL._update_heights( successor.parent )
-        self._rebalance_after_deletion( successor.parent )
+        #self._rebalance_after_deletion( successor.parent )
 
         if( node == self.root ):
             self.root = successor
