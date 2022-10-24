@@ -5,13 +5,14 @@ from multipledispatch import dispatch
 class Node():
 
     def __init__( self, key, parentNode = None ):
+        #making a list instead of assigning the children manually will make it easier to adpt for a b-tree in the future
         self.children =  [None, None, None]
         self.keys = [ key ]
         self.numberOfChildren = 0
         self.numberOfKeys = 1
         self.parent = parentNode
 
-
+    '''
     def __eq__( self, other ):
 
         return self.keys[0] == other.keys[0]
@@ -20,7 +21,7 @@ class Node():
     def __ne__( self, other ):
 
         return self.keys[0] != other.keys[0]
-
+    '''
 
     def __gt__( self, other ):
         if( other is None ):
@@ -50,9 +51,14 @@ class Node():
         return self.keys[0] <= other.keys[0]
 
 
+    def __repr__( self ):
+
+        return str( self.keys )
+
+
     def isTwoNode( self ):
 
-        return ( self.children[0] is not None and self.children[1] is None )
+        return (self.children[0] is not None and self.children[1] is None)
 
 
     def insertChild( self, child ):
@@ -64,9 +70,19 @@ class Node():
             raise Exception( "This operation is not permitted" )
         self.numberOfKeys += 1
         if( newKey > self.keys[0] ):
-            self.keys.append(newKey )
+            self.keys.append( newKey )
         else:
             self.keys.insert( 0, newKey )
+
+
+    def getSecondtKey( self ):
+        if( this.numberOfKeys == 1 ):
+            raise Exception( "This operation is not permitted" )
+        return self.keys[1]
+
+
+    def getFirstKey( self ):
+        return self.keys[0]
 
 
     @dispatch( object, int )
@@ -94,7 +110,6 @@ class Node():
             node.middle = None
 
 
-    #should only be used for sppliting a node
     def addThirdKey( self, newKey ):
         self.numberOfKeys += 1
         self.keys.append(newKey)
@@ -105,11 +120,6 @@ class Node():
         pass
 
 
-    def __repr__( self ):
-
-        return str( self.keys )
-
-
 class Trees_2_3():
 
     def __init__( self ):
@@ -118,10 +128,10 @@ class Trees_2_3():
 
     def search( self, key ):
 
-        return _searchRecursion( key, self.root )
+        return _search( key, self.root )
 
 
-    def _searchRecursion( key, node ):
+    def _search( key, node ):
         if( node is None ):
             return None
 
@@ -129,12 +139,12 @@ class Trees_2_3():
             return node
 
         if( key < node.keys[0] ):
-            return _searchRecursion( key, node.children[0] )
+            return _search( key, node.children[0] )
 
         if(  key > node.keys[1] ):
-            return _searchRecursion( key, node.children[2] )
+            return _search( key, node.children[2] )
 
-        return _searchRecursion( key, node.children[1] )
+        return _search( key, node.children[1] )
 
 
     def insert( self, key ):
@@ -151,7 +161,8 @@ class Trees_2_3():
             node.addThirdKey( key )
             newLeftNode = Node(node.keys[0], parentNode = node)
             newRightNode = Node(node.keys[2], parentNode = node)
-            del(node.keys[2]), del(node.keys[0])
+            del(node.keys[2])
+            del(node.keys[0])
             node.children[0] = newLeftNode
             node.children[1] = newLeftNode
             return
@@ -170,8 +181,6 @@ class Trees_2_3():
                 node.parent.children[2] = newRightNode
                 node.parent.middle = newLeftNode
             return
-
-
 
 
     def _insertOnThreeNode( node, newNode ):
