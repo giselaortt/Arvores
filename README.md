@@ -1,9 +1,11 @@
 # Trees with python
 
-# Contains:
+## Contains:
 
     1. simple binary search tree
 
-    2. AVL
+    2. AVL (in progress)
 
-    3. 2-3-trees
+    3. 2-3-trees (future)
+
+    4. B-trees (future)
