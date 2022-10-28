@@ -2,7 +2,6 @@ from copy import deepcopy
 from multipledispatch import dispatch
 
 
-
 class Node():
 
     def __init__( self, key:float, parentNode = None ):
@@ -12,6 +11,7 @@ class Node():
         self.numberOfChildren = 0
         self.numberOfKeys = 1
         self.parent = parentNode
+
 
     def isLeaf( self ):
 
@@ -61,16 +61,16 @@ class Node():
         return str( self.keys )
 
 
-    def isTwoNode( self ):
+    def isTwoNode( self ) -> bool:
 
         return self.children[2] is None
 
 
-    def insertChild( self, child ):
+    def insertChild( self, child:Node ) -> bool:
         pass
 
 
-    def addKey( self, newKey ):
+    def addKey( self, newKey:float ) -> None:
         #if( self.numberOfKeys == 2 ):
         #    raise Exception( "This operation is not permitted" )
         self.numberOfKeys += 1
@@ -80,22 +80,22 @@ class Node():
             self.split()
 
 
-    def split():
+    def split( self ) -> None:
         pass
 
 
-    def getSecondtKey( self ):
+    def getSecondtKey( self ) -> float:
         if( this.numberOfKeys == 1 ):
             raise Exception( "This operation is not permitted" )
         return self.keys[1]
 
 
-    def getFirstKey( self ):
+    def getFirstKey( self ) -> float:
         return self.keys[0]
 
 
     @dispatch( object, int )
-    def transformToThreeNode( self, newKey ):
+    def transformToThreeNode( self, newKey:float ) -> None:
         if( not self.isTwoNode() ):
             raise Exception( "Ooops! Unexpected path." )
         self.numberOfKeys += 1
@@ -104,11 +104,11 @@ class Node():
 
 
     @dispatch( object, object )
-    def transformToThreeNode( self, newKey ):
+    def transformToThreeNode( self, newKey:float ) -> None:
         pass
 
 
-    def removeChild( self, key ):
+    def removeChild( self, key:float )->None:
         if( node.children[2].key == key ):
             node.children[2] = None
 
@@ -129,12 +129,12 @@ class Trees_2_3():
         self.root = None
 
 
-    def search( self, key ):
+    def search( self, key:float ) -> Node:
 
         return _search( key, self.root )
 
 
-    def _search( key, node ):
+    def _search( key, node ) -> Node:
         if( node is None ):
             return None
 
@@ -153,7 +153,7 @@ class Trees_2_3():
         return _search( key, node.children[1] )
 
 
-    def insert( self, key ):
+    def insert( self, key:float ) -> None:
         if( self.root is None ):
             self.root = Node( key )
             return
