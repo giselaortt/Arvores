@@ -2,9 +2,10 @@ from copy import deepcopy
 from multipledispatch import dispatch
 
 
+
 class Node():
 
-    def __init__( self, key, parentNode = None ):
+    def __init__( self, key:float, parentNode = None ):
         #making a list instead of assigning the children manually will make it easier to adpt for a b-tree in the future
         self.children =  [None, None, None]
         self.keys = [ key ]
@@ -12,7 +13,11 @@ class Node():
         self.numberOfKeys = 1
         self.parent = parentNode
 
-    '''
+    def isLeaf( self ):
+
+        return ( self.children[0] == None )
+
+
     def __eq__( self, other ):
 
         return self.keys[0] == other.keys[0]
@@ -21,7 +26,7 @@ class Node():
     def __ne__( self, other ):
 
         return self.keys[0] != other.keys[0]
-    '''
+
 
     def __gt__( self, other ):
         if( other is None ):
@@ -58,7 +63,7 @@ class Node():
 
     def isTwoNode( self ):
 
-        return (self.children[0] is not None and self.children[1] is None)
+        return self.children[2] is None
 
 
     def insertChild( self, child ):
@@ -66,13 +71,17 @@ class Node():
 
 
     def addKey( self, newKey ):
-        if( self.numberOfKeys == 2 ):
-            raise Exception( "This operation is not permitted" )
+        #if( self.numberOfKeys == 2 ):
+        #    raise Exception( "This operation is not permitted" )
         self.numberOfKeys += 1
-        if( newKey > self.keys[0] ):
-            self.keys.append( newKey )
-        else:
-            self.keys.insert( 0, newKey )
+        self.keys.append(newKey)
+        self.keys.sort()
+        if( self.numberOfKeys == 3 ):
+            self.split()
+
+
+    def split():
+        pass
 
 
     def getSecondtKey( self ):
@@ -110,12 +119,6 @@ class Node():
             node.middle = None
 
 
-    def addThirdKey( self, newKey ):
-        self.numberOfKeys += 1
-        self.keys.append(newKey)
-        self.keys.sort()
-
-
     def split_node( self ):
         pass
 
@@ -137,6 +140,9 @@ class Trees_2_3():
 
         if( key in node.keys ):
             return node
+
+        if( node.isLeaf() ):
+            return None
 
         if( key < node.keys[0] ):
             return _search( key, node.children[0] )

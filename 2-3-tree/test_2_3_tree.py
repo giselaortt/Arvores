@@ -1,11 +1,25 @@
 import pytest
 from tree_2_3 import Node
 
+
 class Test_node():
+
+
+    def test_is_leaf_node( self ):
+        node = Node( 2 )
+        assert node.isLeaf() is True
+
+
+    def test_is_leaf_should_return_false( self ):
+        node = Node(1)
+        other = Node(2)
+        node.insertChild( other )
+        assert node.isLeaf() is False
+
 
     def test_create_node_with_key( self ):
         node = Node( 4 )
-        assert node.keys[0] == 4
+        assert node.keys == [4]
 
 
     def test_is_smaller_than( self ):
@@ -39,27 +53,6 @@ class Test_node():
 
 
     def test_third_key( self ):
-        node = Node( 3 )
-        node.addKey( 2 )
-        node._addThirdKey( 1 )
-        assert node.numberOfKeys == 3
-        print(node.keys)
-        mylist = node.keys
-        print(mylist)
-        mylist.sort()
-        assert mylist == node.keys
-
-
-
-
-
-
-
-
-
-
-
-
-
+        pass
 
 
