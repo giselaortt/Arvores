@@ -78,7 +78,7 @@ class Node():
 
     def isTwoNode( self ) -> bool:
 
-        return self.children[2] is None
+        return self.numberOfKeys==1
 
 
     def insertChild( self, child:object ) -> bool:
