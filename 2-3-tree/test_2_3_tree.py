@@ -1,5 +1,5 @@
 import pytest
-from tree_2_3 import Node
+from tree_2_3 import Node, Tree_2_3
 
 
 class Test_node():
@@ -72,6 +72,11 @@ class Test_node():
         node = Node( 3 )
         node.addKey( 2 )
         assert node.keys[0] == 2 and node.keys[1] == 3
+
+
+    def test_contain_on_empty_tree_returns_false( self ):
+        tree = Tree_2_3()
+        assert (0 in tree) is False
 
 
 

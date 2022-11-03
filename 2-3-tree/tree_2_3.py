@@ -124,22 +124,23 @@ class Node():
             self.children[1] = None
 
 
-class Trees_2_3():
+class Tree_2_3():
 
     def __init__( self ):
         self.root = None
 
 
-    def __contains__( self, key ):
+    def __contains__( self, key:int ) -> bool:
 
         return ( self.search( key ) is not None )
 
 
     def search( self, key:int ) -> Node:
 
-        return _search( key, self.root )
+        return Tree_2_3._search( key, self.root )
 
 
+    @staticmethod
     def _search( key, node ) -> Node:
         if( node is None ):
             return None
