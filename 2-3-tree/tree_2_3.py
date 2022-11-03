@@ -82,8 +82,13 @@ class Node():
 
 
     def insertChild( self, child:object ) -> bool:
-        self.children[self.numberOfChildren] = child
-        self.numberOfChildren += 1
+        key = child.keys[0]
+        if( key < self.keys[0] ):
+            self.children[0] = child
+        elif( self.numberOfKeys == 1 or key < self.keys[1] ):
+            self.children[1]=child
+        else:
+            self.children[2]=child
 
 
     def addKey( self, newKey:int ) -> None:
