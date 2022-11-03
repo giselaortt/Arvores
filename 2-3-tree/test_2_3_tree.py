@@ -5,12 +5,22 @@ from tree_2_3 import Node
 class Test_node():
 
 
+    def test_is_leaf_when_first_child_is_not_present( self ):
+        node = Node(1)
+        other = Node(2)
+        temp = Node(3)
+        node.insertChild( other )
+        node.insertChild( temp )
+        node.removeChild( 2 )
+        assert node.isLeaf() is False
+
+
     def test_is_leaf_node( self ):
         node = Node( 2 )
         assert node.isLeaf() is True
 
 
-    def test_is_leaf_should_return_false( self ):
+    def test_is_leaf_when_not_leaf( self ):
         node = Node(1)
         other = Node(2)
         node.insertChild( other )

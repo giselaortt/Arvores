@@ -17,10 +17,18 @@ class Node():
 
     def isLeaf( self ) -> bool:
 
-        return ( self.children[0] is None )
+        return ( self.children[0] is None and self.children[1] is None and self.children[2] is None )
+
+    """
+    @dispatch( int)
+    def __eq__( self, other:int ):
+
+        return self.keys[0] == other
 
 
-    def __eq__( self, other ):
+    @dispatch( object )
+    """
+    def __eq__( self, other:object ):
 
         return self.keys[0] == other.keys[0]
 
@@ -117,14 +125,14 @@ class Node():
 
 
     def removeChild( self, key:int )->None:
-        if( key in node.children[2] ):
-            node.children[2] = None
+        if(self.children[2] is not None and key in self.children[2] ):
+            self.children[2] = None
 
-        elif( key in node.children[0] ):
-            node.children[0] = None
+        elif( self.children[0] is not None and key in self.children[0] ):
+            self.children[0] = None
 
-        elif( key in node.children[1] ):
-            node.children[1] = None
+        elif( self.children[1] is not None and key in self.children[1] ):
+            self.children[1] = None
 
 
     def split_node( self ):
