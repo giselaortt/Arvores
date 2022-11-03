@@ -62,7 +62,16 @@ class Test_node():
         assert node >= other_node
 
 
-    def test_third_key( self ):
-        pass
+    def test_add_key_greater( self ):
+        node = Node( 3 )
+        node.addKey( 4 )
+        assert node.keys[0] == 3 and node.keys[1] == 4
+
+
+    def test_add_key_smaller( self ):
+        node = Node( 3 )
+        node.addKey( 2 )
+        assert node.keys[0] == 2 and node.keys[1] == 3
+
 
 

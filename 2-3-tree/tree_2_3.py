@@ -95,10 +95,12 @@ class Node():
         #if( self.numberOfKeys == 2 ):
         #    raise Exception( "This operation is not permitted" )
         self.numberOfKeys += 1
-        self.keys.append(newKey)
-        self.keys.sort()
-        if( self.numberOfKeys == 3 ):
-            self.split()
+        if( newKey > self.keys[0] ):
+            self.keys.append(newKey)
+        else:
+            self.keys.insert(0, newKey)
+            del self.children[2]
+            self.children.insert( 0, None )
 
 
     def split( self ) -> None:
