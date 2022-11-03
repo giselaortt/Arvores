@@ -17,7 +17,7 @@ class Node():
 
     def isLeaf( self ) -> bool:
 
-        return ( self.children[0] == None )
+        return ( self.children[0] is None )
 
 
     def __eq__( self, other ):
@@ -74,7 +74,8 @@ class Node():
 
 
     def insertChild( self, child:object ) -> bool:
-        pass
+        self.children[self.numberOfChildren] = child;
+        self.numberOfChildren += 1;
 
 
     def addKey( self, newKey:int ) -> None:
