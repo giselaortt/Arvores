@@ -4,7 +4,9 @@ from multipledispatch import dispatch
 
 class Node():
 
-    def __init__( self, key:float, parentNode = None ):
+    precision = 0.00001
+
+    def __init__( self, key:int, parentNode = None ):
         #making a list instead of assigning the children manually will make it easier to adpt for a b-tree in the future
         self.children =  [None, None, None]
         self.keys = [ key ]
@@ -13,7 +15,7 @@ class Node():
         self.parent = parentNode
 
 
-    def isLeaf( self ):
+    def isLeaf( self ) -> bool:
 
         return ( self.children[0] == None )
 
@@ -61,16 +63,21 @@ class Node():
         return str( self.keys )
 
 
+    def __contains__( self, value : int ):
+
+        return ( value in self.keys )
+
+
     def isTwoNode( self ) -> bool:
 
         return self.children[2] is None
 
 
-    def insertChild( self, child:Node ) -> bool:
+    def insertChild( self, child:object ) -> bool:
         pass
 
 
-    def addKey( self, newKey:float ) -> None:
+    def addKey( self, newKey:int ) -> None:
         #if( self.numberOfKeys == 2 ):
         #    raise Exception( "This operation is not permitted" )
         self.numberOfKeys += 1
@@ -84,18 +91,18 @@ class Node():
         pass
 
 
-    def getSecondtKey( self ) -> float:
+    def getSecondtKey( self ) -> int:
         if( this.numberOfKeys == 1 ):
             raise Exception( "This operation is not permitted" )
         return self.keys[1]
 
 
-    def getFirstKey( self ) -> float:
+    def getFirstKey( self ) -> int:
         return self.keys[0]
 
 
     @dispatch( object, int )
-    def transformToThreeNode( self, newKey:float ) -> None:
+    def transformToThreeNode( self, newKey:int ) -> None:
         if( not self.isTwoNode() ):
             raise Exception( "Ooops! Unexpected path." )
         self.numberOfKeys += 1
@@ -104,11 +111,11 @@ class Node():
 
 
     @dispatch( object, object )
-    def transformToThreeNode( self, newKey:float ) -> None:
+    def transformToThreeNode( self, newKey:int ) -> None:
         pass
 
 
-    def removeChild( self, key:float )->None:
+    def removeChild( self, key:int )->None:
         if( node.children[2].key == key ):
             node.children[2] = None
 
@@ -129,7 +136,7 @@ class Trees_2_3():
         self.root = None
 
 
-    def search( self, key:float ) -> Node:
+    def search( self, key:int ) -> Node:
 
         return _search( key, self.root )
 
@@ -153,7 +160,7 @@ class Trees_2_3():
         return _search( key, node.children[1] )
 
 
-    def insert( self, key:float ) -> None:
+    def insert( self, key:int ) -> None:
         if( self.root is None ):
             self.root = Node( key )
             return
@@ -173,7 +180,7 @@ class Trees_2_3():
             node.children[1] = newLeftNode
             return
 
-        if( node.parent.isTwoNode ):
+        if( node.parent.isTwoNode() ):
             keys = [node.keys[2], node.secondkey, key]
             keys.sort()
             x,y,z = keys
