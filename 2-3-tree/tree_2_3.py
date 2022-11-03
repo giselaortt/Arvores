@@ -103,10 +103,6 @@ class Node():
             self.children.insert( 0, None )
 
 
-    def split( self ) -> None:
-        pass
-
-
     def getSecondtKey( self ) -> int:
         if( this.numberOfKeys == 1 ):
             raise Exception( "This operation is not permitted" )
@@ -117,39 +113,26 @@ class Node():
         return self.keys[0]
 
 
-    @dispatch( object, int )
-    def transformToThreeNode( self, newKey:int ) -> None:
-        if( not self.isTwoNode() ):
-            raise Exception( "Ooops! Unexpected path." )
-        self.numberOfKeys += 1
-        self.keys.append(newKey)
-        self.keys.sort()
-
-
-    @dispatch( object, object )
-    def transformToThreeNode( self, newKey:int ) -> None:
-        pass
-
-
     def removeChild( self, key:int )->None:
-        if(self.children[2] is not None and key in self.children[2] ):
+        if(self.children[2] is not None and key in self.children[2]):
             self.children[2] = None
 
-        elif( self.children[0] is not None and key in self.children[0] ):
+        elif(self.children[0] is not None and key in self.children[0]):
             self.children[0] = None
 
-        elif( self.children[1] is not None and key in self.children[1] ):
+        elif(self.children[1] is not None and key in self.children[1]):
             self.children[1] = None
-
-
-    def split_node( self ):
-        pass
 
 
 class Trees_2_3():
 
     def __init__( self ):
         self.root = None
+
+
+    def __contains__( self, key ):
+
+        return ( self.search( key ) is not None )
 
 
     def search( self, key:int ) -> Node:
