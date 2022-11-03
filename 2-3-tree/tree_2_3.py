@@ -74,8 +74,8 @@ class Node():
 
 
     def insertChild( self, child:object ) -> bool:
-        self.children[self.numberOfChildren] = child;
-        self.numberOfChildren += 1;
+        self.children[self.numberOfChildren] = child
+        self.numberOfChildren += 1
 
 
     def addKey( self, newKey:int ) -> None:
@@ -117,14 +117,14 @@ class Node():
 
 
     def removeChild( self, key:int )->None:
-        if( node.children[2].key == key ):
+        if( key in node.children[2] ):
             node.children[2] = None
 
-        elif( node.children[0].key == key ):
+        elif( key in node.children[0] ):
             node.children[0] = None
 
-        elif( node.children[1] == key ):
-            node.middle = None
+        elif( key in node.children[1] ):
+            node.children[1] = None
 
 
     def split_node( self ):
@@ -146,7 +146,7 @@ class Trees_2_3():
         if( node is None ):
             return None
 
-        if( key in node.keys ):
+        if( key in node ):
             return node
 
         if( node.isLeaf() ):
