@@ -79,4 +79,12 @@ class Test_node():
         assert (0 in tree) is False
 
 
+    def test_should_add_one_element_on_tree( self ):
+        tree = Tree_2_3()
+        tree.insert( 0 )
+        assert tree.isEmpty() is False
+
+
+
+
 

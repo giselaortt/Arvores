@@ -228,6 +228,11 @@ class Tree_2_3():
         pass
 
 
+    def isEmpty( self ):
+
+        return ( self.root is None )
+
+
 if __name__ == '__main__':
     node = Node(5)
     print(node)
