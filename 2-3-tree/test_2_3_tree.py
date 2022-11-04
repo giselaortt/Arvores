@@ -3,8 +3,6 @@ from tree_2_3 import Node, Tree_2_3
 
 
 class Test_node():
-
-
     def test_is_leaf_when_first_child_is_not_present( self ):
         node = Node(1)
         other = Node(2)
@@ -64,13 +62,13 @@ class Test_node():
 
     def test_add_key_greater( self ):
         node = Node( 3 )
-        node.addKey( 4 )
+        node.insertKey( 4 )
         assert node.keys[0] == 3 and node.keys[1] == 4
 
 
     def test_add_key_smaller( self ):
         node = Node( 3 )
-        node.addKey( 2 )
+        node.insertKey( 2 )
         assert node.keys[0] == 2 and node.keys[1] == 3
 
 
@@ -84,6 +82,17 @@ class Test_node():
         tree.insert( 0 )
         assert tree.isEmpty() is False
 
+
+    def test_should_add_multiple_keys_in_tree( self ):
+        tree = Tree_2_3()
+        tree.insert( 0 )
+        tree.insert( 2 )
+        tree.insert( 3 )
+        tree.insert( 4 )
+        tree.insert( 5 )
+        tree.insert( 6 )
+        tree.insert( 7 )
+        tree.insert( 8 )
 
 
 

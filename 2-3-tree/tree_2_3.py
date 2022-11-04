@@ -91,7 +91,7 @@ class Node():
             self.children[2]=child
 
 
-    def addKey( self, newKey:int ) -> None:
+    def insertKey( self, newKey:int ) -> None:
         #if( self.numberOfKeys == 2 ):
         #    raise Exception( "This operation is not permitted" )
         self.numberOfKeys += 1
@@ -135,6 +135,11 @@ class Tree_2_3():
         return ( self.search( key ) is not None )
 
 
+    def isEmpty( self ):
+
+        return ( self.root is None )
+
+
     def search( self, key:int ) -> Node:
 
         return Tree_2_3._search( key, self.root )
@@ -165,9 +170,9 @@ class Tree_2_3():
             self.root = Node( key )
             return
 
-        node = _findNodeToInsert( key, self.root )
+        node = Tree_2_3._findNodeToInsert( key, self.root )
         if( node.isTwoNode() ):
-            node.transformToThreeNode( key )
+            node.insertKey( key )
             return
 
         if( node.parent == None ):
@@ -205,6 +210,7 @@ class Tree_2_3():
         newRightNode    = Node( keys[2],  )
 
 
+    @staticmethod
     def _findNodeToInsert( key, node ):
         if( node is None ):
             raise Exception("Unexpected error occured.")
@@ -226,11 +232,6 @@ class Tree_2_3():
 
     def remove( self, key ):
         pass
-
-
-    def isEmpty( self ):
-
-        return ( self.root is None )
 
 
 if __name__ == '__main__':
