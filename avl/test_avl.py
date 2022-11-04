@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from avl import AVL
+from avl import AVL, Node
 import pytest
 from collections import deque
 
@@ -98,6 +98,11 @@ class Test():
     def test_remove_unexisting_element( self ):
         with pytest.raises(Exception) as info:
             self.test_avl.remove( 32 )
+
+
+    def test_is_leaf( self ):
+        node = Node( 2, "gi" )
+        assert node.is_leaf() is True
 
 
     def test_pre_order( self ):
