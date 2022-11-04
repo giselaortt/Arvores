@@ -81,6 +81,11 @@ class Node():
         return self.numberOfKeys==1
 
 
+    def isTreeNode( self ) -> bool:
+
+        return self.numberOfKeys == 2
+
+
     def insertChild( self, child:object ) -> bool:
         key = child.keys[0]
         if( key < self.keys[0] ):
@@ -215,16 +220,16 @@ class Tree_2_3():
         if( node is None ):
             raise Exception("Unexpected error occured.")
 
-        if( key in node.keys ):
+        if( key in node ):
             raise Exception("Operation not allowed.")
 
-        if( node.numberOfChildren == 0 ):
+        if( node.isLeaf() ):
             return node
 
         if( key < node.keys[0] ):
             return _findNodeToInsert( key, node.children[0] )
 
-        if( key > node.keys[1] ):
+        if( node.isTreeNode() and key > node.keys[1] ):
             return _findNodeToInsert( key, node.children[2] )
 
         return _findNodeToInsert( key, node.children[1] )
