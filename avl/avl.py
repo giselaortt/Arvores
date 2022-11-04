@@ -13,7 +13,7 @@ class Node:
 
     def is_leaf( self ) -> bool:
 
-        return self.right == None and self.left == None
+        return self.right is None and self.left is None
 
 
     def is_left_child( self ) -> bool:

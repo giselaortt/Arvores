@@ -129,6 +129,18 @@ class Node():
             self.children[1] = None
 
 
+    def isFistChild():
+        pass
+
+
+    def isSecondChild():
+        pass
+
+
+    def isThirdChild():
+        pass
+
+
 class Tree_2_3():
 
     def __init__( self ):
@@ -180,30 +192,22 @@ class Tree_2_3():
             node.insertKey( key )
             return
 
+        keys = node.keys
+        keys.append( key )
+        keys.sort()
+        newLeftNode = Node(keys[0], parentNode = node)
+        newRightNode = Node(keys[-1], parentNode = node)
+        node.keys = [ keys[1] ]
+        #node.children[0] = newLeftNode
+        #node.children[1] = newRightNode
+
         if( node.parent == None ):
-            node.addThirdKey( key )
-            newLeftNode = Node(node.keys[0], parentNode = node)
-            newRightNode = Node(node.keys[2], parentNode = node)
-            del(node.keys[2])
-            del(node.keys[0])
-            node.children[0] = newLeftNode
-            node.children[1] = newLeftNode
             return
 
         if( node.parent.isTwoNode() ):
-            keys = [node.keys[2], node.secondkey, key]
-            keys.sort()
-            x,y,z = keys
-            newLeftNode = Node(x, parentNode = node.parent)
-            newRightNode = Node(z, parentNode = node.parent)
-            node.parent.secondkey = y
-            if( node.keys[2] < node.parent.key ):
-                node.parent.children[0] = newLeftNode
-                node.parent.middle = newRightNode
-            else:
-                node.parent.children[2] = newRightNode
-                node.parent.middle = newLeftNode
-            return
+           return
+
+        #missing general case and needs a refactor. the function is too big.
 
 
     def _insertOnThreeNode( node, newNode ):
