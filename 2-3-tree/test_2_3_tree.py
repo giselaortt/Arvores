@@ -3,6 +3,14 @@ from tree_2_3 import Node, Tree_2_3
 
 
 class Test_node():
+
+    def test_insert_key( self ):
+        node = Node(1)
+        other = Node(3)
+        node.insertChild(other)
+        assert other in  node
+
+
     def test_is_leaf_when_first_child_is_not_present( self ):
         node = Node(1)
         other = Node(2)
@@ -81,6 +89,16 @@ class Test_node():
         tree = Tree_2_3()
         tree.insert( 0 )
         assert tree.isEmpty() is False
+
+
+    def test_is_two_node( self ):
+        node = Node( 2 )
+        assert  node.isTwoNode()
+
+
+    def test_is_tree_node_false( self ):
+        node = Node( 2 )
+        assert  node.isThreeNode() is False
 
 
     def test_should_add_multiple_keys_in_tree( self ):

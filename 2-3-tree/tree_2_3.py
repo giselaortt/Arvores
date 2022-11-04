@@ -29,19 +29,17 @@ class Node():
         pass
 
 
-    """
-    @dispatch( int)
+    @dispatch( int )
     def __eq__( self, other:int ):
 
         return self.keys[0] == other
 
 
     @dispatch( object )
-    """
     #needs reimplementation
     def __eq__( self, other:object ):
 
-        return self.keys[0] == other.keys[0]
+        return  self.keys == other.keys
 
 
     def __ne__( self, other ):
@@ -82,7 +80,16 @@ class Node():
         return str( self.keys )
 
 
-    def __contains__( self, value : int ):
+    @dispatch( object )
+    def __contains__( self, other:object ):
+        for child in self.children:
+            if child is other:
+                return True
+        return False
+
+
+    @dispatch( int )
+    def __contains__( self, value:int ):
 
         return ( value in self.keys )
 
@@ -92,13 +99,14 @@ class Node():
         return self.numberOfKeys==1
 
 
-    def isTreeNode( self ) -> bool:
+    def isThreeNode( self ) -> bool:
 
         return self.numberOfKeys == 2
 
 
     def insertChild( self, child:object ) -> bool:
         key = child.keys[0]
+        self.numberOfChildren += 1
         if( key < self.keys[0] ):
             self.children[0] = child
         elif( self.numberOfKeys == 1 or key < self.keys[1] ):
