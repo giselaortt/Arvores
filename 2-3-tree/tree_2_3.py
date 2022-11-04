@@ -8,7 +8,8 @@ class Node():
 
     def __init__( self, key:int, parentNode = None ):
         #making a list instead of assigning the children manually will make it easier to adpt for a b-tree in the future
-        self.children =  [None, None, None]
+        self.children =  [None, None, None, None]
+        #should it be a deque instead ?
         self.keys = [ key ]
         self.numberOfChildren = 0
         self.numberOfKeys = 1
@@ -19,6 +20,15 @@ class Node():
 
         return ( self.children[0] is None and self.children[1] is None and self.children[2] is None )
 
+
+    def __copy__( self ):
+        pass
+
+
+    def __deepcopy__( self ):
+        pass
+
+
     """
     @dispatch( int)
     def __eq__( self, other:int ):
@@ -28,6 +38,7 @@ class Node():
 
     @dispatch( object )
     """
+    #needs reimplementation
     def __eq__( self, other:object ):
 
         return self.keys[0] == other.keys[0]
@@ -147,6 +158,10 @@ class Tree_2_3():
         self.root = None
 
 
+    def __repr__( self ):
+        pass
+
+
     def __contains__( self, key:int ) -> bool:
 
         return ( self.search( key ) is not None )
@@ -176,7 +191,7 @@ class Tree_2_3():
         if( key < node.keys[0] ):
             return _search( key, node.children[0] )
 
-        if(  key > node.keys[1] ):
+        if( node.isTreeNode() and key > node.keys[1] ):
             return _search( key, node.children[2] )
 
         return _search( key, node.children[1] )
