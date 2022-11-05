@@ -17,7 +17,7 @@ class Test_node():
         temp = Node(3)
         node.insertChild( other )
         node.insertChild( temp )
-        node.removeChild( 2 )
+        node.removeChild( other )
         assert node.isLeaf() is False
 
 
@@ -107,11 +107,11 @@ class Test_node():
         tree.insert( 2 )
         tree.insert( 3 )
         tree.insert( 5 )
-        """tree.insert( 4 )
+        """
+        tree.insert( 4 )
         tree.insert( 6 )
         tree.insert( 7 )
-        tree.insert( 8 )"""
-
-
+        tree.insert( 8 )
+        """
 
 
