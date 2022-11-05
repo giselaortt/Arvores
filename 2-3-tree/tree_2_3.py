@@ -64,6 +64,10 @@ class Node():
         return str( self.keys )
 
 
+    def hasExceded( self ):
+        return ( len(self.keys) >= 3 )
+
+
     @dispatch( object )
     def __contains__( self, other:object ):
         for child in self.children:
@@ -157,6 +161,7 @@ class Node():
             self.children = [self.children[0]]+node.children+[self.children[1]]
 
 
+
 class Tree_2_3():
 
     def __init__( self ):
@@ -226,14 +231,22 @@ class Tree_2_3():
             node.parent.removeChild( node )
             node.parent = None
             parent.insertNode( node )
+            if( parent.parent is not None and parent.hasExceded() ):
+                self.bubbleUp(parent)
 
 
-    def bubbleUp( self ):
-        pass
+    def bubbleUp( self, node:object ) -> None:
+        node.split()
+        while( node.parent is not None ):
+            node.parent.removeChild(node)
+            node.parent.insertNode( node )
+            if( node.parent.hasExceded() ):
+                node.parent.split()
+                node = node.parent
 
 
     @staticmethod
-    def _findNodeToInsert( key, node ):
+    def _findNodeToInsert( key, node ) -> object:
         if( node is None ):
             raise Exception("Unexpected error occured.")
         if( key in node ):
@@ -261,14 +274,17 @@ if __name__ == '__main__':
     tree.insert( 4 )
     tree.insert( 5 )
     tree.insert( 6 )
-    print(tree.root)
-    print(tree.root.children)
-    print(tree)
     tree.insert( 7 )
     tree.insert( 8 )
     tree.insert( 9 )
     tree.insert( 10 )
     tree.insert( 11 )
+    tree.insert( 12 )
+    tree.insert( 13 )
+    tree.insert( 14 )
+    print(tree.root)
+    print(tree.root.children)
+    print(tree)
     """
     """
     #print(tree.root)
