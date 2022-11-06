@@ -2,6 +2,7 @@ from copy import deepcopy
 from multipledispatch import dispatch
 import collections
 
+
 class Node():
 
     precision = 0.00001
@@ -109,9 +110,12 @@ class Node():
 
 
     def removeChild( self, child:object ) -> None:
+        if( self.children is None ):
+            return
         for i in range( len(self.children) ):
             if( self.children[i] is child ):
                 del self.children[i]
+                return
 
 
     def isFistChild():
@@ -148,6 +152,8 @@ class Node():
         else:
             self.keys.insert( 1, node.keys[0] )
             self.children = [self.children[0]]+node.children+[self.children[1]]
+        for child in self.children:
+            child.parent = self
 
 
 class Tree_2_3():
@@ -198,8 +204,8 @@ class Tree_2_3():
         if( key < node.keys[0] ):
             return _search( key, node.children[0] )
         if( node.isThreeNode() and key > node.keys[1] ):
-            return _search( key, node.children[2] )
-        return _search( key, node.children[1] )
+            return Tree_2_3._search( key, node.children[2] )
+        return Tree_2_3._search( key, node.children[1] )
 
 
     def insert( self, key:int ) -> None:
@@ -216,8 +222,7 @@ class Tree_2_3():
         if(node.parent is not None):
             parent = node.parent
             node.parent.removeChild( node )
-            node.parent = None
-            parent.insertNode( node )
+            node.parent.insertNode( node )
             if( parent.parent is not None and parent.hasExceded() ):
                 self.bubbleUp(parent)
 
@@ -226,7 +231,7 @@ class Tree_2_3():
         node.split()
         while( node.parent is not None ):
             node.parent.removeChild(node)
-            node.parent.insertNode( node )
+            node.parent.insertNode(node)
             if( node.parent.hasExceded() ):
                 node.parent.split()
                 node = node.parent
@@ -264,15 +269,16 @@ if __name__ == '__main__':
     tree.insert( 7 )
     tree.insert( 8 )
     tree.insert( 9 )
-    tree.insert( 10 )
+    print(tree.root)
+    print(tree.root.children)
+    print(tree)
+    node = tree.search(8)
+    print(node.parent.parent)
+    """
     tree.insert( 11 )
     tree.insert( 12 )
     tree.insert( 13 )
     tree.insert( 14 )
-    print(tree.root)
-    print(tree.root.children)
-    print(tree)
-    """
     """
     #print(tree.root)
     #print(tree.root.children)
