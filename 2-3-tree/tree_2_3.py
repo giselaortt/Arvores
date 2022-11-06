@@ -161,7 +161,6 @@ class Node():
             self.children = [self.children[0]]+node.children+[self.children[1]]
 
 
-
 class Tree_2_3():
 
     def __init__( self ):

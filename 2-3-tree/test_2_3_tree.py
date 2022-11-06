@@ -2,13 +2,61 @@ import pytest
 from tree_2_3 import Node, Tree_2_3
 
 
-class Test_node():
+class Test():
 
     def test_insert_key( self ):
         node = Node(1)
         other = Node(3)
         node.insertChild(other)
         assert other in  node
+
+
+    @staticmethod
+    def proove_all_keys( node ):
+        if(node is None):
+            return
+        assert (type(node.keys) == list)
+        assert (len(node.keys) >= 1 and len(node.keys)<=3 )
+        for key in node.keys:
+            assert (type(key) is int)
+        for child in node.children:
+            Test.proove_all_keys(child)
+
+
+    @staticmethod
+    def proove_all_children(node):
+        if(node is None):
+            return
+        assert (type(node.children) is list)
+        assert (len(node.children) >= 2 and len(node.children)<=3 )
+        for child in node.children:
+            assert (type(child) is Node or child is None)
+            Test.proove_all_children(child)
+
+
+    def proove_nodes( self, tree ):
+        node = tree.root
+        Test.proove_all_keys(node)
+        Test.proove_all_children(node)
+
+
+    def test( self ):
+        tree = Tree_2_3()
+        tree.insert( 0 )
+        tree.insert( 1 )
+        tree.insert( 2 )
+        tree.insert( 3 )
+        tree.insert( 4 )
+        tree.insert( 5 )
+        tree.insert( 6 )
+        tree.insert( 7 )
+        tree.insert( 8 )
+        tree.insert( 9 )
+        tree.insert( 10 )
+        tree.insert( 11 )
+        tree.insert( 12 )
+        tree.insert( 13 )
+        self.proove_nodes(tree)
 
 
     def test_is_leaf_when_first_child_is_not_present( self ):
