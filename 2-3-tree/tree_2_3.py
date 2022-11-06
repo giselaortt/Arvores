@@ -164,9 +164,8 @@ class Tree_2_3():
         queue.append(self.root)
         while( len(queue) > 0 ):
             nextNode = queue.popleft()
-            for child in nextNode.children:
-                if child is not None:
-                    queue.append(child)
+            if( nextNode.children is not None ):
+                queue.extend(nextNode.children)
             ans += " " + nextNode.__repr__()
 
         return ans
