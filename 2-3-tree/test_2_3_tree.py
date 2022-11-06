@@ -4,11 +4,10 @@ from tree_2_3 import Node, Tree_2_3
 
 class Test():
 
-    def test_insert_key( self ):
+    def test__key( self ):
         node = Node(1)
-        other = Node(3)
-        node.insertChild(other)
-        assert other in  node
+        node.insertKey(2)
+        assert 2 in node
 
 
     @staticmethod
@@ -19,6 +18,8 @@ class Test():
         assert (len(node.keys) >= 1 and len(node.keys)<=3 )
         for key in node.keys:
             assert (type(key) is int)
+        if( node.children is None ):
+            return
         for child in node.children:
             Test.proove_all_keys(child)
 
@@ -27,10 +28,12 @@ class Test():
     def proove_all_children(node):
         if(node is None):
             return
+        if( node.children is None ):
+            return
         assert (type(node.children) is list)
         assert (len(node.children) >= 2 and len(node.children)<=3 )
         for child in node.children:
-            assert (type(child) is Node or child is None)
+            assert (type(child) is Node)
             Test.proove_all_children(child)
 
 
@@ -59,26 +62,13 @@ class Test():
         self.proove_nodes(tree)
 
 
-    def test_is_leaf_when_first_child_is_not_present( self ):
-        node = Node(1)
-        other = Node(2)
-        temp = Node(3)
-        node.insertChild( other )
-        node.insertChild( temp )
-        node.removeChild( other )
-        assert node.isLeaf() is False
-
-
     def test_is_leaf_node( self ):
         node = Node( 2 )
         assert node.isLeaf() is True
 
 
     def test_is_leaf_when_not_leaf( self ):
-        node = Node(1)
-        other = Node(2)
-        node.insertChild( other )
-        assert node.isLeaf() is False
+        pass
 
 
     def test_create_node_with_key( self ):

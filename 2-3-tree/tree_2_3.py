@@ -9,7 +9,7 @@ class Node():
     def __init__( self, key:int, parentNode = None ):
         #making a list instead of assigning the children manually will make it easier to adpt for a b-tree in the future
         #should it be a deque instead ?
-        self.children =  [None, None]
+        self.children =  None
         self.keys = [ key ]
         self.numberOfChildren = 0
         self.parent = parentNode
@@ -17,13 +17,13 @@ class Node():
 
     def isLeaf( self ) -> bool:
 
-        return ( self.children[0] is None and self.children[1] is None )
+        return ( self.children is None )
 
 
     @dispatch( int )
     def __eq__( self, other:int ):
 
-        return self.keys[0] == other
+        return self.keys[0] == other.keys[0]
 
 
     @dispatch( object )
@@ -90,17 +90,6 @@ class Node():
     def isThreeNode( self ) -> bool:
 
         return len(self.keys) == 2
-
-
-    def insertChild( self, child:object ) -> bool:
-        key = child.keys[0]
-        self.numberOfChildren += 1
-        if( key < self.keys[0] ):
-            self.children[0] = child
-        elif( self.isTwoNode() or key < self.keys[1] ):
-            self.children[1]=child
-        else:
-            self.children.append(child)
 
 
     def insertKey( self, key:int ) -> None:
