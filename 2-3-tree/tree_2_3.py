@@ -4,9 +4,7 @@ import collections
 
 
 class Node():
-
     precision = 0.00001
-
     def __init__( self, key:int, parentNode = None ):
         #making a list instead of assigning the children manually will make it easier to adpt for a b-tree in the future
         #should it be a deque instead ?
@@ -118,23 +116,10 @@ class Node():
                 return
 
 
-    def isFistChild():
-        pass
-
-
-    def isSecondChild():
-        pass
-
-
-    def isThirdChild( self ):
-        pass
-
-
     def split( self ):
         newLeftNode = Node( self.keys[0], parentNode = self )
         newRightNode = Node( self.keys[2], parentNode = self )
         if( not self.isLeaf() ):
-            print( "children ",  self.children )
             newLeftNode.children = self.children[0:2]
             newRightNode.children = self.children[2:4]
         self.children = [newLeftNode, newRightNode]
@@ -143,6 +128,7 @@ class Node():
 
     #not covered
     def insertNode( self, node:object )->None:
+        #131 and 132 not covered
         if( node.keys[0] < self.keys[0] ):
             self.keys.insert( 0, node.keys[0] )
             self.children = node.children + self.children
@@ -164,7 +150,7 @@ class Tree_2_3():
 
     def __repr__( self ):
         if( self.root is None ):
-            return None.__repr__()
+            return "< >"
         ans = ""
         queue = collections.deque()
         queue.append(self.root)
@@ -188,21 +174,32 @@ class Tree_2_3():
 
 
     def search( self, key:int ) -> Node:
+        if( self.isEmpty() ):
+            return None
+        node = Tree_2_3._search( key, self.root )
+        if(key in node):
+            return node
+        return None
 
-        return Tree_2_3._search( key, self.root )
+
+    def _findNodeToInsert( self, key:int ) -> object:
+        node = Tree_2_3._search( key, self.root )
+        if( node is None ):
+            raise Exception("Unexpected error occured.")
+        if( key in node ):
+            raise Exception("Operation not allowed.")
+        return node
 
 
     #not covered
     @staticmethod
-    def _search( key, node ) -> Node:
+    def _search( key:int, node:object ) -> Node:
         if( node is None ):
             return None
-        if( key in node ):
+        if( key in node or node.isLeaf() ):
             return node
-        if( node.isLeaf() ):
-            return None
         if( key < node.keys[0] ):
-            return _search( key, node.children[0] )
+            return Tree_2_3._search( key, node.children[0] )
         if( node.isThreeNode() and key > node.keys[1] ):
             return Tree_2_3._search( key, node.children[2] )
         return Tree_2_3._search( key, node.children[1] )
@@ -212,22 +209,20 @@ class Tree_2_3():
         if( self.root is None ):
             self.root = Node( key )
             return
-        node = Tree_2_3._findNodeToInsert( key, self.root )
-        if( node.isTwoNode() ):
-            node.insertKey( key )
-            return
+
+        node = self._findNodeToInsert( key )
         node.insertKey(key)
-        node.split()
-        #not covered
-        if(node.parent is not None):
-            parent = node.parent
-            node.parent.removeChild( node )
-            node.parent.insertNode( node )
-            if( parent.parent is not None and parent.hasExceded() ):
-                self.bubbleUp(parent)
+        while( node.hasExceded() ):
+            node.split()
+            if(node.parent is not None):
+                node.parent.removeChild( node )
+                node.parent.insertNode( node )
+                node = node.parent
 
 
     def bubbleUp( self, node:object ) -> None:
+        if( node is None or len(node.keys) <=2 ):
+            return
         node.split()
         while( node.parent is not None ):
             node.parent.removeChild(node)
@@ -235,22 +230,6 @@ class Tree_2_3():
             if( node.parent.hasExceded() ):
                 node.parent.split()
                 node = node.parent
-
-
-    @staticmethod
-    def _findNodeToInsert( key, node ) -> object:
-        if( node is None ):
-            raise Exception("Unexpected error occured.")
-        if( key in node ):
-            raise Exception("Operation not allowed.")
-        if( node.isLeaf() ):
-            return node
-        #not covered
-        if( key < node.keys[0] ):
-            return Tree_2_3._findNodeToInsert( key, node.children[0] )
-        if( node.isThreeNode() and key > node.keys[1] ):
-            return Tree_2_3._findNodeToInsert( key, node.children[2] )
-        return Tree_2_3._findNodeToInsert( key, node.children[1] )
 
 
     def remove( self, key ):
@@ -262,24 +241,29 @@ if __name__ == '__main__':
     tree.insert( 0 )
     tree.insert( 1 )
     tree.insert( 2 )
+    print(tree)
     tree.insert( 3 )
+    print(tree)
     tree.insert( 4 )
+    print(tree)
     tree.insert( 5 )
+    print(tree)
     tree.insert( 6 )
+    """
+    print(tree)
     tree.insert( 7 )
     tree.insert( 8 )
     tree.insert( 9 )
-    print(tree.root)
-    print(tree.root.children)
-    print(tree)
-    node = tree.search(8)
-    print(node.parent.parent)
-    """
     tree.insert( 11 )
     tree.insert( 12 )
     tree.insert( 13 )
     tree.insert( 14 )
+    node = tree.search(8)
+    #print(node.parent.parent)
     """
+    print(tree.root)
+    print(tree.root.children)
+    print(tree)
     #print(tree.root)
     #print(tree.root.children)
 

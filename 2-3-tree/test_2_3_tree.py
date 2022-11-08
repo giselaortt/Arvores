@@ -4,7 +4,7 @@ from tree_2_3 import Node, Tree_2_3
 
 class Test():
 
-    def test__key( self ):
+    def test_insert_key( self ):
         node = Node(1)
         node.insertKey(2)
         assert 2 in node
@@ -170,6 +170,7 @@ class Test():
 
     def test_is_two_node_should_be_false( self ):
         node = Node(2)
+        node.insertKey( 3 )
         assert (not node.isTwoNode())
 
 
