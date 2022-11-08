@@ -240,13 +240,13 @@ class Test():
 
     def test_should_add_multiple_keys_in_tree( self ):
         tree = Tree_2_3()
-        tree.insert( 0 )
-        tree.insert( 2 )
-        tree.insert( 3 )
-        tree.insert( 5 )
-        tree.insert( 4 )
-        tree.insert( 6 )
-        tree.insert( 7 )
-        tree.insert( 8 )
+        keys = [0,1,2,3,4,5,6,7,8,9,10]
+        for key in keys:
+            tree.insert( key )
+        assert all([ key in tree for key in keys ])
+        assert 10 in tree
 
+
+    def test_tree_should_be_balanced( self ):
+        pass
 
