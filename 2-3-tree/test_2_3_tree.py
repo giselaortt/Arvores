@@ -33,7 +33,7 @@ class Test():
 
     @staticmethod
     def proove_all_children(node):
-        if(node is None and node.children is None ):
+        if(node is None or node.children is None ):
             return
         assert (type(node.children) is list)
         assert (len(node.children) >= 2 and len(node.children)<=3 )
@@ -81,10 +81,10 @@ class Test():
         node.children = [ Node(i) for i in [0,2,4,6] ]
         node.split()
         assert node.keys == [3]
-        assert len(node.children[0].children[0].keys==[0])
-        assert len(node.children[0].children[1].keys==[2])
-        assert len(node.children[1].children[0].keys==[0])
-        assert len(node.children[1].children[1].keys==[6])
+        assert node.children[0].children[0].keys==[0]
+        assert node.children[0].children[1].keys==[2]
+        assert node.children[1].children[0].keys==[4]
+        assert node.children[1].children[1].keys==[6]
         assert node.children[0].children[0].parent.parent is node
         assert node.children[0].children[1].parent.parent is node
         assert node.children[1].children[0].parent.parent is node
@@ -99,20 +99,9 @@ class Test():
 
     def test( self ):
         tree = Tree_2_3()
-        tree.insert( 0 )
-        tree.insert( 1 )
-        tree.insert( 2 )
-        tree.insert( 3 )
-        tree.insert( 4 )
-        tree.insert( 5 )
-        tree.insert( 6 )
-        tree.insert( 7 )
-        tree.insert( 8 )
-        tree.insert( 9 )
-        tree.insert( 10 )
-        tree.insert( 11 )
-        tree.insert( 12 )
-        tree.insert( 13 )
+        keys = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17]
+        for key in keys:
+            tree.insert( key )
         self.proove_nodes(tree)
 
 
@@ -205,35 +194,25 @@ class Test():
         assert node.isThreeNode()
 
 
-    def test_is_tree_node_false( self ):
+    def test_is_three_node_false( self ):
         node = Node( 2 )
         assert  node.isThreeNode() is False
 
 
     def test_find_node_to_insert( self ):
         tree = Tree_2_3()
-        tree.insert( 0 )
-        tree.insert( 2 )
-        tree.insert( 3 )
-        tree.insert( 5 )
-        tree.insert( 4 )
-        tree.insert( 6 )
-        tree.insert( 7 )
-        tree.insert( 8 )
+        keys = [0,1,2,3,4,5,6,7,8]
+        for key in keys:
+            tree.insert( key )
         node = tree._findNodeToInsert(9)
         assert 8 in node
 
 
     def test_search( self ):
         tree = Tree_2_3()
-        tree.insert( 0 )
-        tree.insert( 2 )
-        tree.insert( 3 )
-        tree.insert( 5 )
-        tree.insert( 4 )
-        tree.insert( 6 )
-        tree.insert( 7 )
-        tree.insert( 8 )
+        keys = [0,1,2,3,4,5,6,7,8,9,10]
+        for key in keys:
+            tree.insert( key )
         node = tree.search(5)
         assert 5 in node
 
@@ -244,7 +223,6 @@ class Test():
         for key in keys:
             tree.insert( key )
         assert all([ key in tree for key in keys ])
-        assert 10 in tree
 
 
     def test_tree_should_be_balanced( self ):
