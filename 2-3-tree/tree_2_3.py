@@ -5,61 +5,56 @@ import collections
 
 class Node():
     precision = 0.00001
-    def __init__( self, key:int, parentNode = None ):
+    def __init__( self, key:int, parentNode:object = None, children:list = None ):
         #making a list instead of assigning the children manually will make it easier to adpt for a b-tree in the future
         #should it be a deque instead ?
-        self.children =  None
         self.keys = [ key ]
         self.numberOfChildren = 0
         self.parent = parentNode
+        self.children = children
+        if( children is not None ):
+            for child in children:
+                child.parent = self
 
 
     def isLeaf( self ) -> bool:
-
         return ( self.children is None )
 
 
     @dispatch( int )
     def __eq__( self, other:int ):
-
-        return self.keys[0] == other.keys[0]
+        return self.keys[0] == other
 
 
     @dispatch( object )
     #needs reimplementation
     def __eq__( self, other:object ):
-
         return (self.keys == other.keys)
 
 
     def __ne__( self, other ):
-
         return self.keys[0] != other.keys[0]
 
 
     def __gt__( self, other ):
         if( other is None ):
             return True
-
         return self.keys[0] > other.keys[0]
 
 
     def __ge__( self, other ):
         if( other is None ):
             return True
-
         return self.keys[0] >= other.keys[0]
 
 
     def __lt__( self, other ):
         if( other is None ):
             return False
-
         return self.keys[0] < other.keys[0]
 
 
     def __repr__( self ):
-
         return str( self.keys )
 
 
@@ -77,17 +72,14 @@ class Node():
 
     @dispatch( int )
     def __contains__( self, value:int ):
-
         return ( value in self.keys )
 
 
     def isTwoNode( self ) -> bool:
-
         return len(self.keys)==1
 
 
     def isThreeNode( self ) -> bool:
-
         return len(self.keys) == 2
 
 
@@ -122,13 +114,16 @@ class Node():
         if( not self.isLeaf() ):
             newLeftNode.children = self.children[0:2]
             newRightNode.children = self.children[2:4]
+        if( not self.isLeaf() ):
+            self.children[0].parent = newLeftNode
+            self.children[1].parent = newLeftNode
+            self.children[2].parent = newRightNode
+            self.children[3].parent = newRightNode
         self.children = [newLeftNode, newRightNode]
         self.keys = [self.keys[1]]
 
 
-    #not covered
     def insertNode( self, node:object )->None:
-        #131 and 132 not covered
         if( node.keys[0] < self.keys[0] ):
             self.keys.insert( 0, node.keys[0] )
             self.children = node.children + self.children
@@ -227,37 +222,13 @@ class Tree_2_3():
 
 
 if __name__ == '__main__':
-    """
     tree = Tree_2_3()
-    tree.insert( 0 )
-    tree.insert( 1 )
-    tree.insert( 2 )
-    print(tree)
-    tree.insert( 3 )
-    print(tree)
-    tree.insert( 4 )
-    print(tree)
-    tree.insert( 5 )
-    print(tree)
-    tree.insert( 6 )
-    print(tree)
-    tree.insert( 7 )
-    print(tree)
-    tree.insert( 8 )
-    print(tree)
-    tree.insert( 9 )
-    tree.insert( 11 )
-    tree.insert( 12 )
-    tree.insert( 13 )
-    tree.insert( 14 )
-    node = tree.search(8)
-    #print(node.parent.parent)
+    for key in range(8):
+        tree.insert( key )
+        print(tree)
     print(tree.root)
     print(tree.root.children)
     print(tree)
-    #print(tree.root)
-    #print(tree.root.children)
-    """
-
+    print(tree.search(6).parent)
 
 

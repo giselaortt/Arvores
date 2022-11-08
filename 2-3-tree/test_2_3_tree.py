@@ -19,33 +19,59 @@ class Test():
         assert node.children == [4]
 
 
+    def test_less_then( self ):
+        assert Node(2) < Node(3)
+
+
     @staticmethod
     def is_in_order(nums):
         return all(nums[i-1] < nums[i] for i in range(1, len(nums)))
 
 
     @staticmethod
-    def proove_all_keys( node ):
-        assert (type(node.keys) == list)
-        assert (len(node.keys) >= 1 and len(node.keys)<=3 )
-        assert all([ type(key) is int for key in node.keys ])
-        assert Test.is_in_order(node.keys)
-        if( node.children is None ):
-            return
-        for child in node.children:
-            Test.proove_all_keys(child)
+    def node_should_have_0_2_or_3_children( node ):
+        assert ( node.children is None or (len(node.children) >= 2 and len(node.children)<=3 ))
 
 
     @staticmethod
-    def proove_all_children(node):
-        if(node is None or node.children is None ):
-            return
-        assert (type(node.children) is list)
-        assert (len(node.children) >= 2 and len(node.children)<=3 )
+    def children_should_be_ordered(node):
         assert Test.is_in_order(node.children)
+
+
+    @staticmethod
+    def children_must_point_to_its_parent(node):
         for child in node.children:
-            assert (type(child) is Node)
-            Test.proove_all_children(child)
+            assert child.parent is node
+
+
+    @staticmethod
+    def children_should_be_type_node(node):
+        assert all([type(child) is Node for child in node.children])
+
+    @staticmethod
+    def keys_should_have_type_int(node):
+        assert all([type(key)is int for key in node.keys])
+
+
+    @staticmethod
+    def node_should_have_1_or_2_keys(node):
+        assert (len(node.keys) >= 1 and len(node.keys)<=2 )
+
+
+    @staticmethod
+    def node_keys_should_be_ordered(node):
+        assert Test.is_in_order(node.keys)
+
+
+    @staticmethod
+    def proove_node( node ):
+        Test.node_should_have_1_or_2_keys(node)
+        Test.keys_should_have_type_int(node)
+        Test.node_keys_should_be_ordered(node)
+        Test.children_should_be_type_node(node)
+        Test.children_must_point_to_its_parent(node)
+        Test.children_should_be_ordered(node)
+        Test.node_should_have_0_2_or_3_children(node)
 
 
     def test_has_exceded( self ):
@@ -97,7 +123,7 @@ class Test():
         assert (node.children[0].keys == [2] and node.children[1].keys == [4])
 
 
-    def split( self ):
+    def test_split( self ):
         node = Node(0)
         node.keys = [1,3,5]
         node.children = [ Node(i) for i in [0,2,4,6] ]
@@ -111,20 +137,6 @@ class Test():
         assert node.children[0].children[1].parent.parent is node
         assert node.children[1].children[0].parent.parent is node
         assert node.children[1].children[1].parent.parent is node
-
-
-    def proove_nodes( self, tree ):
-        node = tree.root
-        Test.proove_all_keys(node)
-        Test.proove_all_children(node)
-
-
-    def test( self ):
-        tree = Tree_2_3()
-        keys = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17]
-        for key in keys:
-            tree.insert( key )
-        self.proove_nodes(tree)
 
 
     def test_is_leaf_node( self ):
@@ -253,4 +265,5 @@ class Test():
 
     def test_tree_should_be_balanced( self ):
         pass
+
 
