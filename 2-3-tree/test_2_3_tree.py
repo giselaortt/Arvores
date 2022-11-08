@@ -190,6 +190,34 @@ class Test():
         assert  node.isThreeNode() is False
 
 
+    def test_find_node_to_insert( self ):
+        tree = Tree_2_3()
+        tree.insert( 0 )
+        tree.insert( 2 )
+        tree.insert( 3 )
+        tree.insert( 5 )
+        tree.insert( 4 )
+        tree.insert( 6 )
+        tree.insert( 7 )
+        tree.insert( 8 )
+        node = tree._findNodeToInsert(9)
+        assert 8 in node
+
+
+    def test_search( self ):
+        tree = Tree_2_3()
+        tree.insert( 0 )
+        tree.insert( 2 )
+        tree.insert( 3 )
+        tree.insert( 5 )
+        tree.insert( 4 )
+        tree.insert( 6 )
+        tree.insert( 7 )
+        tree.insert( 8 )
+        node = tree.search(5)
+        assert 5 in node
+
+
     def test_should_add_multiple_keys_in_tree( self ):
         tree = Tree_2_3()
         tree.insert( 0 )
