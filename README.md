@@ -4,8 +4,14 @@
 
     1. simple binary search tree
 
-    2. AVL (in progress)
+    2. AVL
 
-    3. 2-3-trees (future)
+    3. 2-3-trees
+
+
+## to be implemented:
 
     4. B-trees (future)
+
+
+feel free to reach out and discuss!
