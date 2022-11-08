@@ -163,6 +163,11 @@ class Test():
         assert tree.isEmpty() is False
 
 
+    def test_is_empty( self ):
+        tree = Tree_2_3()
+        assert tree.isEmpty()
+
+
     def test_is_two_node( self ):
         node = Node( 2 )
         assert  node.isTwoNode()
