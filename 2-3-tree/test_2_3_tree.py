@@ -310,3 +310,13 @@ class Test():
             assert Test.is_node_perfectly_balanced(node)
 
 
+    def test_repetitive_insertion_should_fail(self):
+        tree = Tree_2_3()
+        for key in range( 100 ):
+            tree.insert(key)
+        with pytest.raises(Exception) as info:
+            tree.insert(25)
+        assert str(info.value) == "Operation not allowed."
+
+
+
