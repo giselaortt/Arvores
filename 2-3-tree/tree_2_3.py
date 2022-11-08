@@ -114,7 +114,6 @@ class Node():
         if( not self.isLeaf() ):
             newLeftNode.children = self.children[0:2]
             newRightNode.children = self.children[2:4]
-        if( not self.isLeaf() ):
             self.children[0].parent = newLeftNode
             self.children[1].parent = newLeftNode
             self.children[2].parent = newRightNode
@@ -143,6 +142,10 @@ class Tree_2_3():
         self.root = None
 
 
+    def __contains__( self, key:int ) -> bool:
+        return ( self.search( key ) is not None )
+
+
     def __repr__( self ):
         if( self.root is None ):
             return "< >"
@@ -158,13 +161,22 @@ class Tree_2_3():
         return ans
 
 
-    def __contains__( self, key:int ) -> bool:
+    def traversal( self ) -> list:
+        answer = []
+        Tree_2_3._traversal(self.root, answer)
+        return answer
 
-        return ( self.search( key ) is not None )
+
+    @staticmethod
+    def _traversal( node:object, answer:list ) -> list:
+        answer.append(node.keys)
+        if( node.children is None ):
+            return
+        for child in node.children:
+            Tree_2_3._traversal( child, answer )
 
 
     def isEmpty( self ):
-
         return ( self.root is None )
 
 
@@ -224,12 +236,6 @@ class Tree_2_3():
 
 if __name__ == '__main__':
     tree = Tree_2_3()
-    for key in range(8):
-        tree.insert( key )
-        print(tree)
-    print(tree.root)
-    print(tree.root.children)
-    print(tree)
-    print(tree.search(6).parent)
-
-
+    for key in range(10):
+        tree.insert(key)
+    print(tree.traversal())
