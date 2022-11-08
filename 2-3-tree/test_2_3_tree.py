@@ -11,13 +11,20 @@ class Test():
 
 
     @staticmethod
+    def is_in_order(nums):
+        return all(nums[i-1] < nums[i] for i in range(1, len(nums)))
+
+
+    @staticmethod
     def proove_all_keys( node ):
         if(node is None):
             return
         assert (type(node.keys) == list)
         assert (len(node.keys) >= 1 and len(node.keys)<=3 )
-        for key in node.keys:
-            assert (type(key) is int)
+        #for key in node.keys:
+        #    assert (type(key) is int)
+        assert all([ type(key) is int for key in node.keys ])
+        assert Test.is_in_order(node.keys)
         if( node.children is None ):
             return
         for child in node.children:
@@ -26,9 +33,7 @@ class Test():
 
     @staticmethod
     def proove_all_children(node):
-        if(node is None):
-            return
-        if( node.children is None ):
+        if(node is None and node.children is None ):
             return
         assert (type(node.children) is list)
         assert (len(node.children) >= 2 and len(node.children)<=3 )
@@ -66,9 +71,24 @@ class Test():
         node.keys = [2,3,4]
         node.split()
         assert  len(node.children)==2
-        print( node.children )
         assert (node.children[0].parent is node and node.children[1].parent is node)
         assert (node.children[0].keys == [2] and node.children[1].keys == [4])
+
+
+    def split( self ):
+        node = Node(0)
+        node.keys = [1,3,5]
+        node.children = [ Node(i) for i in [0,2,4,6] ]
+        node.split()
+        assert node.keys == [3]
+        assert len(node.children[0].children[0].keys==[0])
+        assert len(node.children[0].children[1].keys==[2])
+        assert len(node.children[1].children[0].keys==[0])
+        assert len(node.children[1].children[1].keys==[6])
+        assert node.children[0].children[0].parent.parent is node
+        assert node.children[0].children[1].parent.parent is node
+        assert node.children[1].children[0].parent.parent is node
+        assert node.children[1].children[1].parent.parent is node
 
 
     def proove_nodes( self, tree ):
@@ -224,11 +244,9 @@ class Test():
         tree.insert( 2 )
         tree.insert( 3 )
         tree.insert( 5 )
-        """
         tree.insert( 4 )
         tree.insert( 6 )
         tree.insert( 7 )
         tree.insert( 8 )
-        """
 
 

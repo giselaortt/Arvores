@@ -191,7 +191,6 @@ class Tree_2_3():
         return node
 
 
-    #not covered
     @staticmethod
     def _search( key:int, node:object ) -> Node:
         if( node is None ):
@@ -209,7 +208,6 @@ class Tree_2_3():
         if( self.root is None ):
             self.root = Node( key )
             return
-
         node = self._findNodeToInsert( key )
         node.insertKey(key)
         while( node.hasExceded() ):
@@ -221,15 +219,7 @@ class Tree_2_3():
 
 
     def bubbleUp( self, node:object ) -> None:
-        if( node is None or len(node.keys) <=2 ):
-            return
-        node.split()
-        while( node.parent is not None ):
-            node.parent.removeChild(node)
-            node.parent.insertNode(node)
-            if( node.parent.hasExceded() ):
-                node.parent.split()
-                node = node.parent
+        pass
 
 
     def remove( self, key ):
@@ -237,6 +227,7 @@ class Tree_2_3():
 
 
 if __name__ == '__main__':
+    """
     tree = Tree_2_3()
     tree.insert( 0 )
     tree.insert( 1 )
@@ -249,10 +240,11 @@ if __name__ == '__main__':
     tree.insert( 5 )
     print(tree)
     tree.insert( 6 )
-    """
     print(tree)
     tree.insert( 7 )
+    print(tree)
     tree.insert( 8 )
+    print(tree)
     tree.insert( 9 )
     tree.insert( 11 )
     tree.insert( 12 )
@@ -260,12 +252,12 @@ if __name__ == '__main__':
     tree.insert( 14 )
     node = tree.search(8)
     #print(node.parent.parent)
-    """
     print(tree.root)
     print(tree.root.children)
     print(tree)
     #print(tree.root)
     #print(tree.root.children)
+    """
 
 
 
