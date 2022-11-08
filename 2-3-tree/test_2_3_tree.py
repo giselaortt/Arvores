@@ -37,6 +37,18 @@ class Test():
             Test.proove_all_children(child)
 
 
+    def test_has_exceded( self ):
+        node = Node( 2 )
+        node.keys = [2,3,4]
+        assert node.hasExceded()
+
+
+    def test_has_exceded_should_be_false( self ):
+        node = Node( 2 )
+        node.keys = [2,3]
+        assert (not node.hasExceded())
+
+
     def test_split_on_leaf_node( self ):
         node = Node( 2 )
         node.keys = [2,3,4]
