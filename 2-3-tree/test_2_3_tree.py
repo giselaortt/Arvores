@@ -285,7 +285,28 @@ class Test():
         assert all([ key in tree for key in keys ])
 
 
-    def test_tree_should_be_balanced( self ):
-        pass
+    @staticmethod
+    def calculate_height( node:object ) ->  int:
+        if node is None:
+            return 0
+        if( node.isLeaf() ):
+            return 1
+        return max([ Test.calculate_height(child) for child in node.children ])+1
+
+
+    @staticmethod
+    def is_node_perfectly_balanced( node:object ) -> bool:
+        if node is None or node.isLeaf():
+            return True
+        return ( len(set([ Test.calculate_height(child) for child in node.children  ])) == 1)
+
+
+    def test_all_nodes_should_be_perfectly_balanced( self ):
+        tree = Tree_2_3()
+        for key in range( 100 ):
+            tree.insert(key)
+        nodes = tree.pre_order()
+        for node in nodes:
+            assert Test.is_node_perfectly_balanced(node)
 
 
