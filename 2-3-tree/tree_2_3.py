@@ -161,19 +161,19 @@ class Tree_2_3():
         return ans
 
 
-    def traversal( self ) -> list:
+    def pre_order( self ) -> list:
         answer = []
-        Tree_2_3._traversal(self.root, answer)
+        Tree_2_3._pre_order(self.root, answer)
         return answer
 
 
     @staticmethod
-    def _traversal( node:object, answer:list ) -> list:
+    def _pre_order( node:object, answer:list ) -> list:
         answer.append(node.keys)
         if( node.children is None ):
             return
         for child in node.children:
-            Tree_2_3._traversal( child, answer )
+            Tree_2_3._pre_order( child, answer )
 
 
     def isEmpty( self ):
@@ -238,4 +238,4 @@ if __name__ == '__main__':
     tree = Tree_2_3()
     for key in range(10):
         tree.insert(key)
-    print(tree.traversal())
+    print(tree.pre_order())
