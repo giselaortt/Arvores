@@ -49,6 +49,18 @@ class Test():
         assert (not node.hasExceded())
 
 
+    def test_insert_node_on_the_right( self ):
+        pass
+
+
+    def test_insert_node_on_the_left( self ):
+        pass
+
+
+    def test_insert_node_on_the_middle( self ):
+        pass
+
+
     def test_split_on_leaf_node( self ):
         node = Node( 2 )
         node.keys = [2,3,4]
@@ -145,7 +157,7 @@ class Test():
         assert (0 in tree) is False
 
 
-    def test_should_add_one_element_on_tree( self ):
+    def test_is_empty_when_false( self ):
         tree = Tree_2_3()
         tree.insert( 0 )
         assert tree.isEmpty() is False
@@ -154,6 +166,17 @@ class Test():
     def test_is_two_node( self ):
         node = Node( 2 )
         assert  node.isTwoNode()
+
+
+    def test_is_two_node_should_be_false( self ):
+        node = Node(2)
+        assert (not node.isTwoNode())
+
+
+    def test_is_three_node( self ):
+        node = Node( 2 )
+        node.insertKey( 3 )
+        assert node.isThreeNode()
 
 
     def test_is_tree_node_false( self ):
