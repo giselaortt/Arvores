@@ -32,25 +32,15 @@ class Node():
         return (self.keys == other.keys)
 
 
-    def __ne__( self, other ):
-        return self.keys[0] != other.keys[0]
-
-
     def __gt__( self, other ):
-        if( other is None ):
-            return True
         return self.keys[0] > other.keys[0]
 
 
     def __ge__( self, other ):
-        if( other is None ):
-            return True
         return self.keys[0] >= other.keys[0]
 
 
     def __lt__( self, other ):
-        if( other is None ):
-            return False
         return self.keys[0] < other.keys[0]
 
 
@@ -64,6 +54,8 @@ class Node():
 
     @dispatch( object )
     def __contains__( self, other:object ):
+        if(self.children is None):
+            return False
         for child in self.children:
             if child is other:
                 return True
@@ -89,14 +81,14 @@ class Node():
 
 
     #not covered
-    def getSecondtKey( self ) -> int:
-        if( len(self.keys) == 1 ):
-            raise Exception( "This operation is not permitted" )
-        return self.keys[1]
+    #def getSecondtKey( self ) -> int:
+    #    if( len(self.keys) == 1 ):
+    #        raise Exception( "This operation is not permitted" )
+    #    return self.keys[1]
 
 
-    def getFirstKey( self ) -> int:
-        return self.keys[0]
+    #def getFirstKey( self ) -> int:
+    #    return self.keys[0]
 
 
     def removeChild( self, child:object ) -> None:
@@ -191,8 +183,6 @@ class Tree_2_3():
 
     def _findNodeToInsert( self, key:int ) -> object:
         node = Tree_2_3._search( key, self.root )
-        if( node is None ):
-            raise Exception("Unexpected error occured.")
         if( key in node ):
             raise Exception("Operation not allowed.")
         return node
@@ -200,8 +190,8 @@ class Tree_2_3():
 
     @staticmethod
     def _search( key:int, node:object ) -> Node:
-        if( node is None ):
-            return None
+        if( type(node) is not Node ):
+            raise TypeError('expected type Node')
         if( key in node or node.isLeaf() ):
             return node
         if( key < node.keys[0] ):
@@ -232,13 +222,5 @@ class Tree_2_3():
 
     def remove( self, key ):
         pass
-
-
-if __name__ == '__main__':
-    tree = Tree_2_3()
-    for key in range(10):
-        tree.insert(key)
-    print(tree.pre_order())
-
 
 
