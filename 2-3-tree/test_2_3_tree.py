@@ -10,6 +10,15 @@ class Test():
         assert 2 in node
 
 
+    def test_remove_child( self ):
+        node = Node(4)
+        node.insertKey(5)
+        node.insertKey(6)
+        node.split()
+        node.removeChild(node.children[1])
+        assert node.children == [4]
+
+
     @staticmethod
     def is_in_order(nums):
         return all(nums[i-1] < nums[i] for i in range(1, len(nums)))
@@ -17,12 +26,8 @@ class Test():
 
     @staticmethod
     def proove_all_keys( node ):
-        if(node is None):
-            return
         assert (type(node.keys) == list)
         assert (len(node.keys) >= 1 and len(node.keys)<=3 )
-        #for key in node.keys:
-        #    assert (type(key) is int)
         assert all([ type(key) is int for key in node.keys ])
         assert Test.is_in_order(node.keys)
         if( node.children is None ):
@@ -37,6 +42,7 @@ class Test():
             return
         assert (type(node.children) is list)
         assert (len(node.children) >= 2 and len(node.children)<=3 )
+        assert Test.is_in_order(node.children)
         for child in node.children:
             assert (type(child) is Node)
             Test.proove_all_children(child)
@@ -55,11 +61,27 @@ class Test():
 
 
     def test_insert_node_on_the_right( self ):
-        pass
+        node = Node(1)
+        node.children = [Node(-1)]
+        other = Node(4)
+        other.insertKey(5)
+        other.insertKey(6)
+        other.split()
+        node.insertNode(other)
+        assert node.keys == [1,5]
+        assert node.children == [-1,4,6]
 
 
     def test_insert_node_on_the_left( self ):
-        pass
+        node = Node(7)
+        node.children = [Node(8)]
+        other = Node(4)
+        other.insertKey(5)
+        other.insertKey(6)
+        other.split()
+        node.insertNode(other)
+        assert node.keys == [5,7]
+        assert node.children == [4,6,8]
 
 
     def test_insert_node_on_the_middle( self ):
@@ -111,7 +133,11 @@ class Test():
 
 
     def test_is_leaf_when_not_leaf( self ):
-        pass
+        node = Node(2)
+        node.insertKey(3)
+        node.insertKey(4)
+        node.split()
+        assert (not node.isLeaf())
 
 
     def test_create_node_with_key( self ):
