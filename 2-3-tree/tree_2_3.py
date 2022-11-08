@@ -169,7 +169,7 @@ class Tree_2_3():
 
     @staticmethod
     def _pre_order( node:object, answer:list ) -> list:
-        answer.append(node.keys)
+        answer.append(node)
         if( node.children is None ):
             return
         for child in node.children:
@@ -239,3 +239,6 @@ if __name__ == '__main__':
     for key in range(10):
         tree.insert(key)
     print(tree.pre_order())
+
+
+

@@ -35,18 +35,21 @@ class Test():
 
     @staticmethod
     def children_should_be_ordered(node):
-        assert Test.is_in_order(node.children)
+        if( node.children is not None ):
+            assert Test.is_in_order(node.children)
 
 
     @staticmethod
     def children_must_point_to_its_parent(node):
+        if( node.children is None ):
+            return
         for child in node.children:
             assert child.parent is node
 
 
     @staticmethod
-    def children_should_be_type_node(node):
-        assert all([type(child) is Node for child in node.children])
+    def children_types(node):
+        assert (node.children is None or all([type(child) is Node for child in node.children]))
 
     @staticmethod
     def keys_should_have_type_int(node):
@@ -68,10 +71,29 @@ class Test():
         Test.node_should_have_1_or_2_keys(node)
         Test.keys_should_have_type_int(node)
         Test.node_keys_should_be_ordered(node)
-        Test.children_should_be_type_node(node)
+        Test.children_types(node)
         Test.children_must_point_to_its_parent(node)
         Test.children_should_be_ordered(node)
         Test.node_should_have_0_2_or_3_children(node)
+
+
+    def test_proove_all_nodes( self ):
+        tree = Tree_2_3()
+        for key in range(20):
+            tree.insert(key)
+        nodes = tree.pre_order()
+        print(nodes)
+        for node in nodes:
+            Test.proove_node(node)
+
+
+    def test_pre_order_should_return_a_list_of_nodes( self ):
+        tree = Tree_2_3()
+        for key in range(20):
+            tree.insert(key)
+        nodes = tree.pre_order()
+        assert type(nodes) is list
+        assert all( [type(node) is Node for node in nodes] )
 
 
     def test_has_exceded( self ):
