@@ -37,6 +37,16 @@ class Test():
             Test.proove_all_children(child)
 
 
+    def test_split_on_leaf_node( self ):
+        node = Node( 2 )
+        node.keys = [2,3,4]
+        node.split()
+        assert  len(node.children)==2
+        print( node.children )
+        assert (node.children[0].parent is node and node.children[1].parent is node)
+        assert (node.children[0].keys == [2] and node.children[1].keys == [4])
+
+
     def proove_nodes( self, tree ):
         node = tree.root
         Test.proove_all_keys(node)
