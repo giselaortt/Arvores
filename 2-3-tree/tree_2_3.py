@@ -203,18 +203,19 @@ class Tree_2_3():
         if( self.root is None ):
             self.root = Node( key )
             return
+
         node = self._findNodeToInsert( key )
         node.insertKey(key)
-        while( node.hasExceded() ):
+        self.bubbleUp(node)
+
+
+    def bubbleUp( self, node:object ) -> None:
+        while(node.hasExceded()):
             node.split()
             if(node.parent is not None):
                 node.parent.removeChild( node )
                 node.parent.insertNode( node )
                 node = node.parent
-
-
-    def bubbleUp( self, node:object ) -> None:
-        pass
 
 
     def remove( self, key ):
