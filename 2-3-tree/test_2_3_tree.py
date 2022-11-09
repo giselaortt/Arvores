@@ -116,7 +116,7 @@ class Test():
         other.insertKey(6)
         other.split()
         node.insertNode(other)
-        assert node.keys == [1,5]
+        assert node == [1,5]
         assert node.children == [-1,4,6]
 
 
@@ -128,7 +128,7 @@ class Test():
         other.insertKey(6)
         other.split()
         node.insertNode(other)
-        assert node.keys == [5,7]
+        assert node == [5,7]
         assert node.children == [4,6,8]
 
 
@@ -142,7 +142,7 @@ class Test():
         node.split()
         assert  len(node.children)==2
         assert (node.children[0].parent is node and node.children[1].parent is node)
-        assert (node.children[0].keys == [2] and node.children[1].keys == [4])
+        assert (node.children[0] == [2] and node.children[1] == [4])
 
 
     def test_split( self ):
@@ -150,11 +150,11 @@ class Test():
         node.keys = [1,3,5]
         node.children = [ Node(i) for i in [0,2,4,6] ]
         node.split()
-        assert node.keys == [3]
-        assert node.children[0].children[0].keys==[0]
-        assert node.children[0].children[1].keys==[2]
-        assert node.children[1].children[0].keys==[4]
-        assert node.children[1].children[1].keys==[6]
+        assert node == [3]
+        assert node.children[0].children[0]==[0]
+        assert node.children[0].children[1]==[2]
+        assert node.children[1].children[0]==[4]
+        assert node.children[1].children[1]==[6]
         assert node.children[0].children[0].parent.parent is node
         assert node.children[0].children[1].parent.parent is node
         assert node.children[1].children[0].parent.parent is node
@@ -176,7 +176,7 @@ class Test():
 
     def test_create_node_with_key( self ):
         node = Node( 4 )
-        assert node.keys == [4]
+        assert node == [4]
 
 
     def test_is_smaller_than( self ):

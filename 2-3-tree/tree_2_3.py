@@ -1,6 +1,7 @@
 from copy import deepcopy
 from multipledispatch import dispatch
 import collections
+from array import array
 
 
 class Node():
@@ -8,7 +9,8 @@ class Node():
     def __init__( self, key:int, parentNode:object = None, children:list = None ):
         #making a list instead of assigning the children manually will make it easier to adpt for a b-tree in the future
         #should it be a deque instead ?
-        self.keys = [ key ]
+        #self.keys = [ key ]
+        self.keys = array('i', [key])
         self.numberOfChildren = 0
         self.parent = parentNode
         self.children = children
@@ -21,6 +23,11 @@ class Node():
         return ( self.children is None )
 
 
+    @dispatch( list )
+    def __eq__( self, other:list ):
+        return other == list(self.keys)
+
+
     @dispatch( int )
     def __eq__( self, other:int ):
         return self.keys[0] == other
@@ -31,8 +38,8 @@ class Node():
         return (self.keys == other.keys)
 
 
-    def __gt__( self, other ):
-        return self.keys[0] > other.keys[0]
+    #def __gt__( self, other ):
+    #    return self.keys[0] > other.keys[0]
 
 
     def __ge__( self, other ):
@@ -44,7 +51,7 @@ class Node():
 
 
     def __repr__( self ):
-        return str( self.keys )
+        return "["+ ", ".join([str(value) for value in self.keys])+"]"
 
 
     def hasExceded( self ):
@@ -76,7 +83,7 @@ class Node():
 
     def insertKey( self, key:int ) -> None:
         self.keys.append(key)
-        self.keys.sort()
+        self.keys = sorted(self.keys)
 
 
     #not covered
