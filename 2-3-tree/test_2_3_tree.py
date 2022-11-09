@@ -319,4 +319,11 @@ class Test():
         assert str(info.value) == "Operation not allowed."
 
 
+    def test_repr(self):
+        tree = Tree_2_3()
+        for key in range( 5 ):
+            tree.insert(key)
+        print(tree)
+        assert str(tree) == "<[1, 3] [0] [2] [4]>"
+
 

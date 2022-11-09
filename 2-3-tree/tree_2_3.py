@@ -27,7 +27,6 @@ class Node():
 
 
     @dispatch( object )
-    #needs reimplementation
     def __eq__( self, other:object ):
         return (self.keys == other.keys)
 
@@ -141,19 +140,13 @@ class Tree_2_3():
     def __repr__( self ):
         if( self.root is None ):
             return "< >"
-        ans = ""
-        queue = collections.deque()
-        queue.append(self.root)
-        while( len(queue) > 0 ):
-            nextNode = queue.popleft()
-            if( nextNode.children is not None ):
-                queue.extend(nextNode.children)
-            ans += " " + nextNode.__repr__()
-
+        ans = "<"+ " ".join([str(node) for node in self.pre_order()])+">"
         return ans
 
 
     def pre_order( self ) -> list:
+        if(self.root is None):
+            return []
         answer = []
         Tree_2_3._pre_order(self.root, answer)
         return answer
