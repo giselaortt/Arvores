@@ -2,6 +2,7 @@ from copy import deepcopy
 from multipledispatch import dispatch
 import collections
 from array import array
+from typing import Type
 
 
 class Node():
@@ -34,7 +35,7 @@ class Node():
 
 
     @dispatch( object )
-    def __eq__( self, other:object ):
+    def __eq__( self, other:'Node' ):
         return (self.keys == other.keys)
 
 
@@ -97,7 +98,7 @@ class Node():
     #    return self.keys[0]
 
 
-    def removeChild( self, child:object ) -> None:
+    def removeChild( self, child:'None' ) -> None:
         if( self.children is None ):
             return
         for i in range( len(self.children) ):
@@ -120,7 +121,7 @@ class Node():
         self.keys = [self.keys[1]]
 
 
-    def insertNode( self, node:object )->None:
+    def insertNode( self, node:'Node' )->None:
         if( node.keys[0] < self.keys[0] ):
             self.keys.insert( 0, node.keys[0] )
             self.children = node.children + self.children
@@ -160,7 +161,7 @@ class Tree_2_3():
 
 
     @staticmethod
-    def _pre_order( node:object, answer:list ) -> list:
+    def _pre_order( node:Type[Node], answer:list ) -> list:
         answer.append(node)
         if( node.children is None ):
             return
@@ -181,7 +182,7 @@ class Tree_2_3():
         return None
 
 
-    def _findNodeToInsert( self, key:int ) -> object:
+    def _findNodeToInsert( self, key:int ) -> Type[Node]:
         node = Tree_2_3._search( key, self.root )
         if( key in node ):
             raise Exception("Operation not allowed.")
@@ -189,7 +190,7 @@ class Tree_2_3():
 
 
     @staticmethod
-    def _search( key:int, node:object ) -> Node:
+    def _search( key:int, node:Type[Node] ) -> Type[Node]:
         if( type(node) is not Node ):
             raise TypeError('expected type Node')
         if( key in node or node.isLeaf() ):
@@ -211,7 +212,7 @@ class Tree_2_3():
         self.bubbleUp(node)
 
 
-    def bubbleUp( self, node:object ) -> None:
+    def bubbleUp( self, node:Type[Node] ) -> None:
         while(node.hasExceded()):
             node.split()
             if(node.parent is not None):
