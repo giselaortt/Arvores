@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from typing import Type
 
 
 class Node:
@@ -76,7 +77,7 @@ class AVL:
         self._rebalance_after_insertion( new_node )
 
 
-    def _find_node_to_insert( self, node:Node, new_key:int ) -> Node:
+    def _find_node_to_insert( self, node:Type[Node], new_key:int ) -> Type[Node]:
         if node.key == new_key:
             raise Exception("Repetitions are not allowed.")
 
@@ -93,7 +94,7 @@ class AVL:
                 return self._find_node_to_insert(node.left, new_key)
 
 
-    def _rebalance_after_insertion( self, node:Node ) -> None:
+    def _rebalance_after_insertion( self, node:Type[Node] ) -> None:
         leaf = node
         while( node != None ):
             if( node.factor()  >= 2):
@@ -113,7 +114,7 @@ class AVL:
             node = node.parent
 
 
-    def _rotate_right( self, node:Node ) -> None:
+    def _rotate_right( self, node:Type[Node] ) -> None:
         new_parent = node.left
         new_parent.parent = node.parent
         if(node is self.root):
@@ -131,7 +132,7 @@ class AVL:
         self._update_heights( node )
 
 
-    def _rotate_left( self, node:Node ) -> None:
+    def _rotate_left( self, node:Type[Node] ) -> None:
         new_parent = node.right
         new_parent.parent = node.parent
         if(node is self.root):
@@ -164,7 +165,7 @@ class AVL:
 
 
     @staticmethod
-    def _in_order( node:Node, answer:list ) -> list:
+    def _in_order( node:Type[Node], answer:list ) -> list:
         if( node == None ):
             return
         AVL._in_order( node.left, answer )
@@ -202,11 +203,11 @@ class AVL:
         AVL._pre_order( node.right, answer )
 
 
-    def search(self, key:int) -> Node:
+    def search(self, key:int) -> Type[Node]:
         return self._search(self.root, key)
 
 
-    def _search(self, node:Node, key:int) -> Node:
+    def _search(self, node:Type[Node], key:int) -> Type[Node]:
         if( node is None or node.key == key):
             return node
         if key > node.key:
@@ -215,7 +216,7 @@ class AVL:
 
 
     @staticmethod
-    def _update_heights( node:Node ) -> None:
+    def _update_heights( node:Type[Node] ) -> None:
         if( node is None ):
             return
         new_height = node.calculate_height()
@@ -223,7 +224,7 @@ class AVL:
         AVL._update_heights(node.parent)
 
 
-    def _remove_conection_child_parent( node:Node, child_node:Node ) -> None:
+    def _remove_conection_child_parent( node:Type[Node], child_node:Type[Node] ) -> None:
         if node is None or child_node is None :
             return
         if node.left == child_node :
@@ -234,7 +235,7 @@ class AVL:
 
 
     @staticmethod
-    def _find_logical_successor( node:Node ) -> Node :
+    def _find_logical_successor( node:Type[Node] ) -> Type[Node] :
         if(node.is_leaf()):
             return node
 
@@ -252,7 +253,7 @@ class AVL:
 
 
     @staticmethod
-    def _swap_node_informations( first:Node, second:Node ) -> None:
+    def _swap_node_informations( first:Type[Node], second:Type[Node] ) -> None:
         first.name, second.name = second.name, first.name
         first.key, second.key = second.key, first.key
 
@@ -287,7 +288,7 @@ class AVL:
             self.root = successor
 
 
-    def _rebalance_after_deletion( self, node:Node ) -> None :
+    def _rebalance_after_deletion( self, node:Type[Node] ) -> None :
         while( node != None ):
             if abs(node.factor()) <= 1:
                 node = node.parent

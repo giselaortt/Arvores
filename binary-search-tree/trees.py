@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
+from typing import Type
 
 
 class Node:
-    def __init__(self, id, name):
+    def __init__(self, id, name:str):
         self.id = id
         self.name = name
         self.right = None
@@ -10,17 +11,17 @@ class Node:
         self.parent = None
 
 
-    def is_leaf( self ):
+    def is_leaf( self ) -> bool:
 
         return ( self.right == None and self.left == None )
 
 
-    def is_left_child( self ):
+    def is_left_child( self ) -> bool:
 
         return self.parent is not None and self.parent.left == self
 
 
-    def is_right_child( self ):
+    def is_right_child( self ) -> bool:
 
         return self.parent is not None and self.parent.right == self
 
@@ -30,7 +31,7 @@ class Tree:
         self.root = None
 
 
-    def insert(self, id, name):
+    def insert(self, id, name:str) -> None:
         new_node = Node(id, name)
         if(self.root is None):
             self.root = new_node
@@ -38,31 +39,31 @@ class Tree:
             self._insert(self.root, new_node)
 
 
-    def _insert(self, node, novo_no):
-        if node.id == novo_no.id:
+    def _insert(self, node:Type[Node], other:Type[Node]) -> None:
+        if node.id == other.id:
             raise Exception("keyword already exists.")
-        if node.id < novo_no.id:
+        if node.id < other.id:
             if node.right is None:
-                node.right = novo_no
-                novo_no.parent = node
+                node.right = other
+                other.parent = node
             else:
-                self._insert(node.right, novo_no)
+                self._insert(node.right, other)
         else:
             if(node.left is None):
-                node.left = novo_no
-                novo_no.parent = node
+                node.left = other
+                other.parent = node
             else:
-                self._insert(node.left, novo_no)
+                self._insert(node.left, other)
 
 
-    def search(self, id):
+    def search(self, id) -> str :
         node = self._search(self.root, id)
         if node:
             return node.name
         return False
 
 
-    def _search(self, node, id):
+    def _search(self, node:Type[Node], id) -> Type[Node]:
         if node is None:
             return False
         if node.id == id:
@@ -72,17 +73,17 @@ class Tree:
         return self._search(node.left, id)
 
 
-    def height( self ):
+    def height( self ) -> int:
         return _height( self.root )
 
 
-    def _height( self, node ):
+    def _height( self, node:Type[Node] ) -> int:
         if node is None:
             return 0
         return max( self._height(node.right), self._height(node.left) ) + 1
 
 
-    def _prune( self, node ):
+    def _prune( self, node:Type[Node] ) -> None:
         if( self.root is node ):
             self.root = None
         if( node.parent is None ):
@@ -95,7 +96,7 @@ class Tree:
 
 
     @staticmethod
-    def find_logical_successor( node ):
+    def find_logical_successor( node:Type[Node] ) -> Type[Node]:
         successor = node.right
         while( successor.left is not None ):
             successor = successor.left
@@ -103,12 +104,12 @@ class Tree:
 
 
     @staticmethod
-    def _swap_node_informations( first, second ):
+    def _swap_node_informations( first:Type[Node], second:Type[Node] ) -> None:
         first.name, second.name = second.name, first.name
         first.id, second.id = second.id, first.id
 
 
-    def succeed( self, node, successor ):
+    def succeed( self, node:Type[Node], successor:Type[Node] ) -> None:
         if( successor is not None ):
             successor.parent = node.parent
 
@@ -123,7 +124,7 @@ class Tree:
             node.parent.right = successor
 
 
-    def remove(self, id):
+    def remove(self, id) -> None:
         node = self._search(self.root, id)
 
         if( node is False ):
