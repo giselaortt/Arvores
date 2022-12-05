@@ -60,7 +60,7 @@ class Node():
 
 
     @dispatch( object )
-    def __contains__( self, other:object ):
+    def __contains__( self, other:'Node' ):
         if(self.children is None):
             return False
         for child in self.children:
