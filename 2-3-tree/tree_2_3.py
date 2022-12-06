@@ -8,9 +8,6 @@ from typing import Type
 class Node():
     precision = 0.00001
     def __init__( self, key:int, parentNode:object = None, children:list = None ):
-        #making a list instead of assigning the children manually will make it easier to adpt for a b-tree in the future
-        #should it be a deque instead ?
-        #self.keys = [ key ]
         self.keys = array('i', [key])
         self.numberOfChildren = 0
         self.parent = parentNode
