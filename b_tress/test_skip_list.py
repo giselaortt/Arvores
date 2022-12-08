@@ -32,8 +32,61 @@ class Test:
         skip = SkipList()
         assert skip.upper_left is not None
         skip.insert(1)
-        node =  skip._search(1)
+        node =  skip.search(1)
         assert node.key == 1
+
+
+    def test_multiple_insertions(self):
+        skip = SkipList()
+        skip.insert(1)
+        skip.insert(4)
+        skip.insert(3)
+        skip.insert(2)
+        assert str(skip) == "-inf 1 2 3 4 inf "
+        assert skip.search(1)
+        assert skip.search(3)
+        assert skip.search(4)
+        assert skip.search(2)
+
+
+    def test_contains_when_true(self):
+        skip = SkipList()
+        skip.insert(1)
+        skip.insert(4)
+        skip.insert(3)
+        skip.insert(2)
+        assert 1 in skip
+        assert 2 in skip
+
+
+    def test_contains_when_false(self):
+        skip = SkipList()
+        skip.insert(1)
+        skip.insert(4)
+        skip.insert(3)
+        skip.insert(2)
+        assert 5 not in skip
+        assert 10 not in skip
+
+
+    def test_should_not_insert_repeated_elements(self):
+        skip = SkipList()
+        skip.insert(1)
+        with pytest.raises(Exception) as info:
+            skip.insert(1)
+        assert str(info.value) == "Operation not permitted"
+
+    """
+    def test_node_deletion(self):
+        skip = SkipList()
+        skip.insert(1)
+        skip.insert(4)
+        skip.insert(3)
+        skip.insert(2)
+        node = skip.search(3)
+        del node
+        assert 3 not in skip
+    """
 
 
     def test_are_all_elements_sorted(self):

@@ -28,19 +28,27 @@ class Node:
         return self.key > key
 
 
+    """
     def __del__( self ):
-        pass
+        self.right.left = self.left
+        self.left.right = self.right
+        if( self.bellow is not None ):
+            self.bellow.above = self.above
+        if( self.above is not None ):
+            self.above.bellow = self.bellow
+    """
 
 
     def __eq__( self, key:int ):
 
-        return self.key==key
+        return self.key == key
 
 
 
 class SkipList:
     upper_left:'Node' = Node(NEGATIVE_INFINITY)
     upper_right:'Node' = Node(INFINITY)
+    down_left:'Node' = upper_left
     number_of_levels:int = 0
     length:int = 0
 
@@ -52,6 +60,15 @@ class SkipList:
     def __len__( self ):
 
         return self.length
+
+
+    def __repr__( self ):
+        ans = ""
+        node = self.down_left
+        while( node is not None ):
+            ans += str(node.key) + " "
+            node = node.right
+        return ans
 
 
     def __next__( self, node:Type[Node] )-> Type[Node]:
@@ -66,11 +83,12 @@ class SkipList:
 
     def __iter__( self ):
 
-        return self.upper_left
+        return self.down_left
 
 
-    def __contains__( self, key ):
-        pass
+    def __contains__( self, key:int ):
+
+        return bool(self.search( key ))
 
 
     def __getitem__( self ):
@@ -104,10 +122,6 @@ class SkipList:
         return None
 
 
-    def getnextnode( self, node:Type[Node], key:int ) -> Type[Node]:
-        pass
-
-
     def _search( self, key:int ):
         node = self.upper_left
         while( node.key != key ):
@@ -127,6 +141,8 @@ class SkipList:
 
     def insert( self, key:int )->None:
         node = self._search(key)
+        if(node.key == key):
+            raise Exception("Operation not permitted")
         other_node = node.right
         inserted = Node(key)
         node.right = inserted
