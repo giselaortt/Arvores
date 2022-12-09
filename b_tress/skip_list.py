@@ -5,7 +5,6 @@ from collections import deque
 INFINITY = float('inf')
 NEGATIVE_INFINITY = float('-inf')
 
-
 class Node:
     right:'Node' = None
     left:'Node' = None
@@ -132,10 +131,10 @@ class SkipList:
             node.above.bellow = node.bellow
 
 
-    def search( self, key ):
+    def search( self, key:int ):
         if( self.length == 0 ):
             return None
-        node = self._search(key)
+        node = self._search(key, keep_path = False)
         if(node.key == key):
             return node
         return None
@@ -149,42 +148,64 @@ class SkipList:
             path.appendleft(node)
             node = next_node
             next_node = next(node)
-
         if( keep_path ):
             return node, path
         return node
 
 
-    def _increase_tree_level( self, node:Type[Node] )->None:
-        node.upper_left.above = Node(NEGATIVE_INFINITY)
-        node.upper_left.above.bellow = node
-        node.upper_left = node.upper_left.above
-        node.upper_right.above = Node(INFINITY)
-        node.upper_right = node.upper_right.above
+    def _increase_one_treee_level( self )->None:
+        left_top = Node(NEGATIVE_INFINITY)
+        self.upper_left.above = left_top
+        left_top.bellow = self.upper_left
+        self.upper_left = left_top
+
+        right_top = Node(INFINITY)
+        right_top.bellow = self.upper_right
+        self.upper_right.above = right_top
+        self.upper_right = right_top
+
         self.number_of_levels += 1
 
 
-    def _promotion( self, node:Type[Node] )->None:
-        node.above = Node(node.key, level = node.level+1)
-        node.above.bellow = node
+    def _adjust_tree_level(self, level:int)->None:
+        while( self.number_of_levels < level ):
+            self._increase_one_treee_level()
+
+
+    '''@classmethod
+    def node_chain(cls, key:int, number_of_levels:int)->'Node':
+        bottom = Node(key)
+        node = bottom
+        for i in range(1,number_of_levels+1):
+            next_node = Node(key,level=i)
+            node.above = next_node
+            next_node.bellow = node
+            node = next_node
+        return bottom
+    '''
 
 
     def insert( self, key:int )->None:
         node, path = self._search(key, keep_path = True)
+
         if(node.key == key):
             raise Exception("Operation not permitted")
 
-        #level = SkipList._random_level()
-
-
+        node_level = SkipList._random_level()
+        self._adjust_tree_level(node_level)
+        #to_be_inserted = SkipList.node_chain(key, node_level)
+        #n nos em path nesses nos recen criados e os n proximos nos em path
+        #while():
+        to_be_inserted = Node(key, level = 1)
         other_node = node.right
-        inserted = Node(key)
-        node.right = inserted
-        inserted.left = node
-        other_node.left = inserted
-        inserted.right = other_node
+        node.right = to_be_inserted
+        to_be_inserted.left = node
+        other_node.left = to_be_inserted
+        to_be_inserted.right = other_node
         self.length += 1
 
+        """
+        """
 
 
 

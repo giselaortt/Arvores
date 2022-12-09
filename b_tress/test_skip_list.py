@@ -3,7 +3,6 @@ from skip_list import Node, SkipList
 
 
 class Test:
-
     def test_node_comparison(self):
         node = Node(50)
         assert (node == 50)
@@ -11,6 +10,12 @@ class Test:
         assert (node > 40)
         assert (node > 50) is False
         assert (node < 40) is False
+
+
+    def test_insertion_should_increase_counter(self):
+        skip = SkipList()
+        skip.insert(-15)
+        assert skip.length == 1
 
 
     def test_are_all_pointers_none(self):
@@ -32,7 +37,7 @@ class Test:
         skip = SkipList()
         assert skip.upper_left is not None
         skip.insert(1)
-        node =  skip.search(1)
+        node = skip._search(1)
         assert node.key == 1
 
 
@@ -43,8 +48,8 @@ class Test:
         skip.insert(3)
         skip.insert(2)
         assert str(skip) == "-inf 1 2 3 4 inf "
-        assert skip.search(1)
-        assert skip.search(3)
+        assert skip._search(1)
+        assert skip._search(3)
         assert skip.search(4)
         assert skip.search(2)
 
@@ -76,17 +81,43 @@ class Test:
             skip.insert(1)
         assert str(info.value) == "Operation not permitted"
 
-    """
+
     def test_node_deletion(self):
         skip = SkipList()
         skip.insert(1)
         skip.insert(4)
         skip.insert(3)
         skip.insert(2)
-        node = skip.search(3)
-        del node
+        skip.delete_node(3)
         assert 3 not in skip
-    """
+
+
+    def test_random_level_generation(self):
+        level = SkipList._random_level()
+
+
+    def test_adjust_tree_level_should_update_counter(self):
+        skip = SkipList()
+        skip._adjust_tree_level(5)
+        assert skip.number_of_levels == 5
+
+
+    def test_adjust_tree_level_should_increase_side_lists(self):
+        skip = SkipList()
+        skip._adjust_tree_level(5)
+        node = skip.upper_left
+        level_right = 0
+        while(node is not None and level_right <= 1000):
+            level_right += 1
+            node = node.bellow
+        assert level_right == 5
+
+        node = skip.upper_right
+        level_left = 0
+        while(node is not None and level_left <= 1000):
+            level_left += 1
+            node = node.bellow
+        assert level_left == 5
 
 
     def test_are_all_elements_sorted(self):
