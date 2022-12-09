@@ -158,12 +158,10 @@ class SkipList:
         self.upper_left.above = left_top
         left_top.bellow = self.upper_left
         self.upper_left = left_top
-
         right_top = Node(INFINITY)
         right_top.bellow = self.upper_right
         self.upper_right.above = right_top
         self.upper_right = right_top
-
         self.number_of_levels += 1
 
 
@@ -172,17 +170,16 @@ class SkipList:
             self._increase_one_treee_level()
 
 
-    '''@classmethod
-    def node_chain(cls, key:int, number_of_levels:int)->'Node':
+    @classmethod
+    def node_chaining(cls, key:int, number_of_levels:int)->'Node':
         bottom = Node(key)
         node = bottom
-        for i in range(1,number_of_levels+1):
-            next_node = Node(key,level=i)
+        for i in range(1,number_of_levels):
+            next_node = Node(key)
             node.above = next_node
             next_node.bellow = node
             node = next_node
         return bottom
-    '''
 
 
     def insert( self, key:int )->None:

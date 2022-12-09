@@ -111,13 +111,21 @@ class Test:
             level_right += 1
             node = node.bellow
         assert level_right == 5
-
         node = skip.upper_right
         level_left = 0
         while(node is not None and level_left <= 1000):
             level_left += 1
             node = node.bellow
         assert level_left == 5
+
+
+    def test_node_chaining(self):
+        node = SkipList.node_chaining(0,5)
+        counter = 0
+        while(node is not None):
+            counter += 1
+            node = node.above
+        assert counter == 5
 
 
     def test_are_all_elements_sorted(self):
