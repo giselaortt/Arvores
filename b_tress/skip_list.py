@@ -26,9 +26,9 @@ class Node:
         return self
 
 
-    def __init__( self, key:int, level:int = 0 ):
+    def __init__( self, key:int ):
         self.key = key
-        self.level = level
+        #self.level = level
 
 
     def __lt__( self, key:int ):
@@ -193,7 +193,7 @@ class SkipList:
         #to_be_inserted = SkipList.node_chain(key, node_level)
         #n nos em path nesses nos recen criados e os n proximos nos em path
         #while():
-        to_be_inserted = Node(key, level = 1)
+        to_be_inserted = Node(key)
         other_node = node.right
         node.right = to_be_inserted
         to_be_inserted.left = node
