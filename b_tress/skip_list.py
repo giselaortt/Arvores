@@ -14,6 +14,19 @@ class Node:
     key:int
     level:int = 1
 
+    def __next__(self) -> 'Node':
+        if( self.right is not None ):
+            return self.right
+        if( self.bellow is not None ):
+            return self.bellow
+        raise StopIteration()
+
+
+    def __iter__(self):
+
+        return self
+
+
     def __init__( self, key:int, level:int = 0 ):
         self.key = key
         self.level = level
@@ -62,17 +75,9 @@ class SkipList:
         return ans
 
 
-    def __next__( self, node:Type[Node] )-> Type[Node]:
-        if( node.right is not None ):
-            return node.right
-        if( node.bellow is not None ):
-            return node.bellow
-        return None
-
-
     def __iter__( self ):
 
-        return self.down_left
+        return self.upper_left
 
 
     def __contains__( self, key:int ):
@@ -136,22 +141,18 @@ class SkipList:
         return None
 
 
-    #refactor to use next
-    def _search( self, key:int, keep_path:bool = False )->[Type[Node],deque]:
-       # if(keep_path):
-       #     stack = collections.deque()
-        node = self.upper_left
-        while( node.key != key ):
-            while( node.right is not None and node.right.key <= key ):
-        #        if(keep_path):
-         #           stack.append(node)
-                node = node.right
-            if(node.bellow is not None):
-                node = node.bellow
-            else:
-                break
+    def _search( self, key:int, keep_path:bool = False ) -> ['Node',deque]:
+        node = self.__iter__()
+        path = deque()
+        next_node = next(node)
+        while( next_node.key <= key ):
+            path.appendleft(node)
+            node = next_node
+            next_node = next(node)
 
-        return node, stack
+        if( keep_path ):
+            return node, path
+        return node
 
 
     def _increase_tree_level( self, node:Type[Node] )->None:
@@ -169,13 +170,12 @@ class SkipList:
 
 
     def insert( self, key:int )->None:
-        node = self._search(key)
-
+        node, path = self._search(key, keep_path = True)
         if(node.key == key):
             raise Exception("Operation not permitted")
 
         #level = SkipList._random_level()
-        #
+
 
         other_node = node.right
         inserted = Node(key)
