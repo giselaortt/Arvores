@@ -28,7 +28,19 @@ class Test:
         assert (value==1 or value==0)is True
 
 
-    def test_search_on_empty_list_should_return_none(self):
+    def test_search_on_empty(self):
+        skip = SkipList()
+        assert skip._search(50) is not None
+        assert skip._search(50).key == float('-inf')
+
+
+    def test_search_on_length_one_list(self):
+        skip = SkipList()
+        skip.insert(1)
+        assert 1 in skip
+
+
+    def test_user_search_on_empty_list_should_return_none(self):
         skip = SkipList()
         assert skip.search(50) is None
 
@@ -37,7 +49,21 @@ class Test:
         skip = SkipList()
         assert skip.upper_left is not None
         skip.insert(1)
-        node = skip._search(1)
+        node = skip.search(1)
+        assert node is not None
+        assert node.key == 1
+
+
+    def test_insertion(self):
+        skip = SkipList()
+        skip.insert(1)
+        node = skip.down_left.right
+        node = skip.search(1)
+        assert node is not None
+        assert node.right is not None
+        assert node.left is not None
+        assert node.right.key == float('inf')
+        assert node.left.key == float('-inf')
         assert node.key == 1
 
 
@@ -74,12 +100,18 @@ class Test:
         assert 10 not in skip
 
 
+    def test_contains_on_empty_list(self):
+        skip = SkipList()
+        assert float('inf') in skip
+        assert float('-inf') in skip
+
+
     def test_should_not_insert_repeated_elements(self):
         skip = SkipList()
         skip.insert(1)
         with pytest.raises(Exception) as info:
             skip.insert(1)
-        assert str(info.value) == "Operation not permitted"
+        assert "Operation not permitted" in str(info.value)
 
 
     def test_node_deletion(self):
@@ -119,13 +151,81 @@ class Test:
         assert level_left == 5
 
 
-    def test_node_chaining(self):
-        node = SkipList.node_chaining(0,5)
+    def test_adjust_tree_level_should_link_sides(self):
+        skip = SkipList()
+        skip._adjust_tree_level(10)
+        node_left = skip.upper_left
+        node_right = skip.upper_right
+        level = 0
+        while(node_left is not None and node_right is not None and level <= 1000):
+            level += 1
+            assert node_left.right is node_right
+            assert node_right.left is not None
+            assert node_right.left is node_left
+            assert (node_left.above is None) or node_left.above.bellow is node_left
+            assert (node_right.above is None) or node_right.above.bellow is node_right
+            node_left = node_left.bellow
+            node_right = node_right.bellow
+        assert node_left is None and node_right is None
+        assert level == 10
+
+
+    def test_node_chaining_links(self):
+        node = SkipList.create_node_chaining(0,5)
         counter = 0
-        while(node is not None):
+        while(node is not None and counter <= 1000):
+            counter += 1
+            assert node.right is None and node.left is None
+            assert node.above is None or node.above.bellow is node
+            node = node.above
+        assert counter == 4
+
+
+    def test_node_chaining_has_desired_height(self):
+        node = SkipList.create_node_chaining(0,5)
+        counter = 0
+        while(node is not None and counter <= 1000):
             counter += 1
             node = node.above
+        assert 4 == 5
+        assert False is True
+        assert counter == 4
         assert counter == 5
+
+
+    def test_empty_list(self):
+        skip = SkipList()
+        node = skip._search(0)
+        assert node.key == float('-inf')
+        assert node.right is not None
+        assert node.right.key == float('inf')
+
+
+    def test_node_chaining_has_desired_height(self):
+        node = SkipList.create_node_chaining(0,5)
+        counter = 0
+        while(node is not None and counter <= 1000):
+            counter += 1
+            node = node.above
+        assert counter == 4
+
+
+    def test_empty_list(self):
+        skip = SkipList()
+        node = skip._search(0)
+        assert node.key == float('-inf')
+        assert node.right is not None
+        assert node.right.key == float('inf')
+        assert node.right.left is node
+
+
+    def test_get_above_level(self):
+        pass
+
+
+    def test_is_list_fully_connected_after_one_insertion(self):
+        pass
+
 
 
     def test_are_all_elements_sorted(self):
@@ -140,5 +240,28 @@ class Test:
         pass
 
 
+    def test_is_fully_coneected(self):
+        pass
+
+
+
+    def test_is_list_fully_connected_after_one_insertion(self):
+        pass
+
+
+    def test_are_all_elements_sorted(self):
+        pass
+
+
+    def test_iter( self ):
+        pass
+
+
+    def test_next( self ):
+        pass
+
+
+    def test_is_fully_coneected(self):
+        pass
 
 

@@ -7,6 +7,7 @@ from multipledispatch import dispatch
 INFINITY = float('inf')
 NEGATIVE_INFINITY = float('-inf')
 
+
 class Node:
     right:'Node' = None
     left:'Node' = None
@@ -42,7 +43,7 @@ class Node:
         return self.key > key
 
 
-    @dispatch(float)
+    @dispatch((int,float))
     def __eq__( self, key:int ):
 
         return self.key == key
@@ -54,8 +55,6 @@ class Node:
         return self.key == other.key
 
 
-
-#TODO: skip lists need a upper bound. Which should it be ?
 class SkipList:
 
     def __init__( self ):
@@ -124,6 +123,7 @@ class SkipList:
 
     @classmethod
     def _flip_coin(cls) -> bool:
+
         return random.randint(0,1)
 
 
@@ -145,8 +145,10 @@ class SkipList:
 
     @classmethod
     def _delete_node( cls, node:Type[Node] )->None:
-        node.right.left = node.left
-        node.left.right = node.right
+        if( node.right is not None ):
+            node.right.left = node.left
+        if( node.left is not None ):
+            node.left.right = node.right
         if( node.bellow is not None ):
             node.bellow.above = node.above
         if( node.above is not None ):
@@ -161,9 +163,10 @@ class SkipList:
             return node
         return None
 
+
     def _search( self, key:int, keep_path:bool = False )->[Type[Node],deque]:
-       # if(keep_path):
-       #     stack = collections.deque()
+        #if(keep_path):
+        #    stack = collections.deque()
         node = self.upper_left
         while( node.key != key ):
             while( node.right is not None and node.right.key <= key ):
@@ -175,7 +178,8 @@ class SkipList:
             else:
                 break
 
-        return node, stack
+        #return node, stack
+        return node
 
 
     def _increase_one_treee_level( self ) -> None:
@@ -205,7 +209,7 @@ class SkipList:
     def create_node_chaining(cls, key:int, number_of_levels:int)->'Node':
         bottom = Node(key)
         node = bottom
-        for i in range(1,number_of_levels):
+        for i in range(number_of_levels-2):
             next_node = Node(key)
             node.above = next_node
             next_node.bellow = node
@@ -229,13 +233,14 @@ class SkipList:
 
 
     def insert( self, key:int )->None:
-        #if(key in self):
-        #    raise Exception("Operation not permitted, no repetitions are allowed.")
+        if(key in self):
+            raise Exception("Operation not permitted, no repetitions are allowed.")
+
         node = self._search(key)
         node_level = SkipList._random_level()
-        #testing for debug should be deleted
         self._adjust_tree_level(node_level+1)
         to_be_inserted = SkipList.create_node_chaining(key, node_level)
+
         while(to_be_inserted is not None and node is not None):
             other_node = node.right
             node.right = to_be_inserted
@@ -244,6 +249,7 @@ class SkipList:
             to_be_inserted.right = other_node
             to_be_inserted = to_be_inserted.above
             node = SkipList.get_above_level_node(node)
+
         self.length += 1
 
 
