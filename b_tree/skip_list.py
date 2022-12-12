@@ -81,7 +81,7 @@ class SkipList:
         return ans
 
 
-    def __next__( self, node:Type[Node] )-> Type[Node]:
+    def __next__( self, node:'Node' )-> 'Node':
         if( node.right is not None ):
             return node.right
         if( node.bellow is not None ):
@@ -144,7 +144,7 @@ class SkipList:
 
 
     @classmethod
-    def _delete_node( cls, node:Type[Node] )->None:
+    def _delete_node( cls, node:'Node' )->None:
         if( node.right is not None ):
             node.right.left = node.left
         if( node.left is not None ):
@@ -164,7 +164,7 @@ class SkipList:
         return None
 
 
-    def _search( self, key:int, keep_path:bool = False )->[Type[Node],deque]:
+    def _search( self, key:int, keep_path:bool = False )->['Node',deque]:
         #if(keep_path):
         #    stack = collections.deque()
         node = self.upper_left
