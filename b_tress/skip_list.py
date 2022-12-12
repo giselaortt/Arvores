@@ -28,7 +28,7 @@ class Node:
         return self
 
 
-    def __init__( self, key:int ):
+    def __init__( self, key:int, level:int = 0 ):
         self.key = key
 
 
@@ -82,9 +82,17 @@ class SkipList:
         return ans
 
 
+    def __next__( self, node:Type[Node] )-> Type[Node]:
+        if( node.right is not None ):
+            return node.right
+        if( node.bellow is not None ):
+            return node.bellow
+        return None
+
+
     def __iter__( self ):
 
-        return self.upper_left
+        return self.down_left
 
 
     def __contains__( self, key:int ):
@@ -153,14 +161,21 @@ class SkipList:
             return node
         return None
 
+    def _search( self, key:int, keep_path:bool = False )->[Type[Node],deque]:
+       # if(keep_path):
+       #     stack = collections.deque()
+        node = self.upper_left
+        while( node.key != key ):
+            while( node.right is not None and node.right.key <= key ):
+        #        if(keep_path):
+         #           stack.append(node)
+                node = node.right
+            if(node.bellow is not None):
+                node = node.bellow
+            else:
+                break
 
-    def _search( self, key:int ) -> ['Node',deque]:
-        node = self.__iter__()
-        next_node = next(node, key)
-        while( next_node.key <= key ):
-            node = next_node
-            next_node = next(node,key)
-        return node
+        return node, stack
 
 
     def _increase_one_treee_level( self ) -> None:
