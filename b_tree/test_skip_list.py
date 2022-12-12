@@ -1,5 +1,6 @@
 import pytest
 from skip_list import Node, SkipList
+import random
 
 
 class Test:
@@ -219,13 +220,27 @@ class Test:
         assert node.right.left is node
 
 
+    def test_functional(self):
+        skip = SkipList()
+        numbers = random.sample( range(-1000, 1000), 100 )
+        to_delete = random.sample(numbers, 20)
+        for number in numbers:
+            skip.insert(number)
+        for number in to_delete:
+            skip.insert(number)
+        for number in to_delete:
+            assert number not in skip
+        for number in numbers:
+            node = skip.search(number)
+            if(number in numbers):
+                assert node is None
+            else:
+                assert node is not None
+                assert node ==  number
+
+
     def test_get_above_level(self):
         pass
-
-
-    def test_is_list_fully_connected_after_one_insertion(self):
-        pass
-
 
 
     def test_are_all_elements_sorted(self):
@@ -242,7 +257,6 @@ class Test:
 
     def test_is_fully_coneected(self):
         pass
-
 
 
     def test_is_list_fully_connected_after_one_insertion(self):
