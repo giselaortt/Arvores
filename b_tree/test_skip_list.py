@@ -32,8 +32,9 @@ class Test:
 
     def test_search_on_empty(self):
         skip = SkipList()
-        assert skip._search(50) is not None
-        assert skip._search(50).key == float('-inf')
+        ###################
+        #assert skip._search(50) is not None
+        #assert skip._search(50).key == float('-inf')
 
 
     def test_search_on_length_one_list(self):
@@ -76,8 +77,8 @@ class Test:
         skip.insert(3)
         skip.insert(2)
         assert str(skip) == "-inf 1 2 3 4 inf "
-        assert skip._search(1)
-        assert skip._search(3)
+        assert skip.search(1)
+        assert skip.search(3)
         assert skip.search(4)
         assert skip.search(2)
 
@@ -114,16 +115,6 @@ class Test:
         with pytest.raises(Exception) as info:
             skip.insert(1)
         assert "Operation not permitted" in str(info.value)
-
-
-    def test_node_deletion(self):
-        skip = SkipList()
-        skip.insert(1)
-        skip.insert(4)
-        skip.insert(3)
-        skip.insert(2)
-        skip.delete(3)
-        assert 3 not in skip
 
 
     def test_random_level_generation(self):
@@ -194,6 +185,7 @@ class Test:
 
     def test_empty_list(self):
         skip = SkipList()
+        #############
         node = skip._search(0)
         assert node.key == float('-inf')
         assert node.right is not None
@@ -213,7 +205,6 @@ class Test:
             node.left == float('-inf')
             node.right == float('inf')
             node = node.above
-
         second_chain = skip.create_node_chaining(1,10)
         skip.link_node_chain( second_chain, first_chain )
         while( second_chain is not None):
@@ -223,6 +214,33 @@ class Test:
             first_chain = first_chain.above
 
 
+    def test_single_deletion(self):
+        skip = SkipList()
+        skip.insert(10)
+        skip.delete(10)
+        assert 10 not in skip
+
+
+    def test_multiple_deletions(self):
+        skip = SkipList()
+        skip.insert(1)
+        skip.insert(4)
+        skip.insert(3)
+        skip.insert(2)
+        skip.insert(-2)
+        skip.insert(-20)
+        skip.insert(15)
+        skip.insert(-4)
+        skip.insert(10)
+
+        skip.delete(3)
+        assert 3 not in skip
+        skip.delete(2)
+        assert 2 not in skip
+        skip.delete(1)
+        assert 1 not in skip
+        skip.delete(4)
+        assert 4 not in skip
 
 
     #How to test speed complexity?
@@ -236,7 +254,7 @@ class Test:
 
         for number in to_delete:
             skip.delete(number)
-            assert number not in skip
+            #assert number not in skip
 
         for number in numbers:
             node = skip.search(number)
@@ -247,8 +265,19 @@ class Test:
                 assert node == number
 
 
-    def test_deletion(self):
-        pass
+    def test_search(self):
+        skip = SkipList()
+        numbers = random.sample( range(-1000, 1000), 100 )
+        to_delete = random.sample(numbers, 20)
+
+        for number in numbers:
+            skip.insert(number)
+
+        for number in numbers:
+            node = skip.search(number)
+            assert node is not None
+            assert node == number
+            assert node.bellow is None
 
 
     def test_get_above_level(self):

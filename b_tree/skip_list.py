@@ -54,7 +54,7 @@ class Node:
 
 
     def __repr__(self):
-        node_str = "/n\t{1}/n{2}  <{0}>  {3}\n\t{4} \n"
+        node_str = "\n\t{1}\n{2}  <{0}>  {3}\n\t{4} \n"
         above = self.above.key if self.above else None
         bellow = self.bellow.key if self.bellow else None
         right = self.right.key if self.right else None
@@ -163,21 +163,16 @@ class SkipList:
         return None
 
 
-    def _search( self, key:int, keep_path:bool = False )->['Node',deque]:
-        #if(keep_path):
-        #    stack = collections.deque()
-        node = self.upper_left
-        while( node.key != key ):
-            while( node.right is not None and node.right.key <= key ):
-        #        if(keep_path):
-        #            stack.append(node)
-                node = node.right
-            if(node.bellow is not None):
-                node = node.bellow
-            else:
-                break
+    def _search( self, key:int )->'Node':
+        node = self._search_recursion( self.upper_left, key )
+        return node
 
-        #return node, stack
+
+    def _search_recursion( self, node:'Node', key:int )->'Node':
+        if( node.right.key <= key ):
+            return self._search_recursion( node.right, key )
+        if( node.bellow is not None ):
+            return self._search_recursion( node.bellow, key )
         return node
 
 
