@@ -19,8 +19,6 @@ class Node:
     def __next__(self, key:int) -> 'Node':
         if( self.right is not None ):
             return self.right
-        if( self.bellow is not None ):
-            return self.bellow
         raise StopIteration()
 
 
@@ -55,6 +53,15 @@ class Node:
         return self.key == other.key
 
 
+    def __repr__(self):
+        node_str = "/n\t{1}/n{2}  <{0}>  {3}\n\t{4} \n"
+        above = self.above.key if self.above else None
+        bellow = self.bellow.key if self.bellow else None
+        right = self.right.key if self.right else None
+        left = self.left.key if self.left else None
+        return  node_str.format( self.key, above, left, right, bellow )
+
+
 class SkipList:
 
     def __init__( self ):
@@ -79,14 +86,6 @@ class SkipList:
             ans += str(node.key) + " "
             node = node.right
         return ans
-
-
-    def __next__( self, node:'Node' )-> 'Node':
-        if( node.right is not None ):
-            return node.right
-        if( node.bellow is not None ):
-            return node.bellow
-        return None
 
 
     def __iter__( self ):
@@ -136,7 +135,7 @@ class SkipList:
         return ans
 
 
-    def delete_node(self, key:int)->None:
+    def delete(self, key:int)->None:
         node = self.search(key)
         while(node is not None):
             SkipList._delete_node(node)
@@ -171,7 +170,7 @@ class SkipList:
         while( node.key != key ):
             while( node.right is not None and node.right.key <= key ):
         #        if(keep_path):
-         #           stack.append(node)
+        #            stack.append(node)
                 node = node.right
             if(node.bellow is not None):
                 node = node.bellow
@@ -217,9 +216,15 @@ class SkipList:
         return bottom
 
 
-    @classmethod
-    def link_node_chaining(cls, to_be_inserted:'Node', previous:'Node')->None:
-        pass
+    def link_node_chain(self, to_be_inserted:'Node', node:'Node')->None:
+        while(to_be_inserted is not None and node is not None):
+            other_node = node.right
+            node.right = to_be_inserted
+            to_be_inserted.left = node
+            other_node.left = to_be_inserted
+            to_be_inserted.right = other_node
+            to_be_inserted = to_be_inserted.above
+            node = SkipList.get_above_level_node(node)
 
 
     @classmethod
@@ -230,28 +235,18 @@ class SkipList:
             node = node.left
         if(node.above is None):
             raise Exception('end of the road')
+        return node.above
 
 
     def insert( self, key:int )->None:
         if(key in self):
             raise Exception("Operation not permitted, no repetitions are allowed.")
-
         node = self._search(key)
         node_level = SkipList._random_level()
         self._adjust_tree_level(node_level+1)
         to_be_inserted = SkipList.create_node_chaining(key, node_level)
-
-        while(to_be_inserted is not None and node is not None):
-            other_node = node.right
-            node.right = to_be_inserted
-            to_be_inserted.left = node
-            other_node.left = to_be_inserted
-            to_be_inserted.right = other_node
-            to_be_inserted = to_be_inserted.above
-            node = SkipList.get_above_level_node(node)
-
+        self.link_node_chain( to_be_inserted, node )
         self.length += 1
-
 
 
 
