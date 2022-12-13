@@ -4,6 +4,7 @@ import random
 
 
 class Test:
+
     def test_node_comparison(self):
         node = Node(50)
         assert (node == 50)
@@ -121,7 +122,7 @@ class Test:
         skip.insert(4)
         skip.insert(3)
         skip.insert(2)
-        skip.delete_node(3)
+        skip.delete(3)
         assert 3 not in skip
 
 
@@ -135,7 +136,7 @@ class Test:
         assert skip.number_of_levels == 5
 
 
-    def test_adjust_tree_level_should_increase_side_lists(self):
+    def test_size_of_side_lists(self):
         skip = SkipList()
         skip._adjust_tree_level(5)
         node = skip.upper_left
@@ -182,27 +183,7 @@ class Test:
         assert counter == 4
 
 
-    def test_node_chaining_has_desired_height(self):
-        node = SkipList.create_node_chaining(0,5)
-        counter = 0
-        while(node is not None and counter <= 1000):
-            counter += 1
-            node = node.above
-        assert 4 == 5
-        assert False is True
-        assert counter == 4
-        assert counter == 5
-
-
-    def test_empty_list(self):
-        skip = SkipList()
-        node = skip._search(0)
-        assert node.key == float('-inf')
-        assert node.right is not None
-        assert node.right.key == float('inf')
-
-
-    def test_node_chaining_has_desired_height(self):
+    def test_chain_has_desired_height(self):
         node = SkipList.create_node_chaining(0,5)
         counter = 0
         while(node is not None and counter <= 1000):
@@ -217,26 +198,57 @@ class Test:
         assert node.key == float('-inf')
         assert node.right is not None
         assert node.right.key == float('inf')
-        assert node.right.left is node
 
 
+    def test_insertion_links(self):
+        skip = SkipList()
+        level = 10
+        first_chain = skip.create_node_chaining(0,10)
+        skip._adjust_tree_level(10)
+        skip.link_node_chain(first_chain, skip.down_left)
+        node = first_chain
+        while(node is not None):
+            node.left is not None
+            node.right is not None
+            node.left == float('-inf')
+            node.right == float('inf')
+            node = node.above
+
+        second_chain = skip.create_node_chaining(1,10)
+        skip.link_node_chain( second_chain, first_chain )
+        while( second_chain is not None):
+            assert second_chain.left is first_chain
+            assert second_chain.right == float('inf')
+            second_chain = second_chain.above
+            first_chain = first_chain.above
+
+
+
+
+    #How to test speed complexity?
     def test_functional(self):
         skip = SkipList()
         numbers = random.sample( range(-1000, 1000), 100 )
         to_delete = random.sample(numbers, 20)
+
         for number in numbers:
             skip.insert(number)
+
         for number in to_delete:
-            skip.insert(number)
-        for number in to_delete:
+            skip.delete(number)
             assert number not in skip
+
         for number in numbers:
             node = skip.search(number)
-            if(number in numbers):
+            if(number in to_delete):
                 assert node is None
             else:
                 assert node is not None
-                assert node ==  number
+                assert node == number
+
+
+    def test_deletion(self):
+        pass
 
 
     def test_get_above_level(self):
@@ -244,34 +256,6 @@ class Test:
 
 
     def test_are_all_elements_sorted(self):
-        pass
-
-
-    def test_iter( self ):
-        pass
-
-
-    def test_next( self ):
-        pass
-
-
-    def test_is_fully_coneected(self):
-        pass
-
-
-    def test_is_list_fully_connected_after_one_insertion(self):
-        pass
-
-
-    def test_are_all_elements_sorted(self):
-        pass
-
-
-    def test_iter( self ):
-        pass
-
-
-    def test_next( self ):
         pass
 
 
