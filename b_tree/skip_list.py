@@ -4,6 +4,7 @@ from collections import deque
 import pytest
 from multipledispatch import dispatch
 
+
 INFINITY = float('inf')
 NEGATIVE_INFINITY = float('-inf')
 
@@ -54,7 +55,7 @@ class Node:
 
 
     def __repr__(self):
-        node_str = "\n\t{1}\n{2}  <{0}>  {3}\n\t{4} \n"
+        node_str = "  {1}\n{2}  <{0}>  {3}\n  {4}\n"
         above = self.above.key if self.above else None
         bellow = self.bellow.key if self.bellow else None
         right = self.right.key if self.right else None
@@ -72,6 +73,7 @@ class SkipList:
         self.length:int = 0
         self.upper_left.right = self.upper_right
         self.upper_right.left = self.upper_left
+        self.middle = None
 
 
     def __len__( self ):
@@ -104,20 +106,59 @@ class SkipList:
         return False
 
 
+    def __eq__( self, other:'SkipList' )->bool:
+
+        return str(self) == str(other)
+
+
     def __getitem__( self ):
         pass
 
 
-    def __add__( self, other:'SkipList' )->'SkipList':
-        pass
+    def __add__( self, other:'SkipList', deep_copy:bool = False )->'SkipList':
+        first = self.down_left
+        second = other.down_left
+        return_list = SkipList()
+        return_list_node = return_list.down_left
+
+        while( first != float('inf') or second != float('inf') ):
+            if( first < second ):
+                return_list.length += 1
+                return_list.link_node_chain(return_list_node, first)
+                first = first.next
+                return_list_node = return_list_node.next
+
+            elif( second < first ):
+                return_list.length += 1
+                return_list.link_node_chain(return_list_node, second)
+                second = second.next
+                return_list_node = return_list_node.next
+
+            if( first == second ):
+                return_list.length += 1
+                return_list.link_node_chain(return_list_node, first)
+                first = first.next
+                second = second.next
+                return_list_node = return_list_node.next
+
+        return return_list
 
 
-    def __iadd__( self, other:'SkipList' ):
-        pass
+    def __iadd__( self, other:'SkipList', deep_copy:bool = False )->None:
+        first = self.down_left
+        second = other.down_left.right
+        self._adjust_tree_level(other.number_of_levels)
 
-
-    def __del__( self ):
-        pass
+        while( second is not None and second != float('inf')):
+            if( second > first.next ):
+                self.link_node_chain( left_node, right_node )
+                second = second.next
+                self.length += 1
+            elif(second == first):
+                first = first.next
+                second = second.next
+            else:
+                first = first.next
 
 
     @classmethod
@@ -179,16 +220,12 @@ class SkipList:
     def _increase_one_treee_level( self ) -> None:
         left_top = Node(NEGATIVE_INFINITY)
         right_top = Node(INFINITY)
-
         left_top.right = right_top
         right_top.left = left_top
-
         self.upper_left.above = left_top
         self.upper_right.above = right_top
-
         left_top.bellow = self.upper_left
         right_top.bellow = self.upper_right
-
         self.upper_left = left_top
         self.upper_right = right_top
         self.number_of_levels += 1
@@ -244,6 +281,8 @@ class SkipList:
         self.length += 1
 
 
+    def split(self):
+        pass
 
 
 
