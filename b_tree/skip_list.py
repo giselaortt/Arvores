@@ -111,8 +111,17 @@ class SkipList:
         return str(self) == str(other)
 
 
-    def __getitem__( self ):
-        pass
+    def __getitem__( self, index ):
+        if isinstance(index, int):
+            if index < 0 :
+                index = len(self) + index
+            node  = self._search_per_index(index)
+            return node.key
+        if isinstance(index, slice):
+            pass
+        else:
+            raise ValueError(f'Linked list cannot be indexed with values of type {type(index)}')
+
 
 
     def __add__( self, other:'SkipList', deep_copy:bool = False )->'SkipList':
@@ -193,6 +202,14 @@ class SkipList:
             node.bellow.above = node.above
         if( node.above is not None ):
             node.above.bellow = node.bellow
+
+
+    def _search_per_index(self, index:int):
+        node = self.down_left
+        for _ in range(index):
+            node = node.right
+
+        return node
 
 
     def search( self, key:int ):

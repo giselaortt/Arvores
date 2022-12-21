@@ -280,6 +280,36 @@ class Test:
             assert node.bellow is None
 
 
+    def test_node_to_str(self):
+        node = Node(4)
+        node.right = Node(2)
+        node.left = Node(3)
+        print(str(node))
+        assert str(node) == "  None\n3  <4>  2\n  None\n"
+
+
+    def test_merge_empty_lists_should_be_empty_list(self):
+        a = SkipList()
+        b = SkipList()
+        c = a + b
+        assert len(c) == 0
+        assert isinstance(c, SkipList)
+
+
+    def test_equal(self):
+        a = SkipList()
+        b = SkipList()
+        a.insert(1)
+        a.insert(4)
+        a.insert(3)
+        a.insert(-1)
+        b.insert(1)
+        b.insert(4)
+        b.insert(3)
+        b.insert(-1)
+        assert a == b
+
+
     def test_get_above_level(self):
         pass
 
@@ -290,5 +320,37 @@ class Test:
 
     def test_is_fully_coneected(self):
         pass
+
+
+    def test_getitem(self):
+        skip = SkipList()
+        skip.insert(1)
+        skip.insert(4)
+        skip.insert(3)
+        skip.insert(2)
+        skip.insert(-2)
+        skip.insert(-20)
+        skip.insert(15)
+        skip.insert(-4)
+        assert skip[4] == 1
+
+
+    def test_slicing(self):
+        skip = SkipList()
+        skip.insert(1)
+        skip.insert(4)
+        skip.insert(3)
+        skip.insert(2)
+        skip.insert(-2)
+        skip.insert(-20)
+        skip.insert(15)
+        skip.insert(-4)
+        b = SkipList()
+        b.insert(-2)
+        b.insert(-20)
+        b.insert(-4)
+        b.insert(1)
+        assert skip[4] == 1
+
 
 
