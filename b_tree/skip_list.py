@@ -1,9 +1,8 @@
 import random
-from typing import Type
+from typing import Type, Union
 from collections import deque
 import pytest
 from multipledispatch import dispatch
-
 
 INFINITY = float('inf')
 NEGATIVE_INFINITY = float('-inf')
@@ -117,11 +116,21 @@ class SkipList:
                 index = len(self) + index
             node  = self._search_per_index(index)
             return node.key
+        '''if isinstance(index, tuple):
+            answer = SkipList()
+            node = self.down_left
+            return answer
         if isinstance(index, slice):
-            pass
+            answer = SkipList()
+            node = self.down_left
+            return answer
+        '''
         else:
-            raise ValueError(f'Linked list cannot be indexed with values of type {type(index)}')
+            raise ValueError(f'SkipList cannot be indexed with values of type {type(index)}')
 
+
+    def __delitem__(key):
+        pass
 
 
     def __add__( self, other:'SkipList', deep_copy:bool = False )->'SkipList':
