@@ -335,22 +335,39 @@ class Test:
         assert skip[4] == 1
 
 
-    def test_slicing(self):
+    def test_getitem_tuple(self):
         skip = SkipList()
-        skip.insert(1)
-        skip.insert(4)
-        skip.insert(3)
-        skip.insert(2)
-        skip.insert(-2)
         skip.insert(-20)
-        skip.insert(15)
         skip.insert(-4)
+        skip.insert(-2)
+        skip.insert(1)
+        skip.insert(2)
+        skip.insert(3)
+        skip.insert(4)
+        skip.insert(15)
         b = SkipList()
         b.insert(-2)
-        b.insert(-20)
-        b.insert(-4)
         b.insert(1)
-        assert skip[4] == 1
+        b.insert(2)
+        b.insert(3)
+        assert skip[2,3,4,5] == b
+
+
+    def test_getitem_slice(self):
+        skip = SkipList()
+        skip.insert(-20)
+        skip.insert(-4)
+        skip.insert(-2)
+        skip.insert(1)
+        skip.insert(2)
+        skip.insert(3)
+        skip.insert(4)
+        skip.insert(15)
+        b = SkipList()
+        b.insert(1)
+        b.insert(-2)
+        assert skip[2:4] == b
+        #assert skip[0:4:2] == b
 
 
 

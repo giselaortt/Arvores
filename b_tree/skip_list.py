@@ -16,7 +16,7 @@ class Node:
     key:int
     level:int = 1
 
-    def __next__(self, key:int) -> 'Node':
+    def __next__(self) -> 'Node':
         if( self.right is not None ):
             return self.right
         raise StopIteration()
@@ -116,15 +116,29 @@ class SkipList:
                 index = len(self) + index
             node  = self._search_per_index(index)
             return node.key
-        '''if isinstance(index, tuple):
-            answer = SkipList()
+        if isinstance(index, tuple):
             node = self.down_left
+            answer = SkipList()
+            ind = 0
+            while(node != float('inf')):
+                node = next(node)
+                if(ind in index):
+                    answer.insert(node.key)
+                ind += 1
             return answer
         if isinstance(index, slice):
+            index.stop
             answer = SkipList()
             node = self.down_left
+            node = next(node)
+            answer_node_ptr = answer.down_left
+            for i in range(0,index.start):
+                node = next(node)
+            for i in range(index.stop - index.start):
+                answer._insert(node.key, answer_node_ptr)
+                node = next(node)
+                answer_node_ptr = next(answer_node_ptr)
             return answer
-        '''
         else:
             raise ValueError(f'SkipList cannot be indexed with values of type {type(index)}')
 
@@ -300,6 +314,14 @@ class SkipList:
         if(key in self):
             raise Exception("Operation not permitted, no repetitions are allowed.")
         node = self._search(key)
+        node_level = SkipList._random_level()
+        self._adjust_tree_level(node_level+1)
+        to_be_inserted = SkipList.create_node_chaining(key, node_level)
+        self.link_node_chain( to_be_inserted, node )
+        self.length += 1
+
+
+    def _insert( self, key:int, node:'Node' )->None:
         node_level = SkipList._random_level()
         self._adjust_tree_level(node_level+1)
         to_be_inserted = SkipList.create_node_chaining(key, node_level)
