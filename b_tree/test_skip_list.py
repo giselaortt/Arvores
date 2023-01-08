@@ -32,9 +32,8 @@ class Test:
 
     def test_search_on_empty(self):
         skip = SkipList()
-        ###################
-        #assert skip._search(50) is not None
-        #assert skip._search(50).key == float('-inf')
+        assert skip._search(50) is not None
+        assert skip._search(50).key == float('-inf')
 
 
     def test_search_on_length_one_list(self):
@@ -185,7 +184,6 @@ class Test:
 
     def test_empty_list(self):
         skip = SkipList()
-        #############
         node = skip._search(0)
         assert node.key == float('-inf')
         assert node.right is not None
@@ -232,7 +230,6 @@ class Test:
         skip.insert(15)
         skip.insert(-4)
         skip.insert(10)
-
         skip.delete(3)
         assert 3 not in skip
         skip.delete(2)
@@ -254,7 +251,7 @@ class Test:
 
         for number in to_delete:
             skip.delete(number)
-            #assert number not in skip
+            assert number not in skip
 
         for number in numbers:
             node = skip.search(number)
@@ -368,6 +365,19 @@ class Test:
         b.insert(-2)
         assert skip[2:4] == b
         #assert skip[0:4:2] == b
+
+
+    def test_add_lists(self):
+        skip = SkipList()
+        other = SkipList()
+        skip.insert(-2)
+        skip.insert(3)
+        other.insert(2)
+        other.insert(-3)
+        result = skip + other
+        assert str(result) == '[-inf,-3,-2,2,3,in]'
+
+
 
 
 
