@@ -59,6 +59,7 @@ class Node:
         bellow = self.bellow.key if self.bellow else None
         right = self.right.key if self.right else None
         left = self.left.key if self.left else None
+
         return  node_str.format( self.key, above, left, right, bellow )
 
 
@@ -86,6 +87,7 @@ class SkipList:
         while( node is not None ):
             ans += str(node.key) + " "
             node = node.right
+
         return ans
 
 
@@ -116,6 +118,7 @@ class SkipList:
                 index = len(self) + index
             node  = self._search_per_index(index)
             return node.key
+
         if isinstance(index, tuple):
             node = self.down_left
             answer = SkipList()
@@ -126,6 +129,7 @@ class SkipList:
                     answer.insert(node.key)
                 ind += 1
             return answer
+
         if isinstance(index, slice):
             index.stop
             answer = SkipList()
@@ -227,14 +231,6 @@ class SkipList:
             node.above.bellow = node.bellow
 
 
-    def _search_per_index(self, index:int):
-        node = self.down_left
-        for _ in range(index):
-            node = node.right
-
-        return node
-
-
     def search( self, key:int ):
         if( self.length == 0 ):
             return None
@@ -244,16 +240,27 @@ class SkipList:
         return None
 
 
-    def _search( self, key:int )->'Node':
-        node = self._search_recursion( self.upper_left, key )
+    #@multipledispatch(int)
+    def _search_per_index(self, index:int)->'Node':
+        node = self.down_left
+        for _ in range(index):
+            node = node.right
+
         return node
 
 
-    def _search_recursion( self, node:'Node', key:int )->'Node':
+    @dispatch(int)
+    def _search( self, key:int )->'Node':
+        node = self._search( self.upper_left, key )
+        return node
+
+
+    @dispatch(object,int)
+    def _search( self, node:'Node', key:int )->'Node':
         if( node.right.key <= key ):
-            return self._search_recursion( node.right, key )
+            return self._search( node.right, key )
         if( node.bellow is not None ):
-            return self._search_recursion( node.bellow, key )
+            return self._search( node.bellow, key )
         return node
 
 
@@ -294,6 +301,7 @@ class SkipList:
             node.right = to_be_inserted
             to_be_inserted.left = node
             other_node.left = to_be_inserted
+
             to_be_inserted.right = other_node
             to_be_inserted = to_be_inserted.above
             node = SkipList.get_above_level_node(node)

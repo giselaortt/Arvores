@@ -13,4 +13,5 @@ cov-bst:
 cov-avl:
 	pytest --cov-report term-missing --cov=avl
 
-
+cov-b:
+	pytest --cov-report term-missing --cov=b_tree

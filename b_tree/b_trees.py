@@ -1,3 +1,4 @@
+
 from copy import deepcopy
 from multipledispatch import dispatch
 import collections
@@ -9,14 +10,19 @@ import skip_list
 class Node():
     precision = 0.00001
 
-    def __init__( self, key:int, parentNode:'Node' = None, children:list = None ):
-        self.keys = skip_list( key )
+    def __init__( self, key:int, parentNode:'Node' = None, children:list = None, max_len:int = 10 ):
+        self.keys = skip_list( )
+        self.keys.insert( key )
         self.numberOfChildren = 0
         self.parent = parentNode
-        self.children = children
         if( children is not None ):
+            #deep copy is important!
+            self.children = list(children)
             for child in children:
                 child.parent = self
+        else:
+            self.children = None
+        self.max_len = max_len
 
 
     def isLeaf( self ) -> bool:
@@ -25,7 +31,9 @@ class Node():
 
     @dispatch( object )
     def __eq__( self, other:'Node' ):
-        return (self.keys == other.keys)
+        pass
+        #implement it on the skip list first...
+        #return (self.keys == other.keys)
 
 
     def __repr__( self ):
@@ -33,17 +41,19 @@ class Node():
 
 
     def hasExceded( self ):
-        return ( len(self.keys) >= 3 )
+        return ( len(self.keys) >= self.max_len )
 
 
-    @dispatch( object )
+    """@dispatch( object )
     def __contains__( self, other:'Node' ):
         if(self.children is None):
             return False
-        for child in self.children:
-            if child is other:
-                return True
-        return False
+        #for child in self.children:
+        #    if child is other:
+        #        return True
+        #return False
+        pass
+    """
 
 
     @dispatch( int )
@@ -61,8 +71,7 @@ class Node():
 
     def insertKey( self, key:int ) -> None:
         #should follow skip list insertion methods
-        self.keys.append(key)
-        self.keys = sorted(self.keys)
+        self.keys.insert(key)
 
 
     def removeChild( self, child:'None' ) -> None:
@@ -75,22 +84,24 @@ class Node():
 
 
     def split( self ):
-        newLeftNode = Node( self.keys[0], parentNode = self )
-        newRightNode = Node( self.keys[2], parentNode = self )
+        #newLeftNode = Node( self.keys[0], parentNode = self )
+        #newRightNode = Node( self.keys[2], parentNode = self )
         if( not self.isLeaf() ):
             newLeftNode.children = self.children[0:2]
             newRightNode.children = self.children[2:4]
-            self.children[0].parent = newLeftNode
-            self.children[1].parent = newLeftNode
-            self.children[2].parent = newRightNode
-            self.children[3].parent = newRightNode
+            #self.children[0].parent = newLeftNode
+            #self.children[1].parent = newLeftNode
+            #self.children[2].parent = newRightNode
+            #self.children[3].parent = newRightNode
         self.children = [newLeftNode, newRightNode]
         #should be a definition of a new skip list
-        self.keys = [self.keys[1]]
+        #self.keys = [self.keys[1]]
+        self.keys = SkipList()
+        #self.keys.insert(self.keys[1])
 
 
     def insertNode( self, node:'Node' )->None:
-        if( node.keys[0] < self.keys[0] ):
+        """if( node.keys[0] < self.keys[0] ):
             self.keys.insert( 0, node.keys[0] )
             self.children = node.children + self.children
         elif( node.keys[0] > self.keys[-1] ):
@@ -101,6 +112,7 @@ class Node():
             self.children = [self.children[0]]+node.children+[self.children[1]]
         for child in self.children:
             child.parent = self
+        """
 
 
 class BTree():
@@ -163,11 +175,13 @@ class BTree():
             raise TypeError('expected type Node')
         if( key in node or node.isLeaf() ):
             return node
+        """
         if( key < node.keys[0] ):
             return BTree._search( key, node.children[0] )
         if( node.isThreeNode() and key > node.keys[1] ):
             return BTree._search( key, node.children[2] )
         return BTree._search( key, node.children[1] )
+        """
 
 
     def insert( self, key:int ) -> None:
