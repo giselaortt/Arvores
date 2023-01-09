@@ -4,6 +4,7 @@ from collections import deque
 import pytest
 from multipledispatch import dispatch
 
+
 INFINITY = float('inf')
 NEGATIVE_INFINITY = float('-inf')
 
@@ -119,7 +120,7 @@ class SkipList:
             node  = self._search_per_index(index)
             return node.key
 
-        if isinstance(index, tuple):
+        elif isinstance(index, tuple):
             node = self.down_left
             answer = SkipList()
             ind = 0
@@ -130,7 +131,7 @@ class SkipList:
                 ind += 1
             return answer
 
-        if isinstance(index, slice):
+        elif isinstance(index, slice):
             index.stop
             answer = SkipList()
             node = self.down_left
@@ -151,31 +152,34 @@ class SkipList:
         pass
 
 
-    def __add__( self, other:'SkipList', deep_copy:bool = False )->'SkipList':
-        first = self.down_left
-        second = other.down_left
+    #found error 
+    #realized now that a shallow copy version might not be possible as we still need to navigate the list backwards for insertion.
+    def __add__( self, other:'SkipList', deep_copy:bool = True )->'SkipList':
+        first = self.down_left.right
+        second = other.down_left.right
         return_list = SkipList()
+        #return_list._adjust_tree_level( max(self.number_of_levels, other.number_of_levels)+1)
         return_list_node = return_list.down_left
 
         while( first != float('inf') or second != float('inf') ):
             if( first < second ):
                 return_list.length += 1
-                return_list.link_node_chain(return_list_node, first)
-                first = first.next
-                return_list_node = return_list_node.next
+                return_list.link_node_chain(first, return_list_node)
+                first = first.right
+                return_list_node = return_list_node.right
 
             elif( second < first ):
                 return_list.length += 1
-                return_list.link_node_chain(return_list_node, second)
-                second = second.next
-                return_list_node = return_list_node.next
+                return_list.link_node_chain(second, return_list_node)
+                second = second.right
+                return_list_node = return_list_node.right
 
             if( first == second ):
                 return_list.length += 1
-                return_list.link_node_chain(return_list_node, first)
-                first = first.next
-                second = second.next
-                return_list_node = return_list_node.next
+                return_list.link_node_chain(first, return_list_node)
+                first = first.right
+                second = second.right
+                return_list_node = return_list_node.right
 
         return return_list
 
@@ -186,15 +190,15 @@ class SkipList:
         self._adjust_tree_level(other.number_of_levels)
 
         while( second is not None and second != float('inf')):
-            if( second > first.next ):
+            if( second > first.right ):
                 self.link_node_chain( left_node, right_node )
-                second = second.next
+                second = second.right
                 self.length += 1
             elif(second == first):
-                first = first.next
-                second = second.next
+                first = first.right
+                second = second.right
             else:
-                first = first.next
+                first = first.right
 
 
     @classmethod
@@ -295,16 +299,16 @@ class SkipList:
         return bottom
 
 
-    def link_node_chain(self, to_be_inserted:'Node', node:'Node')->None:
-        while(to_be_inserted is not None and node is not None):
-            other_node = node.right
-            node.right = to_be_inserted
-            to_be_inserted.left = node
+    def link_node_chain(self, to_be_inserted:'Node', list_node:'Node')->None:
+        while(to_be_inserted is not None and list_node is not None):
+            other_node = list_node.right
+            list_node.right = to_be_inserted
+            to_be_inserted.left = list_node
             other_node.left = to_be_inserted
 
             to_be_inserted.right = other_node
             to_be_inserted = to_be_inserted.above
-            node = SkipList.get_above_level_node(node)
+            list_node = SkipList.get_above_level_node(list_node)
 
 
     @classmethod
@@ -313,7 +317,7 @@ class SkipList:
             return node.above
         while(node.above is None and node.left is not None):
             node = node.left
-        if(node.above is None):
+        if(node is None):
             raise Exception('end of the road')
         return node.above
 
