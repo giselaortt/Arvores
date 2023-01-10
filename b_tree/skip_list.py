@@ -152,34 +152,28 @@ class SkipList:
         pass
 
 
-    #found error 
-    #realized now that a shallow copy version might not be possible as we still need to navigate the list backwards for insertion.
     def __add__( self, other:'SkipList', deep_copy:bool = True )->'SkipList':
+        if( not deep_copy  ):
+            raise NotImplementedError
         first = self.down_left.right
         second = other.down_left.right
         return_list = SkipList()
-        #return_list._adjust_tree_level( max(self.number_of_levels, other.number_of_levels)+1)
         return_list_node = return_list.down_left
 
-        while( first != float('inf') or second != float('inf') ):
+        while(first != float('inf') or second != float('inf')):
             if( first < second ):
-                return_list.length += 1
-                return_list.link_node_chain(first, return_list_node)
-                first = first.right
-                return_list_node = return_list_node.right
-
+                return_list._insert( first.key, return_list_node )
+                first = next(first)
+                return_list_node = next(return_list_node)
             elif( second < first ):
-                return_list.length += 1
-                return_list.link_node_chain(second, return_list_node)
-                second = second.right
-                return_list_node = return_list_node.right
-
-            if( first == second ):
-                return_list.length += 1
-                return_list.link_node_chain(first, return_list_node)
-                first = first.right
-                second = second.right
-                return_list_node = return_list_node.right
+                return_list._insert( second.key, return_list_node )
+                second = next(second)
+                return_list_node = next(return_list_node)
+            elif( first == second ):
+                return_list._insert( second.key, return_list_node )
+                first = next(first)
+                second = next(second)
+                return_list_node = next(return_list_node)
 
         return return_list
 
@@ -317,22 +311,25 @@ class SkipList:
             return node.above
         while(node.above is None and node.left is not None):
             node = node.left
-        if(node is None):
+        if(node.above is None):
             raise Exception('end of the road')
         return node.above
 
 
+    @dispatch((int,float))
     def insert( self, key:int )->None:
         if(key in self):
             raise Exception("Operation not permitted, no repetitions are allowed.")
         node = self._search(key)
-        node_level = SkipList._random_level()
-        self._adjust_tree_level(node_level+1)
-        to_be_inserted = SkipList.create_node_chaining(key, node_level)
-        self.link_node_chain( to_be_inserted, node )
-        self.length += 1
+        #node_level = SkipList._random_level()
+        #self._adjust_tree_level(node_level+1)
+        #to_be_inserted = SkipList.create_node_chaining(key, node_level)
+        #self.link_node_chain( to_be_inserted, node )
+        #self.length += 1
+        self._insert(key,node)
 
 
+    @dispatch((int,float), object)
     def _insert( self, key:int, node:'Node' )->None:
         node_level = SkipList._random_level()
         self._adjust_tree_level(node_level+1)

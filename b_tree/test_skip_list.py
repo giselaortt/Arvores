@@ -375,9 +375,7 @@ class Test:
         other.insert(2)
         other.insert(-3)
         result = skip + other
-        assert str(result) == '[-inf,-3,-2,2,3,in]'
-
-
+        assert str(result) == '-inf -3 -2 2 3 inf '
 
 
 
