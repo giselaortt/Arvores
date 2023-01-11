@@ -152,14 +152,11 @@ class SkipList:
         pass
 
 
-    def __add__( self, other:'SkipList', deep_copy:bool = True )->'SkipList':
-        if( not deep_copy  ):
-            raise NotImplementedError
+    def __add__( self, other:'SkipList')->'SkipList':
         first = self.down_left.right
         second = other.down_left.right
         return_list = SkipList()
         return_list_node = return_list.down_left
-
         while(first != float('inf') or second != float('inf')):
             if( first < second ):
                 return_list._insert( first.key, return_list_node )
@@ -178,21 +175,20 @@ class SkipList:
         return return_list
 
 
-    def __iadd__( self, other:'SkipList', deep_copy:bool = False )->None:
+    def __iadd__( self, other:'SkipList', deep_copy:bool=True )->None:
         first = self.down_left
         second = other.down_left.right
         self._adjust_tree_level(other.number_of_levels)
-
-        while( second is not None and second != float('inf')):
-            if( second > first.right ):
-                self.link_node_chain( left_node, right_node )
-                second = second.right
-                self.length += 1
+        while( second != float('inf')):
+            if( second > first and second < first.right ):
+                self._insert( second.key, first )
+                second = next(second)
             elif(second == first):
-                first = first.right
-                second = second.right
+                first = next(first)
+                second = next(second)
             else:
-                first = first.right
+                first = next(first)
+        return self
 
 
     @classmethod
