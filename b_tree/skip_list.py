@@ -5,8 +5,8 @@ import pytest
 from multipledispatch import dispatch
 
 
-INFINITY = float('inf')
-NEGATIVE_INFINITY = float('-inf')
+END_OF_LIST = float('inf')
+BEGINNING_OF_LIST = float('-inf')
 
 
 class Node:
@@ -67,8 +67,8 @@ class Node:
 class SkipList:
 
     def __init__( self ):
-        self.upper_left:'Node' = Node(NEGATIVE_INFINITY)
-        self.upper_right:'Node' = Node(INFINITY)
+        self.upper_left:'Node' = Node(BEGINNING_OF_LIST)
+        self.upper_right:'Node' = Node(END_OF_LIST)
         self.down_left:'Node' = self.upper_left
         self.number_of_levels:int = 1
         self.length:int = 0
@@ -124,7 +124,7 @@ class SkipList:
             node = self.down_left
             answer = SkipList()
             ind = 0
-            while(node != float('inf')):
+            while(node != END_OF_LIST):
                 node = next(node)
                 if(ind in index):
                     answer.insert(node.key)
@@ -140,7 +140,7 @@ class SkipList:
             for i in range(0,index.start):
                 node = next(node)
             for i in range(index.stop - index.start):
-                answer._insert(node.key, answer_node_ptr)
+                answer.insert(node.key, answer_node_ptr)
                 node = next(node)
                 answer_node_ptr = next(answer_node_ptr)
             return answer
@@ -157,17 +157,17 @@ class SkipList:
         second = other.down_left.right
         return_list = SkipList()
         return_list_node = return_list.down_left
-        while(first != float('inf') or second != float('inf')):
+        while(first != END_OF_LIST or second != END_OF_LIST):
             if( first < second ):
-                return_list._insert( first.key, return_list_node )
+                return_list.insert( first.key, return_list_node )
                 first = next(first)
                 return_list_node = next(return_list_node)
             elif( second < first ):
-                return_list._insert( second.key, return_list_node )
+                return_list.insert( second.key, return_list_node )
                 second = next(second)
                 return_list_node = next(return_list_node)
             elif( first == second ):
-                return_list._insert( second.key, return_list_node )
+                return_list.insert( second.key, return_list_node )
                 first = next(first)
                 second = next(second)
                 return_list_node = next(return_list_node)
@@ -179,9 +179,9 @@ class SkipList:
         first = self.down_left
         second = other.down_left.right
         self._adjust_tree_level(other.number_of_levels)
-        while( second != float('inf')):
+        while( second != END_OF_LIST):
             if( second > first and second < first.right ):
-                self._insert( second.key, first )
+                self.insert( second.key, first )
                 second = next(second)
             elif(second == first):
                 first = next(first)
@@ -259,8 +259,8 @@ class SkipList:
 
 
     def _increase_one_treee_level( self ) -> None:
-        left_top = Node(NEGATIVE_INFINITY)
-        right_top = Node(INFINITY)
+        left_top = Node(BEGINNING_OF_LIST)
+        right_top = Node(END_OF_LIST)
         left_top.right = right_top
         right_top.left = left_top
         self.upper_left.above = left_top
@@ -317,16 +317,11 @@ class SkipList:
         if(key in self):
             raise Exception("Operation not permitted, no repetitions are allowed.")
         node = self._search(key)
-        #node_level = SkipList._random_level()
-        #self._adjust_tree_level(node_level+1)
-        #to_be_inserted = SkipList.create_node_chaining(key, node_level)
-        #self.link_node_chain( to_be_inserted, node )
-        #self.length += 1
-        self._insert(key,node)
+        self.insert(key,node)
 
 
     @dispatch((int,float), object)
-    def _insert( self, key:int, node:'Node' )->None:
+    def insert( self, key:int, node:'Node' )->None:
         node_level = SkipList._random_level()
         self._adjust_tree_level(node_level+1)
         to_be_inserted = SkipList.create_node_chaining(key, node_level)
@@ -336,6 +331,5 @@ class SkipList:
 
     def split(self):
         pass
-
 
 
