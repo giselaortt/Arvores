@@ -378,4 +378,33 @@ class Test:
         assert str(result) == '-inf -3 -2 2 3 inf '
 
 
+    def test_add_inplace_with_deep_copy(self):
+        skip = SkipList()
+        other = SkipList()
+        skip.insert(-2)
+        skip.insert(3)
+        other.insert(2)
+        other.insert(-3)
+        skip += other
+        #testing the deep copy
+        other.insert(5)
+        assert str(skip) == '-inf -3 -2 2 3 inf '
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
