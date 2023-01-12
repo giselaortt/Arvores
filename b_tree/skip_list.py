@@ -236,7 +236,7 @@ class SkipList:
 
     #@multipledispatch(int)
     def _search_per_index(self, index:int)->'Node':
-        node = self.down_left
+        node = self.down_left.right
         for _ in range(index):
             node = node.right
 

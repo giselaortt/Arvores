@@ -1,17 +1,16 @@
-
 from copy import deepcopy
 from multipledispatch import dispatch
 import collections
 from array import array
 from typing import Type
-import skip_list
+from skip_list import SkipList
 
 
 class Node():
     precision = 0.00001
 
     def __init__( self, key:int, parentNode:'Node' = None, children:list = None, max_len:int = 10 ):
-        self.keys = skip_list( )
+        self.keys = SkipList( )
         self.keys.insert( key )
         self.numberOfChildren = 0
         self.parent = parentNode
@@ -31,9 +30,7 @@ class Node():
 
     @dispatch( object )
     def __eq__( self, other:'Node' ):
-        pass
-        #implement it on the skip list first...
-        #return (self.keys == other.keys)
+        return (self.keys == other.keys)
 
 
     def __repr__( self ):
@@ -44,34 +41,13 @@ class Node():
         return ( len(self.keys) >= self.max_len )
 
 
-    """@dispatch( object )
-    def __contains__( self, other:'Node' ):
-        if(self.children is None):
-            return False
-        #for child in self.children:
-        #    if child is other:
-        #        return True
-        #return False
-        pass
-    """
-
-
-    @dispatch( int )
+    @dispatch( (int,float) )
     def __contains__( self, value:int ):
         return ( value in self.keys )
 
 
-    def isTwoNode( self ) -> bool:
-        return len(self.keys)==1
-
-
-    def isThreeNode( self ) -> bool:
-        return len(self.keys) == 2
-
-
-    def insertKey( self, key:int ) -> None:
-        #should follow skip list insertion methods
-        self.keys.insert(key)
+    def insert( self, key:int ) -> None:
+       self.keys.insert(key)
 
 
     def removeChild( self, child:'None' ) -> None:
@@ -84,35 +60,11 @@ class Node():
 
 
     def split( self ):
-        #newLeftNode = Node( self.keys[0], parentNode = self )
-        #newRightNode = Node( self.keys[2], parentNode = self )
-        if( not self.isLeaf() ):
-            newLeftNode.children = self.children[0:2]
-            newRightNode.children = self.children[2:4]
-            #self.children[0].parent = newLeftNode
-            #self.children[1].parent = newLeftNode
-            #self.children[2].parent = newRightNode
-            #self.children[3].parent = newRightNode
-        self.children = [newLeftNode, newRightNode]
-        #should be a definition of a new skip list
-        #self.keys = [self.keys[1]]
-        self.keys = SkipList()
-        #self.keys.insert(self.keys[1])
+        pass
 
 
     def insertNode( self, node:'Node' )->None:
-        """if( node.keys[0] < self.keys[0] ):
-            self.keys.insert( 0, node.keys[0] )
-            self.children = node.children + self.children
-        elif( node.keys[0] > self.keys[-1] ):
-            self.keys.append( node.keys[0] )
-            self.children.extend(node.children)
-        else:
-            self.keys.insert( 1, node.keys[0] )
-            self.children = [self.children[0]]+node.children+[self.children[1]]
-        for child in self.children:
-            child.parent = self
-        """
+        pass
 
 
 class BTree():
@@ -128,7 +80,8 @@ class BTree():
     def __repr__( self ):
         if( self.root is None ):
             return "< >"
-        ans = "<"+ " ".join([str(node) for node in self.pre_order()])+">"
+        #ans = "<"+ " ".join([str(node) for node in self.pre_order()])+">"
+        ans = "<"+ " ".join([str(self.pre_order())])+">"
         return ans
 
 
@@ -142,11 +95,12 @@ class BTree():
 
     @staticmethod
     def _pre_order( node:Type[Node], answer:list ) -> list:
-        answer.append(node)
-        if( node.children is None ):
-            return
-        for child in node.children:
-            BTree._pre_order( child, answer )
+        pass
+    #    answer.append(node)
+    #    if( node.children is None ):
+    #        return
+    #    for child in node.children:
+    #        BTree._pre_order( child, answer )
 
 
     def isEmpty( self ):
@@ -189,7 +143,7 @@ class BTree():
             self.root = Node( key )
             return
         node = self._findNodeToInsert( key )
-        node.insertKey(key)
+        node.insert(key)
         self.bubbleUp(node)
 
 

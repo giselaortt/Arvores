@@ -319,17 +319,23 @@ class Test:
         pass
 
 
-    def test_getitem(self):
+    def test_getitem_with_int(self):
         skip = SkipList()
-        skip.insert(1)
-        skip.insert(4)
-        skip.insert(3)
-        skip.insert(2)
-        skip.insert(-2)
         skip.insert(-20)
-        skip.insert(15)
         skip.insert(-4)
-        assert skip[4] == 1
+        skip.insert(-2)
+        skip.insert(1)
+        skip.insert(2)
+        skip.insert(3)
+        skip.insert(4)
+        skip.insert(15)
+        assert len(skip) == 8
+        assert skip[3] == 1
+        assert skip[4] == 2
+        assert skip[0] == -20
+        assert skip[-1] == 15
+        assert skip[1] == -4
+        assert skip[2] == -2
 
 
     def test_getitem_tuple(self):
