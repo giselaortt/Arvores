@@ -25,46 +25,64 @@ class Node():
 
 
     def isLeaf( self ) -> bool:
+
         return ( self.children is None )
 
 
     @dispatch( object )
+
     def __eq__( self, other:'Node' ):
         return (self.keys == other.keys)
 
 
     def __repr__( self ):
+
         return "["+ ", ".join([str(value) for value in self.keys])+"]"
 
 
+    def __len__( self ):
+
+        return len(self.keys)
+
+
     def hasExceded( self ):
+
         return ( len(self.keys) >= self.max_len )
 
 
     @dispatch( (int,float) )
     def __contains__( self, value:int ):
+
         return ( value in self.keys )
 
 
+    @dispatch(int)
     def insert( self, key:int ) -> None:
        self.keys.insert(key)
 
 
+    #should this 2 functions become one ?
+    @dispatch(object)
+    def insert( self, node:'Node' ) -> None:
+       raise NotImplementedError
+
+
+    #should this 2 functions become one ?
     def removeChild( self, child:'None' ) -> None:
-        if( self.children is None ):
-            return
-        for i in range( len(self.children) ):
-            if( self.children[i] is child ):
-                del self.children[i]
-                return
+       raise NotImplementedError
+
+
+    def promoteChild( self, child:'None' )->None:
+       raise NotImplementedError
 
 
     def split( self ):
-        pass
-
-
-    def insertNode( self, node:'Node' )->None:
-        pass
+        right_child = SkipList()
+        left_child = SkipList()
+        middle = len(slef/2)
+        right_child.keys = self.keys[0:len(self/2)]
+        left_child.keys = self.keys[len(self/2)+1:]
+        self.key = self.keys[ len(self)/2 ]
 
 
 class BTree():
@@ -74,6 +92,7 @@ class BTree():
 
 
     def __contains__( self, key:int ) -> bool:
+
         return ( self.search( key ) is not None )
 
 
@@ -96,14 +115,10 @@ class BTree():
     @staticmethod
     def _pre_order( node:Type[Node], answer:list ) -> list:
         pass
-    #    answer.append(node)
-    #    if( node.children is None ):
-    #        return
-    #    for child in node.children:
-    #        BTree._pre_order( child, answer )
 
 
     def isEmpty( self ):
+
         return ( self.root is None )
 
 
@@ -129,6 +144,7 @@ class BTree():
             raise TypeError('expected type Node')
         if( key in node or node.isLeaf() ):
             return node
+        
         """
         if( key < node.keys[0] ):
             return BTree._search( key, node.children[0] )
@@ -152,7 +168,7 @@ class BTree():
             node.split()
             if(node.parent is not None):
                 node.parent.removeChild( node )
-                node.parent.insertNode( node )
+                node.parent.insert( node )
                 node = node.parent
 
 
