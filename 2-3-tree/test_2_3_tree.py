@@ -6,14 +6,14 @@ class Test():
 
     def test_insert_key( self ):
         node = Node(1)
-        node.insertKey(2)
+        node.insert(2)
         assert 2 in node
 
 
     def test_remove_child( self ):
         node = Node(4)
-        node.insertKey(5)
-        node.insertKey(6)
+        node.insert(5)
+        node.insert(6)
         node.split()
         node.removeChild(node.children[1])
         assert node.children == [4]
@@ -24,7 +24,7 @@ class Test():
 
 
     @staticmethod
-    def is_in_order(nums):
+    def is_ordered(nums):
         return all(nums[i-1] < nums[i] for i in range(1, len(nums)))
 
 
@@ -36,7 +36,7 @@ class Test():
     @staticmethod
     def children_should_be_ordered(node):
         if( node.children is not None ):
-            assert Test.is_in_order(node.children)
+            assert Test.is_ordered(node.children)
 
 
     @staticmethod
@@ -51,6 +51,7 @@ class Test():
     def children_types(node):
         assert (node.children is None or all([type(child) is Node for child in node.children]))
 
+
     @staticmethod
     def keys_should_have_type_int(node):
         assert all([type(key)is int for key in node.keys])
@@ -63,7 +64,7 @@ class Test():
 
     @staticmethod
     def node_keys_should_be_ordered(node):
-        assert Test.is_in_order(node.keys)
+        assert Test.is_ordered(node.keys)
 
 
     @staticmethod
@@ -112,10 +113,10 @@ class Test():
         node = Node(1)
         node.children = [Node(-1)]
         other = Node(4)
-        other.insertKey(5)
-        other.insertKey(6)
+        other.insert(5)
+        other.insert(6)
         other.split()
-        node.insertNode(other)
+        node.insert(other)
         assert node == [1,5]
         assert node.children == [-1,4,6]
 
@@ -124,10 +125,10 @@ class Test():
         node = Node(7)
         node.children = [Node(8)]
         other = Node(4)
-        other.insertKey(5)
-        other.insertKey(6)
+        other.insert(5)
+        other.insert(6)
         other.split()
-        node.insertNode(other)
+        node.insert(other)
         assert node == [5,7]
         assert node.children == [4,6,8]
 
@@ -168,8 +169,8 @@ class Test():
 
     def test_is_leaf_when_not_leaf( self ):
         node = Node(2)
-        node.insertKey(3)
-        node.insertKey(4)
+        node.insert(3)
+        node.insert(4)
         node.split()
         assert (not node.isLeaf())
 
@@ -211,13 +212,13 @@ class Test():
 
     def test_add_key_greater( self ):
         node = Node( 3 )
-        node.insertKey( 4 )
+        node.insert( 4 )
         assert node.keys[0] == 3 and node.keys[1] == 4
 
 
     def test_add_key_smaller( self ):
         node = Node( 3 )
-        node.insertKey( 2 )
+        node.insert( 2 )
         assert node.keys[0] == 2 and node.keys[1] == 3
 
 
@@ -244,13 +245,13 @@ class Test():
 
     def test_is_two_node_should_be_false( self ):
         node = Node(2)
-        node.insertKey( 3 )
+        node.insert( 3 )
         assert (not node.isTwoNode())
 
 
     def test_is_three_node( self ):
         node = Node( 2 )
-        node.insertKey( 3 )
+        node.insert( 3 )
         assert node.isThreeNode()
 
 

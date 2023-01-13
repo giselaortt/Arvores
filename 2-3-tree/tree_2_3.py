@@ -36,10 +36,6 @@ class Node():
         return (self.keys == other.keys)
 
 
-    #def __gt__( self, other ):
-    #    return self.keys[0] > other.keys[0]
-
-
     def __ge__( self, other ):
         return self.keys[0] >= other.keys[0]
 
@@ -79,20 +75,10 @@ class Node():
         return len(self.keys) == 2
 
 
-    def insertKey( self, key:int ) -> None:
+    @dispatch(int)
+    def insert( self, key:int ) -> None:
         self.keys.append(key)
         self.keys = sorted(self.keys)
-
-
-    #not covered
-    #def getSecondtKey( self ) -> int:
-    #    if( len(self.keys) == 1 ):
-    #        raise Exception( "This operation is not permitted" )
-    #    return self.keys[1]
-
-
-    #def getFirstKey( self ) -> int:
-    #    return self.keys[0]
 
 
     def removeChild( self, child:'None' ) -> None:
@@ -118,7 +104,8 @@ class Node():
         self.keys = [self.keys[1]]
 
 
-    def insertNode( self, node:'Node' )->None:
+    @dispatch(object)
+    def insert( self, node:'Node' )->None:
         if( node.keys[0] < self.keys[0] ):
             self.keys.insert( 0, node.keys[0] )
             self.children = node.children + self.children
@@ -205,7 +192,7 @@ class Tree_2_3():
             return
 
         node = self._findNodeToInsert( key )
-        node.insertKey(key)
+        node.insert(key)
         self.bubbleUp(node)
 
 
@@ -214,7 +201,7 @@ class Tree_2_3():
             node.split()
             if(node.parent is not None):
                 node.parent.removeChild( node )
-                node.parent.insertNode( node )
+                node.parent.insert( node )
                 node = node.parent
 
 
