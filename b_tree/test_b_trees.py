@@ -68,6 +68,13 @@ class Test():
         assert tree.isEmpty()
 
 
+    def test_single_insertion( self ):
+        tree = BTree()
+        tree.insert(1)
+        assert 1 in tree
+
+
+    #causing infinit looping
     def should_add_multiple_keys_in_tree( self ):
         pass
         tree = BTree()
