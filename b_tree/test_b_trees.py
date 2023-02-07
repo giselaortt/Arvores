@@ -1,5 +1,5 @@
 import pytest
-from BTrees import BTree, Node
+from BTrees import *
 
 
 class Test():

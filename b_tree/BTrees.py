@@ -6,14 +6,14 @@ from typing import Type
 from skip_list import SkipList
 
 
-class Node():
+class NodeBTree():
     precision = 0.00001
 
-    def __init__( self, key:int, parentNode:'Node' = None, children:list = None, max_len:int = 10 ):
+    def __init__( self, key:int, parentNodeBTree:'NodeBTree' = None, children:list = None, max_len:int = 10 ):
         self.keys = SkipList( )
         self.keys.insert( key )
         self.numberOfChildren = 0
-        self.parent = parentNode
+        self.parent = parentNodeBTree
         if( children is not None ):
             #deep copy is important!
             self.children = list(children)
@@ -30,8 +30,8 @@ class Node():
 
 
     @dispatch( object )
+    def __eq__( self, other:'NodeBTree' ):
 
-    def __eq__( self, other:'Node' ):
         return (self.keys == other.keys)
 
 
@@ -59,17 +59,6 @@ class Node():
     @dispatch(int)
     def insert( self, key:int ) -> None:
        self.keys.insert(key)
-
-
-    #should this 2 functions become one ?
-    @dispatch(object)
-    def insert( self, node:'Node' ) -> None:
-       raise NotImplementedError
-
-
-    #should this 2 functions become one ?
-    def removeChild( self, child:'None' ) -> None:
-       raise NotImplementedError
 
 
     def promoteChild( self, child:'None' )->None:
@@ -113,7 +102,7 @@ class BTree():
 
 
     @staticmethod
-    def _pre_order( node:Type[Node], answer:list ) -> list:
+    def _pre_order( node:'NodeBTree', answer:list ) -> list:
         pass
 
 
@@ -122,7 +111,7 @@ class BTree():
         return ( self.root is None )
 
 
-    def search( self, key:int ) -> Node:
+    def search( self, key:int ) -> 'NodeBTree':
         if( self.isEmpty() ):
             return None
         node = BTree._search( key, self.root )
@@ -131,7 +120,7 @@ class BTree():
         return None
 
 
-    def _findNodeToInsert( self, key:int ) -> Type[Node]:
+    def _findNodeBTreeToInsert( self, key:int ) -> 'NodeBTree':
         node = BTree._search( key, self.root )
         if( key in node ):
             raise Exception("Operation not allowed.")
@@ -139,16 +128,15 @@ class BTree():
 
 
     @staticmethod
-    def _search( key:int, node:Type[Node] ) -> Type[Node]:
-        if( type(node) is not Node ):
-            raise TypeError('expected type Node')
+    def _search( key:int, node:'NodeBTree' ) -> 'NodeBTree':
+        if( type(node) is not NodeBTree ):
+            raise TypeError('expected type NodeBTree')
         if( key in node or node.isLeaf() ):
             return node
-        
         """
         if( key < node.keys[0] ):
             return BTree._search( key, node.children[0] )
-        if( node.isThreeNode() and key > node.keys[1] ):
+        if( node.isThreeNodeBTree() and key > node.keys[1] ):
             return BTree._search( key, node.children[2] )
         return BTree._search( key, node.children[1] )
         """
@@ -156,14 +144,14 @@ class BTree():
 
     def insert( self, key:int ) -> None:
         if( self.root is None ):
-            self.root = Node( key )
+            self.root = NodeBTree( key )
             return
-        node = self._findNodeToInsert( key )
+        node = self._findNodeBTreeToInsert( key )
         node.insert(key)
         self.bubbleUp(node)
 
 
-    def bubbleUp( self, node:Type[Node] ) -> None:
+    def bubbleUp( self, node:'NodeBTree' ) -> None:
         while(node.hasExceded()):
             node.split()
             if(node.parent is not None):
@@ -174,5 +162,10 @@ class BTree():
 
     def remove( self, key ):
         pass
+
+
+
+
+
 
 

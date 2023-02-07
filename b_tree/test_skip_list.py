@@ -1,12 +1,12 @@
 import pytest
-from skip_list import Node, SkipList
+from skip_list import NodeSkipList, SkipList
 import random
 
 
 class Test:
 
     def test_node_comparison(self):
-        node = Node(50)
+        node = NodeSkipList(50)
         assert (node == 50)
         assert (node < 51)
         assert (node > 40)
@@ -21,7 +21,7 @@ class Test:
 
 
     def test_are_all_pointers_none(self):
-        node = Node(50)
+        node = NodeSkipList(50)
         assert (node.above is None and node.bellow is None and node.right is None and node.left is None)
 
 
@@ -278,9 +278,9 @@ class Test:
 
 
     def test_node_to_str(self):
-        node = Node(4)
-        node.right = Node(2)
-        node.left = Node(3)
+        node = NodeSkipList(4)
+        node.right = NodeSkipList(2)
+        node.left = NodeSkipList(3)
         print(str(node))
         assert str(node) == "  None\n3  <4>  2\n  None\n"
 

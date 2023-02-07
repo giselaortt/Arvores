@@ -9,15 +9,15 @@ END_OF_LIST = float('inf')
 BEGINNING_OF_LIST = float('-inf')
 
 
-class Node:
-    right:'Node' = None
-    left:'Node' = None
-    above:'Node' = None
-    bellow:'Node' = None
-    key:int
+class NodeSkipList:
+    right:'NodeSkipList' = None
+    left:'NodeSkipList' = None
+    above:'NodeSkipList' = None
+    bellow:['NodeSkipList'] = None
+    key:any
     level:int = 1
 
-    def __next__(self) -> 'Node':
+    def __next__(self) -> 'NodeSkipList':
         if( self.right is not None ):
             return self.right
         raise StopIteration()
@@ -28,11 +28,11 @@ class Node:
         return self
 
 
-    def __init__( self, key:int, level:int = 0 ):
+    def __init__( self, key:any ):
         self.key = key
 
 
-    def __lt__( self, key:int ):
+    def __lt__( self, key:any ):
 
         return self.key < key
 
@@ -49,7 +49,7 @@ class Node:
 
 
     @dispatch(object)
-    def __eq__( self, other:'Node' ):
+    def __eq__( self, other:'NodeSkipList' ):
 
         return self.key == other.key
 
@@ -67,9 +67,9 @@ class Node:
 class SkipList:
 
     def __init__( self ):
-        self.upper_left:'Node' = Node(BEGINNING_OF_LIST)
-        self.upper_right:'Node' = Node(END_OF_LIST)
-        self.down_left:'Node' = self.upper_left
+        self.upper_left:'NodeSkipList' = NodeSkipList(BEGINNING_OF_LIST)
+        self.upper_right:'NodeSkipList' = NodeSkipList(END_OF_LIST)
+        self.down_left:'NodeSkipList' = self.upper_left
         self.number_of_levels:int = 1
         self.length:int = 0
         self.upper_left.right = self.upper_right
@@ -214,7 +214,7 @@ class SkipList:
 
 
     @classmethod
-    def _delete_node( cls, node:'Node' )->None:
+    def _delete_node( cls, node:'NodeSkipList' )->None:
         if( node.right is not None ):
             node.right.left = node.left
         if( node.left is not None ):
@@ -225,7 +225,7 @@ class SkipList:
             node.above.bellow = node.bellow
 
 
-    def search( self, key:int ):
+    def search( self, key:int )->any:
         if( self.length == 0 ):
             return None
         node = self._search(key)
@@ -234,8 +234,8 @@ class SkipList:
         return None
 
 
-    #@multipledispatch(int)
-    def _search_per_index(self, index:int)->'Node':
+    #@dispatch(int)
+    def _search_per_index(self, index:int)->'NodeSkipList':
         node = self.down_left.right
         for _ in range(index):
             node = node.right
@@ -244,23 +244,24 @@ class SkipList:
 
 
     @dispatch(int)
-    def _search( self, key:int )->'Node':
+    def _search( self, key:int )->'NodeSkipList':
         node = self._search( self.upper_left, key )
         return node
 
 
-    @dispatch(object,int)
-    def _search( self, node:'Node', key:int )->'Node':
+    #@dispatch(object,int)
+    @classmethod
+    def _search( cls, node:'NodeSkipList', key:int )->'NodeSkipList':
         if( node.right.key <= key ):
-            return self._search( node.right, key )
+            return BTree._search( node.right, key )
         if( node.bellow is not None ):
-            return self._search( node.bellow, key )
+            return BTree._search( node.bellow, key )
         return node
 
 
-    def _increase_one_treee_level( self ) -> None:
-        left_top = Node(BEGINNING_OF_LIST)
-        right_top = Node(END_OF_LIST)
+    def _increase_one_level( self ) -> None:
+        left_top = NodeSkipList(BEGINNING_OF_LIST)
+        right_top = NodeSkipList(END_OF_LIST)
         left_top.right = right_top
         right_top.left = left_top
         self.upper_left.above = left_top
@@ -274,35 +275,35 @@ class SkipList:
 
     def _adjust_tree_level(self, level:int) -> None:
         while( self.number_of_levels < level ):
-            self._increase_one_treee_level()
+            self._increase_one_level()
 
 
     @classmethod
-    def create_node_chaining(cls, key:int, number_of_levels:int)->'Node':
-        bottom = Node(key)
+    def create_node_chaining(cls, key:int, number_of_levels:int)->'NodeSkipList':
+        bottom = NodeSkipList(key)
         node = bottom
         for i in range(number_of_levels-2):
-            next_node = Node(key)
+            next_node = NodeSkipList(key)
             node.above = next_node
             next_node.bellow = node
             node = next_node
         return bottom
 
 
-    def link_node_chain(self, to_be_inserted:'Node', list_node:'Node')->None:
+    @classmethod
+    def link_node_chain(cls, to_be_inserted:'NodeSkipList', list_node:'NodeSkipList')->None:
         while(to_be_inserted is not None and list_node is not None):
             other_node = list_node.right
             list_node.right = to_be_inserted
             to_be_inserted.left = list_node
             other_node.left = to_be_inserted
-
             to_be_inserted.right = other_node
             to_be_inserted = to_be_inserted.above
             list_node = SkipList.get_above_level_node(list_node)
 
 
     @classmethod
-    def get_above_level_node(cls, node:'Node')->'Node':
+    def get_above_level_node(cls, node:'NodeSkipList')->'NodeSkipList':
         if(node.above is not None):
             return node.above
         while(node.above is None and node.left is not None):
@@ -312,24 +313,37 @@ class SkipList:
         return node.above
 
 
-    @dispatch((int,float))
-    def insert( self, key:int )->None:
+    #@dispatch((int,float), any)
+    def insert( self, key:int, element:any )->None:
         if(key in self):
             raise Exception("Operation not permitted, no repetitions are allowed.")
         node = self._search(key)
-        self.insert(key,node)
+        self.insert(key,node, element)
 
 
-    @dispatch((int,float), object)
-    def insert( self, key:int, node:'Node' )->None:
+    @classmethod
+    def attach_element_to_node_chain( cls, node:'NodeSkipList', element:any ):
+        element_node = NodeSkipList(element)
+        element_node.parent = node
+        node.bellow = element_node
+
+
+    #@dispatch((int,float), object, any)
+    def insert( self, key:int, node:'NodeSkipList', element:any )->None:
         node_level = SkipList._random_level()
         self._adjust_tree_level(node_level+1)
         to_be_inserted = SkipList.create_node_chaining(key, node_level)
-        self.link_node_chain( to_be_inserted, node )
+        BTree.link_node_chain( to_be_inserted, node )
+        BTree.attach_element_to_node_chain( node, element )
         self.length += 1
 
 
     def split(self):
         pass
+
+
+    def get(self, key):
+        pass
+
 
 
