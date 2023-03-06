@@ -1,4 +1,4 @@
-# Trees with python
+# Data Structures with python
 
 ## Contains:
 
