@@ -5,7 +5,7 @@ from BTrees import *
 class Test():
 
     def test_insert_key( self ):
-        node = Node(1)
+        node = NodeBTree(1)
         node.insert(2)
         assert 2 in node
 
@@ -22,32 +22,32 @@ class Test():
 
 
     def test_has_exceded( self ):
-        node = Node( -2 )
+        node = NodeBTree( -2 )
         for i in range(10):
             node.insert(i)
         assert node.hasExceded()
 
 
     def test_has_exceded_should_be_false( self ):
-        node = Node( 2 )
+        node = NodeBTree( 2 )
         node.insert(-2)
         node.insert(3)
         assert (not node.hasExceded())
 
 
     def test_is_leaf_node( self ):
-        node = Node( 2 )
+        node = NodeBTree( 2 )
         assert node.isLeaf() is True
 
 
     def test_add_key_greater( self ):
-        node = Node( 3 )
+        node = NodeBTree( 3 )
         node.insert( 4 )
         assert node.keys[0] == 3 and node.keys[1] == 4
 
 
     def test_add_key_smaller( self ):
-        node = Node( 3 )
+        node = NodeBTree( 3 )
         node.insert( 2 )
         assert node.keys[0] == 2 and node.keys[1] == 3
 
