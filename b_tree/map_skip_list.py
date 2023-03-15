@@ -15,7 +15,7 @@ class NodeMapSkipList:
     above:'NodeMapSkipList' = None
     bellow:['NodeMapSkipList'] = None
     key:int
-    value:any
+    element:any
     level:int = 1
 
 
@@ -30,25 +30,45 @@ class NodeMapSkipList:
         return self
 
 
-    def __init__( self, key:int, value:any=None ):
+    def __init__( self, key:int, element:any=None ):
         self.key = key
-        self.value = value
+        self.element = element
 
 
-    @dispatch(object)
-    def __eq__( self, other:'NodeMapSkipList' ):
+    def __lt__( self, key:int ):
 
-        return self.key == other.key and self.value == other.value
+        return self.key <= key
+
+
+    def __gt__( self, key:int ):
+
+        return self.key >= key
+
+
+    def __le__( self, key:int ):
+
+        return self.key <= key
+
+
+    def __ge__( self, key:int ):
+
+        return self.key >= key
+
+
+    def __ne__( self, key:int ):
+
+        return self.key != key
 
 
     def __repr__(self):
-        node_str = "  {1}\n{2}  <{0}>  {3}\n  {4}\n"
-        above = self.above.key if self.above else None
-        bellow = self.bellow.key if self.bellow else None
-        right = self.right.key if self.right else None
-        left = self.left.key if self.left else None
+        #node_str = "  {1}\n{2}  <{0}>  {3}\n  {4}\n"
+        node_str = "{1} {2} <{0}> {3} {4}"
+        above = (self.above.key,self.above.element) if self.above else None
+        bellow = (self.bellow.key,self.bellow.element) if self.bellow else None
+        right = (self.right.key,self.right.element) if self.right else None
+        left = (self.left.key,self.left.element) if self.left else None
 
-        return  node_str.format( (self.key,self.value), above, left, right, bellow )
+        return  node_str.format( (self.key,self.element), above, left, right, bellow )
 
 
 class MapSkipList:
@@ -73,7 +93,7 @@ class MapSkipList:
         ans = ""
         node = self.down_left
         while( node is not None ):
-            ans += "("+str(node.key)+", "+str(node.value)+") "
+            ans += "("+str(node.key)+", "+str(node.element)+") "
             node = node.right
 
         return ans
@@ -139,45 +159,45 @@ class MapSkipList:
 #        pass
 #
 #
-#    def __add__( self, other:'MapSkipList')->'MapSkipList':
-#        first = self.down_left.right
-#        second = other.down_left.right
-#        return_list = MapSkipList()
-#        return_list_node = return_list.down_left
-#        while(first != END_OF_LIST or second != END_OF_LIST):
-#            if( first < second ):
-#                return_list.insert( first.key, return_list_node )
-#                first = next(first)
-#                return_list_node = next(return_list_node)
-#            elif( second < first ):
-#                return_list.insert( second.key, return_list_node )
-#                second = next(second)
-#                return_list_node = next(return_list_node)
-#            elif( first == second ):
-#                return_list.insert( second.key, return_list_node )
-#                first = next(first)
-#                second = next(second)
-#                return_list_node = next(return_list_node)
-#
-#        return return_list
-#
-#
-#    def __iadd__( self, other:'MapSkipList', deep_copy:bool=True )->None:
-#        first = self.down_left
-#        second = other.down_left.right
-#        self._adjust_tree_level(other.number_of_levels)
-#        while( second != END_OF_LIST):
-#            if( second > first and second < first.right ):
-#                self.insert( second.key, first )
-#                second = next(second)
-#            elif(second == first):
-#                first = next(first)
-#                second = next(second)
-#            else:
-#                first = next(first)
-#        return self
-#
-#
+    def __add__( self, other:'MapSkipList')->'MapSkipList':
+        first = self.down_left.right
+        second = other.down_left.right
+        return_list = MapSkipList()
+        return_list_node = return_list.down_left
+        while(first != END_OF_LIST or second != END_OF_LIST):
+            if( first < second ):
+                return_list.insert( first.key, first.element, return_list_node )
+                first = next(first)
+                return_list_node = next(return_list_node)
+            elif( second < first ):
+                return_list.insert( second.key, secont.element, return_list_node )
+                second = next(second)
+                return_list_node = next(return_list_node)
+            elif( first == second ):
+                return_list.insert( second.key, second.element, return_list_node )
+                first = next(first)
+                second = next(second)
+                return_list_node = next(return_list_node)
+
+        return return_list
+
+
+    def __iadd__( self, other:'MapSkipList', deep_copy:bool=True )->None:
+        first = self.down_left
+        second = other.down_left.right
+        self._adjust_tree_level(other.number_of_levels)
+        while( second != END_OF_LIST):
+            if( second > first and second < first.right ):
+                self.insert( second.key, second.element, first )
+                second = next(second)
+            elif(second == first):
+                first = next(first)
+                second = next(second)
+            else:
+                first = next(first)
+        return self
+
+
     @classmethod
     def _flip_coin(cls) -> bool:
 
@@ -185,7 +205,7 @@ class MapSkipList:
 
 
     @classmethod
-    def _random_level(cls)->int:
+    def _random_level(cls) -> int:
         ans = 1
         while( MapSkipList._flip_coin() and ans <= 100 ):
             ans += 1
@@ -193,7 +213,7 @@ class MapSkipList:
         return ans
 
 
-    def delete(self, key:int)->None:
+    def delete(self, key:int) -> None:
         node = self.search(key)
         while(node is not None):
             MapSkipList._delete_node(node)
@@ -201,7 +221,7 @@ class MapSkipList:
 
 
     @classmethod
-    def _delete_node( cls, node:'NodeMapSkipList' )->None:
+    def _delete_node( cls, node:'NodeMapSkipList' ) -> None:
         if( node.right is not None ):
             node.right.left = node.left
         if( node.left is not None ):
@@ -212,7 +232,7 @@ class MapSkipList:
             node.above.bellow = node.bellow
 
 
-    def search( self, key:int )->any:
+    def search( self, key:int ) -> any:
         if( self.length == 0 ):
             return None
         node = self._search(key)
@@ -307,7 +327,7 @@ class MapSkipList:
         self.insert(key, element, node)
 
 
-    @dispatch(int,object,object)
+    @dispatch((int,float),object,object)
     def insert( self, key:int, element:any, node:'NodeMapSkipList' ) -> None:
         node_level = MapSkipList._random_level()
         self._adjust_tree_level( node_level+1 )
@@ -327,6 +347,4 @@ class MapSkipList:
 #    def set(self, key:int, newValue:any)->None:
 #        pass
 #
-#
-#
-#
+

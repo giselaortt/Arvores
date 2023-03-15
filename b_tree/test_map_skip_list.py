@@ -271,22 +271,32 @@ class Test:
             assert node.bellow is None
 
 
-#    def test_node_to_str(self):
-#        node = NodeMapSkipList(4)
-#        node.right = NodeMapSkipList(2)
-#        node.left = NodeMapSkipList(3)
-#        print(str(node))
-#        assert str(node) == "  None\n3  <4>  2\n  None\n"
-#
-#
-#    def test_merge_empty_lists_should_be_empty_list(self):
-#        a = MapSkipList()
-#        b = MapSkipList()
-#        c = a + b
-#        assert len(c) == 0
-#        assert isinstance(c, MapSkipList)
-#
-#
+    def test_node_to_str(self):
+        node = NodeMapSkipList(4)
+        node.right = NodeMapSkipList(2)
+        node.left = NodeMapSkipList(3)
+        print(str(node))
+        #assert str(node) == "  None\n3  <4>  2\n  None\n"
+        assert str(node) == "None (3, None) <(4, None)> (2, None) None"
+
+
+    def test_merge_empty_lists_should_be_empty_list(self):
+        a = MapSkipList()
+        b = MapSkipList()
+        c = a + b
+        assert len(c) == 0
+        assert isinstance(c, MapSkipList)
+
+
+    def test_iadd_empty_list(self):
+        a = MapSkipList()
+        b = MapSkipList()
+        b += a
+        assert len(b) == 0
+        assert isinstance(b, MapSkipList)
+        assert str(b) == "(-inf, None) (inf, None) "
+
+
 #    def test_equal(self):
 #        a = MapSkipList()
 #        b = MapSkipList()
