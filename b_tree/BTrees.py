@@ -11,22 +11,20 @@ sys.path.insert(0, '../skip_list/')
 from map_skip_list import MapSkipList
 from skip_list import SkipList
 
+
 class NodeBTree():
     precision = 0.00001
+    self.max_len = 20
 
-    def __init__( self, key:int, parentNodeBTree:'NodeBTree' = None, children:list = None, max_len:int = 10 ):
-        self.keys = SkipList( )
+    #def __init__( self, key:int, parent:'NodeBTree' = None, children:list = None, max_len:int = 10 ):
+    def __init__( self, key:int, parent:'NodeBTree' = None, max_len:int = 10 ):
+        self.keys = MapSkipList( )
         self.keys.insert( key )
         self.numberOfChildren = 0
-        self.parent = parentNodeBTree
-        if( children is not None ):
-            #deep copy is important!
-            self.children = list(children)
-            for child in children:
-                child.parent = self
+        self.parent = parent
+
         else:
             self.children = None
-        self.max_len = max_len
 
 
     def isLeaf( self ) -> bool:

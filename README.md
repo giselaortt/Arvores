@@ -1,4 +1,4 @@
-# Trees with python
+# Data Structures with python
 
 ## Contains:
 
@@ -7,11 +7,14 @@
     2. AVL
 
     3. 2-3-trees 
+    
+    4. B-Trees
+    
+    5. Skip Lists (used on BTrees)
 
+    6. Map Skip Lists (used on B Trees)
 
 ## to be implemented:
-
-    4. B-trees [future]
 
 
 ## Things to note:
@@ -32,8 +35,6 @@
  - (complexity analyses)[https://m.youtube.com/watch?v=2g9OSRKJuzM&t=1s]
 
  - (Original paper)[https://15721.courses.cs.cmu.edu/spring2018/papers/08-oltpindexes1/pugh-skiplists-cacm1990.pdf]
-
-  - ()
 
 
 feel free to reach out and discuss!

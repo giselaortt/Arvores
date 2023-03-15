@@ -320,7 +320,7 @@ class MapSkipList:
 
 
     @dispatch(int,object)
-    def insert( self, key:int, element:any ) -> None:
+    def insert( self, key:int, element:any=None ) -> None:
         if(key in self):
             raise Exception("Operation not permitted, no repetitions are allowed.")
         node = self._search(key)
