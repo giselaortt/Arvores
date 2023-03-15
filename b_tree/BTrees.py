@@ -3,8 +3,13 @@ from multipledispatch import dispatch
 import collections
 from array import array
 from typing import Type
-from skip_list import SkipList
 
+import sys
+sys.path.insert(0, '../map_skip_list/')
+sys.path.insert(0, '../skip_list/')
+
+from map_skip_list import MapSkipList
+from skip_list import SkipList
 
 class NodeBTree():
     precision = 0.00001
@@ -24,8 +29,6 @@ class NodeBTree():
         self.max_len = max_len
 
 
-
-    
     def isLeaf( self ) -> bool:
 
         return ( self.children is None )
