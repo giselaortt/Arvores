@@ -297,20 +297,20 @@ class Test:
         assert str(b) == "(-inf, None) (inf, None) "
 
 
-#    def test_equal(self):
-#        a = MapSkipList()
-#        b = MapSkipList()
-#        a.insert(1)
-#        a.insert(4)
-#        a.insert(3)
-#        a.insert(-1)
-#        b.insert(1)
-#        b.insert(4)
-#        b.insert(3)
-#        b.insert(-1)
-#        assert a == b
-#
-#
+    def test_equal(self):
+        a = MapSkipList()
+        b = MapSkipList()
+        a.insert(1, 'a')
+        a.insert(4, 'a')
+        a.insert(3, 'a')
+        b.insert(1, 'a')
+        b.insert(4, 'a')
+        b.insert(3, 'a')
+        b.insert(-1, 'b')
+        a.insert(-1, 'b')
+        assert a == b
+
+
 #    def test_get_above_level(self):
 #        pass
 #
@@ -323,84 +323,83 @@ class Test:
 #        pass
 #
 #
-#    def test_getitem_with_int(self):
-#        skip = MapSkipList()
-#        skip.insert(-20)
-#        skip.insert(-4)
-#        skip.insert(-2)
-#        skip.insert(1)
-#        skip.insert(2)
-#        skip.insert(3)
-#        skip.insert(4)
-#        skip.insert(15)
-#        assert len(skip) == 8
-#        assert skip[3] == 1
-#        assert skip[4] == 2
-#        assert skip[0] == -20
-#        assert skip[-1] == 15
-#        assert skip[1] == -4
-#        assert skip[2] == -2
-#
-#
-#    def test_getitem_tuple(self):
-#        skip = MapSkipList()
-#        skip.insert(-20)
-#        skip.insert(-4)
-#        skip.insert(-2)
-#        skip.insert(1)
-#        skip.insert(2)
-#        skip.insert(3)
-#        skip.insert(4)
-#        skip.insert(15)
-#        b = MapSkipList()
-#        b.insert(-2)
-#        b.insert(1)
-#        b.insert(2)
-#        b.insert(3)
-#        assert skip[2,3,4,5] == b
-#
-#
-#    def test_getitem_slice(self):
-#        skip = MapSkipList()
-#        skip.insert(-20)
-#        skip.insert(-4)
-#        skip.insert(-2)
-#        skip.insert(1)
-#        skip.insert(2)
-#        skip.insert(3)
-#        skip.insert(4)
-#        skip.insert(15)
-#        b = MapSkipList()
-#        b.insert(1)
-#        b.insert(-2)
-#        assert skip[2:4] == b
-#        #assert skip[0:4:2] == b
-#
-#
-#    def test_add_lists(self):
-#        skip = MapSkipList()
-#        other = MapSkipList()
-#        skip.insert(-2)
-#        skip.insert(3)
-#        other.insert(2)
-#        other.insert(-3)
-#        result = skip + other
-#        assert str(result) == '-inf -3 -2 2 3 inf '
-#
-#
-#    def test_add_inplace_with_deep_copy(self):
-#        skip = MapSkipList()
-#        other = MapSkipList()
-#        skip.insert(-2)
-#        skip.insert(3)
-#        other.insert(2)
-#        other.insert(-3)
-#        skip += other
-#        #testing the deep copy
-#        other.insert(5)
-#        assert str(skip) == '-inf -3 -2 2 3 inf '
-#
-#
+    def test_getitem_with_int(self):
+        skip = MapSkipList()
+        skip.insert(-20,'a' )
+        skip.insert(-4, 'a' )
+        skip.insert(-2, 'a' )
+        skip.insert(1 , 'a' )
+        skip.insert(2 , 'a' )
+        skip.insert(3 , 'a' )
+        skip.insert(4 , 'a' )
+        skip.insert(15, 'a' )
+        assert len(skip) == 8
+        assert skip[3] == 1
+        assert skip[4] == 2
+        assert skip[0] == -20
+        assert skip[-1] == 15
+        assert skip[1] == -4
+        assert skip[2] == -2
+
+
+    def test_getitem_tuple(self):
+        skip = MapSkipList()
+        skip.insert(-20, 'a' )
+        skip.insert(-4 , 'a' )
+        skip.insert(-2 , 'a' )
+        skip.insert(1  , 'a' )
+        skip.insert(2  , 'a' )
+        skip.insert(3  , 'a' )
+        skip.insert(4  , 'a' )
+        skip.insert(15 , 'a' )
+        b = MapSkipList()
+        b.insert(-2, 'a')
+        b.insert(1, 'a')
+        b.insert(2, 'a')
+        b.insert(3, 'a')
+        assert skip[2,3,4,5] == b
+
+
+    def test_getitem_slice(self):
+        skip = MapSkipList()
+        skip.insert(-20,'a' )
+        skip.insert(-4, 'a' )
+        skip.insert(-2, 'a' )
+        skip.insert(1,  'a' )
+        skip.insert(2,  'a' )
+        skip.insert(3,  'a' )
+        skip.insert(4,  'a' )
+        skip.insert(15, 'a' )
+        b = MapSkipList()
+        b.insert(1, 'a')
+        b.insert(-2, 'a')
+        assert skip[2:4] == b
+        #assert skip[0:4:2] == b
+
+
+    def test_add_lists(self):
+        skip = MapSkipList()
+        other = MapSkipList()
+        skip.insert(-2 , 'a')
+        skip.insert(3  , 'a')
+        other.insert(2 , 'a')
+        other.insert(-3, 'a')
+        result = skip + other
+        assert str(result) == '(-inf, None) (-3, a) (-2, a) (2, a) (3, a) (inf, None) '
+
+
+    def test_add_inplace_with_deep_copy(self):
+        skip = MapSkipList()
+        other = MapSkipList()
+        skip.insert(-2 , 'a')
+        skip.insert(3  , 'a')
+        other.insert(2 , 'a')
+        other.insert(-3, 'a')
+        skip += other
+        #testing the deep copy
+        other.insert(5, 'a')
+        assert str(skip) == '(-inf, None) (-3, a) (-2, a) (2, a) (3, a) (inf, None) '
+
 #
 #
 #

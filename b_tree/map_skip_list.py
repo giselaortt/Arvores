@@ -120,41 +120,41 @@ class MapSkipList:
         return str(self) == str(other)
 
 
-#    def __getitem__( self, index ):
-#        if isinstance(index, int):
-#            if index < 0 :
-#                index = len(self) + index
-#            node  = self._search_per_index(index)
-#            return node.key
-#
-#        elif isinstance(index, tuple):
-#            node = self.down_left
-#            answer = MapSkipList()
-#            ind = 0
-#            while(node != END_OF_LIST):
-#                node = next(node)
-#                if(ind in index):
-#                    answer.insert(node.key)
-#                ind += 1
-#            return answer
-#
-#        elif isinstance(index, slice):
-#            index.stop
-#            answer = MapSkipList()
-#            node = self.down_left
-#            node = next(node)
-#            answer_node_ptr = answer.down_left
-#            for i in range(0,index.start):
-#                node = next(node)
-#            for i in range(index.stop - index.start):
-#                answer.insert(node.key, answer_node_ptr)
-#                node = next(node)
-#                answer_node_ptr = next(answer_node_ptr)
-#            return answer
-#        else:
-#            raise ValueError(f'MapSkipList cannot be indexed with values of type {type(index)}')
-#
-#
+    def __getitem__( self, index ):
+        if isinstance(index, int):
+            if index < 0 :
+                index = len(self) + index
+            node  = self._search_per_index(index)
+            return node.key
+
+        elif isinstance(index, tuple):
+            node = self.down_left
+            answer = MapSkipList()
+            ind = 0
+            while(node != END_OF_LIST):
+                node = next(node)
+                if(ind in index):
+                    answer.insert(node.key, node.element)
+                ind += 1
+            return answer
+
+        elif isinstance(index, slice):
+            index.stop
+            answer = MapSkipList()
+            node = self.down_left
+            node = next(node)
+            answer_node_ptr = answer.down_left
+            for i in range(0,index.start):
+                node = next(node)
+            for i in range(index.stop - index.start):
+                answer.insert(node.key, node.element, answer_node_ptr)
+                node = next(node)
+                answer_node_ptr = next(answer_node_ptr)
+            return answer
+        else:
+            raise ValueError(f'MapSkipList cannot be indexed with values of type {type(index)}')
+
+
 #    def __delitem__(key):
 #        pass
 #
@@ -170,7 +170,7 @@ class MapSkipList:
                 first = next(first)
                 return_list_node = next(return_list_node)
             elif( second < first ):
-                return_list.insert( second.key, secont.element, return_list_node )
+                return_list.insert( second.key, second.element, return_list_node )
                 second = next(second)
                 return_list_node = next(return_list_node)
             elif( first == second ):
@@ -336,10 +336,7 @@ class MapSkipList:
         self.length += 1
 
 
-#    def split(self):
-#        pass
-#
-#
+
 #    def get(self, key:int):
 #        pass
 #
