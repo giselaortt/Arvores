@@ -120,6 +120,7 @@ class MapSkipList:
         return str(self) == str(other)
 
 
+    #question, should it return the element instead, and operate on the key value, as a dictionary ?
     @dispatch(int)
     def __getitem__( self, index ):
         if index < 0 :
@@ -155,7 +156,7 @@ class MapSkipList:
         for i in range(0,index.start):
             node = next(node)
         for i in range(index.stop - index.start):
-            answer.insert(node.key, node.element, answer_node_ptr)
+            answer.insert(answer_node_ptr,node.key, node.element)
             node = next(node)
             answer_node_ptr = next(answer_node_ptr)
 
@@ -173,15 +174,15 @@ class MapSkipList:
         return_list_node = return_list.down_left
         while(first != END_OF_LIST or second != END_OF_LIST):
             if( first < second ):
-                return_list.insert( first.key, first.element, return_list_node )
+                return_list.insert( return_list_node, first.key, first.element )
                 first = next(first)
                 return_list_node = next(return_list_node)
             elif( second < first ):
-                return_list.insert( second.key, second.element, return_list_node )
+                return_list.insert( return_list_node, second.key, second.element )
                 second = next(second)
                 return_list_node = next(return_list_node)
             elif( first == second ):
-                return_list.insert( second.key, second.element, return_list_node )
+                return_list.insert( return_list_node, second.key, second.element )
                 first = next(first)
                 second = next(second)
                 return_list_node = next(return_list_node)
@@ -195,7 +196,7 @@ class MapSkipList:
         self._adjust_tree_level(other.number_of_levels)
         while( second != END_OF_LIST):
             if( second > first and second < first.right ):
-                self.insert( second.key, second.element, first )
+                self.insert( first, second.key, second.element )
                 second = next(second)
             elif(second == first):
                 first = next(first)
@@ -318,16 +319,21 @@ class MapSkipList:
         return node.above
 
 
+    @dispatch(int)
+    def insert(self, key:int):
+        self.insert(key, None)
+
+
     @dispatch(int,object)
-    def insert( self, key:int, element:any=None ) -> None:
+    def insert( self, key:int, element:any ) -> None:
         if(key in self):
             raise Exception("Operation not permitted, no repetitions are allowed.")
         node = self._search(key)
-        self.insert(key, element, node)
+        self.insert(node, key, element)
 
 
-    @dispatch(int,object,object)
-    def insert( self, key:int, element:any, node:'NodeMapSkipList' ) -> None:
+    @dispatch(object,int,object)
+    def insert( self, node:'NodeMapSkipList', key:int, element:any=None ) -> None:
         node_level = MapSkipList._random_level()
         self._adjust_tree_level( node_level+1 )
         to_be_inserted = MapSkipList.create_node_chaining( key, element, node_level )
@@ -335,11 +341,13 @@ class MapSkipList:
         self.length += 1
 
 
-    def get(self, key:int):
-        pass
-
-
     def set(self, key:int, newValue:any)->None:
-        pass
+        node = self.search(key)
+        if(node is None):
+            raise Exception
+        node.element = newValue
+
+
+
 
 

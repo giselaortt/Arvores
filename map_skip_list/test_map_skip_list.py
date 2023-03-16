@@ -334,12 +334,12 @@ class Test:
         skip.insert(4 , 'a' )
         skip.insert(15, 'a' )
         assert len(skip) == 8
-        assert skip[3] == ( 1, 'a' )
+        assert skip[3] == ( 1, 'a')
         assert skip[4] == ( 2, 'a')
-        assert skip[0] == (-20, 'a')
-        assert skip[-1] ==( 15, 'a')
-        assert skip[1] == (-4, 'a' )
-        assert skip[2] == (-2, 'a' )
+        assert skip[0] == (-20,'a')
+        assert skip[-1] ==( 15,'a')
+        assert skip[1] == (-4, 'a')
+        assert skip[2] == (-2, 'a')
 
 
     def test_getitem_tuple(self):
@@ -400,20 +400,12 @@ class Test:
         other.insert(5, 'a')
         assert str(skip) == '(-inf, None) (-3, a) (-2, a) (2, a) (3, a) (inf, None) '
 
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
+
+    def test_calling_insert_without_value(self):
+        skip = MapSkipList()
+        skip.insert(1)
+
+
+
+
+
