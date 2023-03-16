@@ -334,12 +334,12 @@ class Test:
         skip.insert(4 , 'a' )
         skip.insert(15, 'a' )
         assert len(skip) == 8
-        assert skip[3] == 1
-        assert skip[4] == 2
-        assert skip[0] == -20
-        assert skip[-1] == 15
-        assert skip[1] == -4
-        assert skip[2] == -2
+        assert skip[3] == ( 1, 'a' )
+        assert skip[4] == ( 2, 'a')
+        assert skip[0] == (-20, 'a')
+        assert skip[-1] ==( 15, 'a')
+        assert skip[1] == (-4, 'a' )
+        assert skip[2] == (-2, 'a' )
 
 
     def test_getitem_tuple(self):

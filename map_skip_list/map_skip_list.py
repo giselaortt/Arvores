@@ -124,8 +124,11 @@ class MapSkipList:
     def __getitem__( self, index ):
         if index < 0 :
             index = len(self) + index
-        node  = self._search_per_index(index)
-        return node.key
+        node = self.down_left.right
+        for _ in range(index):
+            node = node.right
+
+        return (node.key,node.element)
 
 
     @dispatch(tuple)
@@ -138,6 +141,7 @@ class MapSkipList:
             if(ind in index):
                 answer.insert(node.key, node.element)
             ind += 1
+
         return answer
 
 
@@ -154,9 +158,8 @@ class MapSkipList:
             answer.insert(node.key, node.element, answer_node_ptr)
             node = next(node)
             answer_node_ptr = next(answer_node_ptr)
+
         return answer
-        #else:
-        #    raise ValueError(f'MapSkipList cannot be indexed with values of type {type(index)}')
 
 
 #    def __delitem__(key):
@@ -243,14 +246,6 @@ class MapSkipList:
         if(node.key == key):
             return node
         return None
-
-
-    def _search_per_index(self, index:int)->'NodeMapSkipList':
-        node = self.down_left.right
-        for _ in range(index):
-            node = node.right
-
-        return node
 
 
     @dispatch(int)
@@ -340,11 +335,11 @@ class MapSkipList:
         self.length += 1
 
 
-#    def get(self, key:int):
-#        pass
-#
-#
-#    def set(self, key:int, newValue:any)->None:
-#        pass
-#
+    def get(self, key:int):
+        pass
+
+
+    def set(self, key:int, newValue:any)->None:
+        pass
+
 
