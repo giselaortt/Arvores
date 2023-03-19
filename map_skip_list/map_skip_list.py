@@ -61,7 +61,6 @@ class NodeMapSkipList:
 
 
     def __repr__(self):
-        #node_str = "  {1}\n{2}  <{0}>  {3}\n  {4}\n"
         node_str = "{1} {2} <{0}> {3} {4}"
         above = (self.above.key,self.above.element) if self.above else None
         bellow = (self.bellow.key,self.bellow.element) if self.bellow else None
@@ -163,10 +162,6 @@ class MapSkipList:
         return answer
 
 
-#    def __delitem__(key):
-#        pass
-#
-#
     def __add__( self, other:'MapSkipList')->'MapSkipList':
         first = self.down_left.right
         second = other.down_left.right
@@ -348,6 +343,7 @@ class MapSkipList:
         node.element = newValue
 
 
-
+    def get():
+        pass
 
 

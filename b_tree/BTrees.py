@@ -3,44 +3,32 @@ from multipledispatch import dispatch
 import collections
 from array import array
 from typing import Type
-
 import sys
 sys.path.insert(0, '../map_skip_list/')
 sys.path.insert(0, '../skip_list/')
-
 from map_skip_list import MapSkipList
 from skip_list import SkipList
 
 
 class NodeBTree():
     precision = 0.00001
-    self.max_len = 20
+    max_len = 20
 
-    #def __init__( self, key:int, parent:'NodeBTree' = None, children:list = None, max_len:int = 10 ):
-    def __init__( self, key:int, parent:'NodeBTree' = None, max_len:int = 10 ):
-        self.keys = MapSkipList( )
-        self.keys.insert( key )
-        self.numberOfChildren = 0
+    def __init__( self, key:int = None, parent:'NodeBTree' = None ):
+        self.keys = MapSkipList()
+        if(key is not None):
+            self.keys.insert( key, None )
         self.parent = parent
-
-        else:
-            self.children = None
 
 
     def isLeaf( self ) -> bool:
 
-        return ( self.children is None )
-
-
-    @dispatch( object )
-    def __eq__( self, other:'NodeBTree' ):
-
-        return (self.keys == other.keys)
+        return self.keys[0][1] is None
 
 
     def __repr__( self ):
 
-        return "["+ ", ".join([str(value) for value in self.keys])+"]"
+        return str(self.keys)
 
 
     def __len__( self ):
@@ -50,7 +38,7 @@ class NodeBTree():
 
     def hasExceded( self ):
 
-        return ( len(self.keys) >= self.max_len )
+        return ( len(self.keys) > self.max_len )
 
 
     @dispatch( (int,float) )
@@ -62,19 +50,25 @@ class NodeBTree():
     @dispatch(int)
     def insert( self, key:int ) -> None:
        self.keys.insert(key)
+       if( self.hasExceded() ):
+           self.split
 
 
-    def promoteChild( self, child:'None' )->None:
-       raise NotImplementedError
+    def _get_child( self, index:int ):
+
+        raise NotImplementedError
 
 
-    def split( self ):
-        right_child = SkipList()
-        left_child = SkipList()
-        middle = len(slef/2)
-        right_child.keys = self.keys[0:len(self/2)]
-        left_child.keys = self.keys[len(self/2)+1:]
-        self.key = self.keys[ len(self)/2 ]
+    def _promoteChild( self, child:'None' )->None:
+
+        raise NotImplementedError
+
+
+    def _split( self ):
+        raise NotImplementedError
+        #left = self.keys[0:length/2-1]
+        #right = self.keys[length/2+1:]
+        #self.keys = self.keys[middle]
 
 
 class BTree():
@@ -91,8 +85,8 @@ class BTree():
     def __repr__( self ):
         if( self.root is None ):
             return "< >"
-        #ans = "<"+ " ".join([str(node) for node in self.pre_order()])+">"
         ans = "<"+ " ".join([str(self.pre_order())])+">"
+
         return ans
 
 
@@ -106,7 +100,8 @@ class BTree():
 
     @staticmethod
     def _pre_order( node:'NodeBTree', answer:list ) -> list:
-        pass
+
+        raise NotImplementedError
 
 
     def isEmpty( self ):
@@ -123,7 +118,7 @@ class BTree():
         return None
 
 
-    def _findNodeBTreeToInsert( self, key:int ) -> 'NodeBTree':
+    def _findNodeToInsert( self, key:int ) -> 'NodeBTree':
         node = BTree._search( key, self.root )
         if( key in node ):
             raise Exception("Operation not allowed.")
@@ -136,20 +131,19 @@ class BTree():
             raise TypeError('expected type NodeBTree')
         if( key in node or node.isLeaf() ):
             return node
-        """
+        raise NotImplementedError
         if( key < node.keys[0] ):
             return BTree._search( key, node.children[0] )
         if( node.isThreeNodeBTree() and key > node.keys[1] ):
             return BTree._search( key, node.children[2] )
         return BTree._search( key, node.children[1] )
-        """
 
 
     def insert( self, key:int ) -> None:
         if( self.root is None ):
             self.root = NodeBTree( key )
             return
-        node = self._findNodeBTreeToInsert( key )
+        node = self._findNodeToInsert( key )
         node.insert(key)
         self.bubbleUp(node)
 
@@ -168,7 +162,7 @@ class BTree():
 
 
 
-
-
+    def _merge(self, node, other):
+        pass
 
 
