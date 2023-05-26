@@ -36,7 +36,7 @@ class Test():
 
 
     def test_node_must_split_automatically( self ):
-        node = NodeBTree(0)
+        node = NodeBTree(-1)
         for i in range(20):
             node.insert(i)
         assert len(node) == 1
