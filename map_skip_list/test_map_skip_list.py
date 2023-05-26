@@ -360,7 +360,7 @@ class Test:
         assert skip[2,3,4,5] == b
 
 
-    def test_getitem_slice(self):
+    def test_slice(self):
         skip = MapSkipList()
         skip.insert(-20,'a' )
         skip.insert(-4, 'a' )
@@ -374,7 +374,7 @@ class Test:
         b.insert(1, 'a')
         b.insert(-2, 'a')
         assert skip[2:4] == b
-        #assert skip[0:4:2] == b
+        assert skip[2:4:2] == b
 
 
     def test_add_lists(self):
