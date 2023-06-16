@@ -14,11 +14,18 @@ class NodeBTree():
     precision = 0.00001
     max_len = 20
 
-    def __init__( self, key:int = None, parent:'NodeBTree' = None ):
+
+    def __init__( self, parent:'NodeBTree' = None ):
         self.keys = MapSkipList()
-        if(key is not None):
-            self.keys.insert( key, None )
         self.parent = parent
+
+
+    '''
+    @dispatch(object)
+    def __init__( self, keys:MapSkipList = None ):
+
+        raise NotImplementedError
+    '''
 
 
     def isLeaf( self ) -> bool:
@@ -38,6 +45,7 @@ class NodeBTree():
 
     def hasExceded( self ):
 
+        print( len(self.keys) )
         return ( len(self.keys) > self.max_len )
 
 
@@ -51,7 +59,7 @@ class NodeBTree():
     def insert( self, key:int ) -> None:
        self.keys.insert(key)
        if( self.hasExceded() ):
-           self.split
+           self.split()
 
 
     def _get_child( self, index:int ):
@@ -65,10 +73,12 @@ class NodeBTree():
 
 
     def _split( self ):
-        raise NotImplementedError
-        #left = self.keys[0:length/2-1]
-        #right = self.keys[length/2+1:]
-        #self.keys = self.keys[middle]
+        pointer = self.keys
+        middle = len(self.keys)/2
+        self.keys = self.keys[middle]
+        left = pointer[0:middle-1]
+        right = pointer[middle+1:]
+        #how to link 2 children if i have only one key ?
 
 
 class BTree():
@@ -85,28 +95,34 @@ class BTree():
     def __repr__( self ):
         if( self.root is None ):
             return "< >"
-        ans = "<"+ " ".join([str(self.pre_order())])+">"
+        ans = "<" + " ".join([str(self.pre_order())]) + ">"
 
         return ans
 
 
-    def pre_order( self ) -> list:
-        if(self.root is None):
-            return []
-        answer = []
-        BTree._pre_order(self.root, answer)
-        return answer
+    def insert( self, key:int ) -> None:
+        if( self.root is None ):
+            self.root = NodeBTree( key )
+            return
+        node = self._findNodeToInsert( key )
+        node.insert(key)
+        self.bubbleUp(node)
 
 
-    @staticmethod
-    def _pre_order( node:'NodeBTree', answer:list ) -> list:
+    def _findNodeToInsert( self, key:int ) -> 'NodeBTree':
+        node = BTree._search( key, self.root )
+        if( key in node ):
+            raise Exception("Operation not allowed.")
+        return node
 
-        raise NotImplementedError
 
-
-    def isEmpty( self ):
-
-        return ( self.root is None )
+    def bubbleUp( self, node:'NodeBTree' ) -> None:
+        while(node.hasExceded()):
+            node.split()
+            if(node.parent is not None):
+                node.parent.removeChild( node )
+                node.parent.insert( node )
+                node = node.parent
 
 
     def search( self, key:int ) -> 'NodeBTree':
@@ -116,13 +132,6 @@ class BTree():
         if(key in node):
             return node
         return None
-
-
-    def _findNodeToInsert( self, key:int ) -> 'NodeBTree':
-        node = BTree._search( key, self.root )
-        if( key in node ):
-            raise Exception("Operation not allowed.")
-        return node
 
 
     @staticmethod
@@ -139,22 +148,24 @@ class BTree():
         return BTree._search( key, node.children[1] )
 
 
-    def insert( self, key:int ) -> None:
-        if( self.root is None ):
-            self.root = NodeBTree( key )
-            return
-        node = self._findNodeToInsert( key )
-        node.insert(key)
-        self.bubbleUp(node)
+    def pre_order( self ) -> list:
+        if(self.root is None):
+            return []
+        answer = []
+        BTree._pre_order(self.root, answer)
+
+        return answer
 
 
-    def bubbleUp( self, node:'NodeBTree' ) -> None:
-        while(node.hasExceded()):
-            node.split()
-            if(node.parent is not None):
-                node.parent.removeChild( node )
-                node.parent.insert( node )
-                node = node.parent
+    @staticmethod
+    def _pre_order( node:'NodeBTree', answer:list ) -> list:
+
+        raise NotImplementedError
+
+
+    def isEmpty( self ):
+
+        return ( self.root is None )
 
 
     def remove( self, key ):
