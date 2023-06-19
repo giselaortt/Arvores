@@ -4,10 +4,7 @@ import collections
 from array import array
 from typing import Type
 import sys
-sys.path.insert(0, '../map_skip_list/')
-sys.path.insert(0, '../skip_list/')
-from map_skip_list import MapSkipList
-from skip_list import SkipList
+from bisect import bisect_left
 
 
 class NodeBTree():
@@ -15,22 +12,18 @@ class NodeBTree():
     max_len = 20
 
 
-    def __init__( self, parent:'NodeBTree' = None ):
-        self.keys = MapSkipList()
+    def __init__( self, parent:'NodeBTree'=None, keys:list=None ):
         self.parent = parent
-
-
-    '''
-    @dispatch(object)
-    def __init__( self, keys:MapSkipList = None ):
-
-        raise NotImplementedError
-    '''
+        if(keys is not None):
+            self.keys = list(keys)
+        else:
+            self.keys:list = []
+        self.children:list = []
 
 
     def isLeaf( self ) -> bool:
 
-        return self.keys[0][1] is None
+        return len(self.children)==0
 
 
     def __repr__( self ):
@@ -45,7 +38,6 @@ class NodeBTree():
 
     def hasExceded( self ):
 
-        print( len(self.keys) )
         return ( len(self.keys) > self.max_len )
 
 
@@ -57,9 +49,10 @@ class NodeBTree():
 
     @dispatch(int)
     def insert( self, key:int ) -> None:
-       self.keys.insert(key)
+       self.keys.append(key)
+       self.keys.sort()
        if( self.hasExceded() ):
-           self.split()
+           self._split()
 
 
     def _get_child( self, index:int ):
@@ -74,11 +67,11 @@ class NodeBTree():
 
     def _split( self ):
         pointer = self.keys
-        middle = len(self.keys)/2
-        self.keys = self.keys[middle]
-        left = pointer[0:middle-1]
-        right = pointer[middle+1:]
-        #how to link 2 children if i have only one key ?
+        middle = int(len(self.keys)/2)
+        self.keys = [ self.keys[middle] ]
+        left = NodeBTree( parent=self, keys=pointer[0:middle])
+        right = NodeBTree( parent=self, keys=pointer[middle+1:] )
+        self.children = [left,right]
 
 
 class BTree():
@@ -102,7 +95,8 @@ class BTree():
 
     def insert( self, key:int ) -> None:
         if( self.root is None ):
-            self.root = NodeBTree( key )
+            self.root = NodeBTree( )
+            self.root.insert(key)
             return
         node = self._findNodeToInsert( key )
         node.insert(key)
@@ -140,12 +134,9 @@ class BTree():
             raise TypeError('expected type NodeBTree')
         if( key in node or node.isLeaf() ):
             return node
-        raise NotImplementedError
-        if( key < node.keys[0] ):
-            return BTree._search( key, node.children[0] )
-        if( node.isThreeNodeBTree() and key > node.keys[1] ):
-            return BTree._search( key, node.children[2] )
-        return BTree._search( key, node.children[1] )
+        pos = bisect_left(node.keys, key)
+        #pos = bisect.bisect_right(node.keys, key)
+        return BTree._search(key,node.children[ pos ])
 
 
     def pre_order( self ) -> list:
@@ -170,7 +161,6 @@ class BTree():
 
     def remove( self, key ):
         pass
-
 
 
     def _merge(self, node, other):

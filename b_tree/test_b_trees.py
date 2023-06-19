@@ -14,7 +14,7 @@ class Test():
     def test_has_exceded( self ):
         node = NodeBTree( )
         for i in range(21):
-            node.keys.insert(i)
+            node.keys.append(i)
         assert node.hasExceded()
 
 
@@ -32,36 +32,39 @@ class Test():
         node.insert(3)
         node._split()
         assert len(node) == 1
-        #assert node.keys == [1]
-        #node.get_children()
-        #should have one left child and one right child
+        assert node.keys == [2]
 
-'''
 
     def test_node_must_split_automatically( self ):
-        node = NodeBTree(-1)
-        for i in range(20):
+        node = NodeBTree()
+        for i in range(21):
             node.insert(i)
         assert len(node) == 1
-        #assert len(node left child) == 10
-        #assert len(node right child) == 10
+        print(node)
+        print(node.children[1])
+        print(node.children[0])
+        assert len(node.children[1]) == 10
+        assert len(node.children[0]) == 10
 
 
     def test_is_leaf_node( self ):
-        node = NodeBTree( 2 )
+        node = NodeBTree( )
+        node.insert(2)
         assert node.isLeaf() is True
 
 
     def test_add_key_greater( self ):
-        node = NodeBTree( 3 )
+        node = NodeBTree( )
+        node.insert( 3 )
         node.insert( 4 )
-        assert node.keys[0][0] == 3 and node.keys[1][0] == 4
+        assert node.keys[0] == 3 and node.keys[1] == 4
 
 
     def test_add_key_smaller( self ):
-        node = NodeBTree( 3 )
+        node = NodeBTree(  )
+        node.insert( 3 )
         node.insert( 2 )
-        assert node.keys[0][0] == 2 and node.keys[1][0] == 3
+        assert node.keys[0] == 2 and node.keys[1] == 3
 
 
     def test_contain_on_empty_tree_returns_false( self ):
@@ -86,8 +89,7 @@ class Test():
         assert 1 in tree
 
 
-    def should_add_multiple_keys_in_tree( self ):
-        pass
+    def test_should_add_multiple_keys_in_tree( self ):
         tree = BTree()
         keys = range(21)
         for key in keys:
@@ -120,7 +122,7 @@ class Test():
 #            assert Test.is_node_perfectly_balanced(node)
 #
 #
-    def repetitive_insertion_should_fail(self):
+    def test_repetitive_insertion_should_fail(self):
         tree = BTree()
         for key in range( 100 ):
             tree.insert(key)
@@ -128,6 +130,20 @@ class Test():
             tree.insert(25)
         assert str(info.value) == "Operation not allowed."
 
-'''
+
+
+    def test_to_string(self):
+        tree = BTree()
+        keys = range(21)
+        for key in keys:
+            tree.insert( key )
+
+        print(tree)
+
+
+
+    def test_is_b_tree(self):
+        #btrees definition:
+        pass
 
 
