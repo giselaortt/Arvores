@@ -45,6 +45,14 @@ class Test():
         assert len(node.children[0]) == 10
 
 
+    def test_children_type( self ):
+        node = NodeBTree()
+        for i in range(100):
+            node.insert(i)
+        assert type( node.children[1] ) == NodeBTree
+        assert type( node.children[0] ) == NodeBTree
+
+
     def test_is_leaf_node( self ):
         node = NodeBTree( )
         node.insert(2)

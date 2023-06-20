@@ -168,8 +168,10 @@ class BTree():
 
     @staticmethod
     def _pre_order( node:'NodeBTree', answer:list ) -> list:
-
-        raise NotImplementedError
+        answer.append( node.keys )
+        if( not node.isLeaf() ):
+            for child in node.children:
+                BTree._pre_order( child, answer )
 
 
     def isEmpty( self ):
