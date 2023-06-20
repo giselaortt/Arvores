@@ -5,6 +5,8 @@ from array import array
 from typing import Type
 import sys
 from bisect import bisect_left
+from bisect import bisect_right
+
 
 
 class NodeBTree():
@@ -12,13 +14,16 @@ class NodeBTree():
     max_len = 20
 
 
-    def __init__( self, parent:'NodeBTree'=None, keys:list=None ):
+    def __init__( self, parent:'NodeBTree'=None, keys:list=None, children:list=None ):
         self.parent = parent
         if(keys is not None):
             self.keys = list(keys)
         else:
             self.keys:list = []
-        self.children:list = []
+        if(children is not None):
+            self.children = list(children)
+        else:
+            self.children:list = []
 
 
     def isLeaf( self ) -> bool:
@@ -55,6 +60,12 @@ class NodeBTree():
            self._split()
 
 
+    @dispatch(object)
+    def insert( self, node:'NodeBTree' ) -> None:
+
+        raise NotImplementedError
+
+
     def _get_child( self, index:int ):
 
         raise NotImplementedError
@@ -65,13 +76,21 @@ class NodeBTree():
         raise NotImplementedError
 
 
+    def split( self ):
+
+        raise NotImplementedError
+
+
     def _split( self ):
         pointer = self.keys
         middle = int(len(self.keys)/2)
         self.keys = [ self.keys[middle] ]
         left = NodeBTree( parent=self, keys=pointer[0:middle])
-        right = NodeBTree( parent=self, keys=pointer[middle+1:] )
-        self.children = [left,right]
+        right = NodeBTree( parent=self, keys=pointer[middle+1:])
+        if( self.isLeaf() ):
+            self.children = [left,right]
+        else:
+            raise NotImplementedError
 
 
 class BTree():
@@ -82,7 +101,7 @@ class BTree():
 
     def __contains__( self, key:int ) -> bool:
 
-        return ( self.search( key ) is not None )
+        return ( self.search(key) is not None )
 
 
     def __repr__( self ):
@@ -113,7 +132,7 @@ class BTree():
     def bubbleUp( self, node:'NodeBTree' ) -> None:
         while(node.hasExceded()):
             node.split()
-            if(node.parent is not None):
+            if( node is not self.root ):
                 node.parent.removeChild( node )
                 node.parent.insert( node )
                 node = node.parent
@@ -134,8 +153,7 @@ class BTree():
             raise TypeError('expected type NodeBTree')
         if( key in node or node.isLeaf() ):
             return node
-        pos = bisect_left(node.keys, key)
-        #pos = bisect.bisect_right(node.keys, key)
+        pos = bisect_right(node.keys, key)
         return BTree._search(key,node.children[ pos ])
 
 
@@ -165,5 +183,6 @@ class BTree():
 
     def _merge(self, node, other):
         pass
+
 
 
