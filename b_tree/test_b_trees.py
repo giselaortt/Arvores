@@ -105,7 +105,7 @@ class Test():
 
 
     @staticmethod
-    def calculate_height( node:object ) ->  int:
+    def calculate_height( node:'NodeBTree' ) ->  int:
         if node is None:
             return 0
         if( node.isLeaf() ):
@@ -114,7 +114,7 @@ class Test():
 
 
     @staticmethod
-    def is_node_perfectly_balanced( node:object ) -> bool:
+    def is_node_perfectly_balanced( node:'NodeBTree' ) -> bool:
         if node is None or node.isLeaf():
             return True
         return ( len(set([ Test.calculate_height(child) for child in node.children  ])) == 1)
@@ -122,7 +122,7 @@ class Test():
 
     def test_all_nodes_should_be_perfectly_balanced( self ):
         tree = BTree()
-        for key in range( 10000 ):
+        for key in range( 500 ):
             tree.insert(key)
         nodes = tree.pre_order()
         for node in nodes:

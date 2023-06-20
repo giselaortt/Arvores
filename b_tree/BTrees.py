@@ -168,7 +168,7 @@ class BTree():
 
     @staticmethod
     def _pre_order( node:'NodeBTree', answer:list ) -> list:
-        answer.append( node.keys )
+        answer.append( node )
         if( not node.isLeaf() ):
             for child in node.children:
                 BTree._pre_order( child, answer )
