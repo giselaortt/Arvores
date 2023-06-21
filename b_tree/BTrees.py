@@ -11,7 +11,7 @@ from bisect import bisect_right
 class NodeBTree():
     precision = 0.00001
     max_len = 20
-    middle = 11 # should be (max_len / 2) +1
+    middle = 10 # should be (max_len / 2) +1
 
 
     def __init__( self, parent:'NodeBTree'=None, keys:list=None, children:list=None ):
