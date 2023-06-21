@@ -11,13 +11,13 @@ from bisect import bisect_right
 class NodeBTree():
     precision = 0.00001
     max_len = 20
-    middle = 11
+    middle = 11 # should be (max_len / 2) +1
 
 
     def __init__( self, parent:'NodeBTree'=None, keys:list=None, children:list=None ):
         self.parent = parent
         if(keys is not None):
-            self.keys = list(keys)
+            self.keys = list(keys) #deep copy is important!
         else:
             self.keys:list = []
         if(children is not None):
@@ -88,13 +88,13 @@ class NodeBTree():
 
     def _split( self ):
         pointer = self.keys
-        self.keys = [ self.keys[middle] ]
-        left = NodeBTree( parent=self, keys=pointer[0:middle])
-        right = NodeBTree( parent=self, keys=pointer[middle+1:])
-        if( self.isLeaf() ):
-            self.children = [left,right]
-        else:
-            raise NotImplementedError
+        self.keys = [ self.keys[self.middle] ]
+        left = NodeBTree( parent=self, keys=pointer[0:self.middle])
+        right = NodeBTree( parent=self, keys=pointer[self.middle+1:])
+        if( not self.isLeaf() ):
+            left.children = list(self.children[0:self.middle+1])
+            right.children = list(self.children[self.middle+1:])
+        self.children = [left,right]
 
 
 class BTree():
