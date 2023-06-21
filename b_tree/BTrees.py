@@ -8,10 +8,10 @@ from bisect import bisect_left
 from bisect import bisect_right
 
 
-
 class NodeBTree():
     precision = 0.00001
     max_len = 20
+    middle = 11
 
 
     def __init__( self, parent:'NodeBTree'=None, keys:list=None, children:list=None ):
@@ -71,19 +71,23 @@ class NodeBTree():
         raise NotImplementedError
 
 
-    def _promoteChild( self, child:'None' )->None:
+    def _promoteChild( self, child:'NodeBTree' )->None:
+        if(len(child.keys) != 1):
+            raise ValueError('')
+        position = self.children.index(child)
+        del self.children[position]
+        self._insertChild( position, child.children[1] )
+        self._insertChild( position, child.children[0] )
+        self.keys.insert( position, child.keys[0] )
 
-        raise NotImplementedError
 
-
-    def split( self ):
-
-        raise NotImplementedError
+    def _insertChild( self, position:int, child:'NodeBTree' )->None:
+        self.children.insert(position, child)
+        child.parent = self
 
 
     def _split( self ):
         pointer = self.keys
-        middle = int(len(self.keys)/2)
         self.keys = [ self.keys[middle] ]
         left = NodeBTree( parent=self, keys=pointer[0:middle])
         right = NodeBTree( parent=self, keys=pointer[middle+1:])
@@ -126,6 +130,7 @@ class BTree():
         node = BTree._search( key, self.root )
         if( key in node ):
             raise Exception("Operation not allowed.")
+
         return node
 
 
