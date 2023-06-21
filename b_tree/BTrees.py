@@ -60,12 +60,6 @@ class NodeBTree():
            self._split()
 
 
-    @dispatch(object)
-    def insert( self, node:'NodeBTree' ) -> None:
-
-        raise NotImplementedError
-
-
     def _get_child( self, index:int ):
 
         raise NotImplementedError
