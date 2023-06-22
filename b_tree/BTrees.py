@@ -8,15 +8,13 @@ from bisect import bisect_left
 from bisect import bisect_right
 
 
-
 class NodeBTree():
     precision = 0.00001
-    max_len = 20
-    middle = 10 # should be (max_len / 2) +1
 
-
-    def __init__( self, parent:'NodeBTree'=None, keys:list=None, children:list=None ):
+    def __init__( self, max_len=20, parent:'NodeBTree'=None, keys:list=None, children:list=None ):
         self.parent = parent
+        self.max_len = max_len
+        self.middle = (max_len) / 2
         if(keys is not None):
             self.keys = list(keys) #deep copy is important!
         else:
@@ -84,8 +82,8 @@ class NodeBTree():
     def _split( self ):
         pointer = self.keys
         self.keys = [ self.keys[self.middle] ]
-        left = NodeBTree( parent=self, keys=pointer[0:self.middle])
-        right = NodeBTree( parent=self, keys=pointer[self.middle+1:])
+        left = NodeBTree( max_len = self.max_len, parent=self, keys=pointer[0:self.middle])
+        right = NodeBTree( max_len = self.max_len, parent=self, keys=pointer[self.middle+1:])
         if( not self.isLeaf() ):
             left.children = list(self.children[0:self.middle+1])
             right.children = list(self.children[self.middle+1:])
@@ -94,7 +92,8 @@ class NodeBTree():
 
 class BTree():
 
-    def __init__( self ):
+    def __init__( self, max_len:int = 20 ):
+        self.max_len = max_len
         self.root = None
 
 
@@ -113,7 +112,7 @@ class BTree():
 
     def insert( self, key:int ) -> None:
         if( self.root is None ):
-            self.root = NodeBTree( )
+            self.root = NodeBTree( max_len = self.max_len )
             self.root.insert(key)
             return
         node = self._findNodeToInsert( key )
