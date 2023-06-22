@@ -11,10 +11,10 @@ from bisect import bisect_right
 class NodeBTree():
     precision = 0.00001
 
-    def __init__( self, max_len=20, parent:'NodeBTree'=None, keys:list=None, children:list=None ):
+    def __init__( self, parent:'NodeBTree'=None, keys:list=None, children:list=None, max_len=20 ):
         self.parent = parent
         self.max_len = max_len
-        self.middle = (max_len) / 2
+        self.middle = int((max_len) / 2)
         if(keys is not None):
             self.keys = list(keys) #deep copy is important!
         else:
