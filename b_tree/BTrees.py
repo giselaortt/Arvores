@@ -8,6 +8,7 @@ from bisect import bisect_left
 from bisect import bisect_right
 
 
+
 class NodeBTree():
     precision = 0.00001
     max_len = 20

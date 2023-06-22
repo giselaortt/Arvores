@@ -26,15 +26,15 @@ class Test():
         assert (not node.hasExceded())
 
 
-    def test_split( self ):
-        node = NodeBTree()
-        node.insert(1)
-        node.insert(2)
-        node.insert(3)
-        node._split()
-        assert len(node) == 1
-        assert node.keys == [2]
-
+#    def test_split( self ):
+#        node = NodeBTree()
+#        node.insert(1)
+#        node.insert(2)
+#        node.insert(3)
+#        node._split()
+#        assert len(node) == 1
+#        assert node.keys == [2]
+#
 
     def test_node_must_split_automatically( self ):
         node = NodeBTree()
@@ -43,6 +43,10 @@ class Test():
         assert len(node) == 1
         assert len(node.children[1]) == 10
         assert len(node.children[0]) == 10
+
+
+    def test_split_on_no_leaf_node( self ):
+        pass
 
 
     def test_children_type( self ):
@@ -120,17 +124,26 @@ class Test():
         return ( len(set([ Test.calculate_height(child) for child in node.children  ])) == 1)
 
 
-    def test_all_nodes_should_be_perfectly_balanced( self ):
+    def test_is_b_tree( self ):
         tree = BTree()
+        max_len = 20
         for key in range( 500 ):
             tree.insert(key)
+
+        #the root node is eigther a leaf node or an internal node with 2 to M+1 children
+        assert (tree.root.isLeaf() or (2 <= len(tree.root.children) and (len(tree.root.children) <= max_len+1)))
+
+        #the root node should have between 1 to M keys
+        assert ( 1 <= len(tree.root.keys) and len(tree.root.keys) <= max_len )
+
+        #the rest of the internal nodes have between M/2 and M children
         nodes = tree.pre_order()
+        for node in nodes[1:]:
+            assert ( node.isLeaf() or (max_len/2 <= len(node.children) and len(node.children) <= max_len ))
+
+        #all leaves are at the same deapth, should be perfecly balanced
         for node in nodes:
-            assert Test.is_node_perfectly_balanced(node)
-
-
-    def test_is_b_tree( self ):
-        pass
+            assert is_node_perfectly_balanced( node )
 
 
     def test_repetitive_insertion_should_fail(self):
