@@ -99,7 +99,7 @@ class Test():
         assert 1 in tree
 
 
-    def test_should_add_multiple_keys_in_tree( self ):
+    def test_add_multiple_keys_in_tree( self ):
         tree = BTree()
         keys = list(range(1000))
         shuffle(keys)
@@ -124,26 +124,39 @@ class Test():
         return ( len(set([ Test.calculate_height(child) for child in node.children  ])) == 1)
 
 
-    def test_is_b_tree( self ):
-        tree = BTree()
-        max_len = 20
-        for key in range( 500 ):
-            tree.insert(key)
+    @staticmethod
+    def root_should_be_leaf_or_have_between_two_and_m_children( tree:'BTree' ):
+        assert (tree.root.isLeaf() or (2 <= len(tree.root.children) and (len(tree.root.children) <= tree.max_len+1)))
 
-        #the root node is eigther a leaf node or an internal node with 2 to M+1 children
-        assert (tree.root.isLeaf() or (2 <= len(tree.root.children) and (len(tree.root.children) <= max_len+1)))
 
-        #the root node should have between 1 to M keys
-        assert ( 1 <= len(tree.root.keys) and len(tree.root.keys) <= max_len )
+    @staticmethod
+    def root_should_have_between_one_and_m_keys( tree:'BTree' ):
+        assert ( 1 <= len(tree.root.keys) and len(tree.root.keys) <= tree.max_len )
 
-        #the rest of the internal nodes have between M/2 and M children
+
+    @staticmethod
+    #the rest of the internal nodes have between M/2 and M children
+    def internal_node_should_have_between_11_and_21_children( tree:'BTree' ):
         nodes = tree.pre_order()
         for node in nodes[1:]:
-            assert ( node.isLeaf() or (max_len/2 <= len(node.children) and len(node.children) <= max_len ))
+            assert ( node.isLeaf() or (tree.max_len/2 <= len(node.children) and len(node.children) <= tree.max_len+1 ))
 
-        #all leaves are at the same deapth, should be perfecly balanced
+
+    @staticmethod
+    def all_nodes_should_be_perfectly_balanced( tree:'BTree' ):
+        nodes = tree.pre_order()
         for node in nodes:
-            assert is_node_perfectly_balanced( node )
+            assert Test.is_node_perfectly_balanced( node )
+
+
+    def test_is_b_tree( self ):
+        tree = BTree( max_len = 10 )
+        for key in range( 1000 ):
+            tree.insert(key)
+        Test.root_should_be_leaf_or_have_between_two_and_m_children(tree)
+        Test.root_should_have_between_one_and_m_keys(tree)
+        Test.internal_node_should_have_between_11_and_21_children(tree)
+        Test.all_nodes_should_be_perfectly_balanced( tree )
 
 
     def test_repetitive_insertion_should_fail(self):
@@ -160,5 +173,6 @@ class Test():
         keys = range(21)
         for key in keys:
             tree.insert( key )
+
 
 
