@@ -1,4 +1,4 @@
-# Data Structures with python
+#Data Structures with python
 
 ## Contains:
 
@@ -8,13 +8,11 @@
 
     3. 2-3-trees 
     
-    4. B-Trees
+    4. B-Trees (in progress)
     
     5. Skip Lists (used on BTrees)
 
     6. Map Skip Lists (used on B Trees)
-
-## to be implemented:
 
 
 ## Things to note:
