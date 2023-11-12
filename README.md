@@ -17,9 +17,9 @@
 
 ## Things to note:
 
-    - Even thought python is not typed and would allow for an inserction with a float type, the trees would not work as expected with a float because i have not implemented the precision on float comparisson. The AVL and BST could potentially be used with chars but not in the case of the 2-3 trees. Adaptation would be simple thought.
+- Even thought python is not typed and would allow for an inserction with a float type, the trees would not work as expected with a float because i have not implemented the precision on float comparisson. The AVL and BST could potentially be used with chars but not in the case of the 2-3 trees. Adaptation would be simple thought.
 
-    - Note that the implementation on the keys handling on the 2-3 trees is not efficient as many insertions appends and dels are made on the python arrays and lists. It is not worthy optimizing as a 2-3 tree only has few keys. in order to convert this code for a b-tree a skip list data structure is required which is not available on python, and is the reason why i didnt code b-trees yet (even though an extention on existing 2-3 trees would be simple). For this reason B-trees might come in another language soon.
+- Note that the implementation on the keys handling on the 2-3 trees is not efficient as many insertions appends and dels are made on the python arrays and lists. It is not worthy optimizing as a 2-3 tree only has few keys. in order to convert this code for a b-tree a skip list data structure is required which is not available on python, and is the reason why i didnt code b-trees yet (even though an extention on existing 2-3 trees would be simple). For this reason B-trees might come in another language soon.
 
 ## References and usefull links:
 
